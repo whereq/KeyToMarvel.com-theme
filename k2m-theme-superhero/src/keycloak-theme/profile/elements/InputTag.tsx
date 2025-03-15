@@ -3,8 +3,8 @@ import type { KcClsx } from "keycloakify/login/lib/kcClsx";
 import type { Attribute } from "keycloakify/login/KcContext";
 import type { I18n } from "@keycloak-theme/login/i18n";
 import type { FormAction, FormFieldError } from "keycloakify/login/lib/useUserProfileForm";
-import FieldErrors from "@keycloak-theme/profile/FieldErrors";
-import AddRemoveButtonsMultiValuedAttribute from "@keycloak-theme/profile/AddRemoveButtonsMultiValuedAttribute";
+import FieldErrors from "@keycloak-theme/profile/elements/FieldErrors";
+import AddRemoveButtonsMultiValuedAttribute from "@keycloak-theme/profile/elements/AddRemoveButtonsMultiValuedAttribute";
 
 export default function InputTag(props: {
     attribute: Attribute;

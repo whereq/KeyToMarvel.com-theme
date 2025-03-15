@@ -12,7 +12,7 @@ const doMakeUserConfirmPassword = true;
 
 const Login = lazy(() => import("@keycloak-theme/login/pages/login/Login"));
 const Register = lazy(() => import("@keycloak-theme/login/pages/register/Register"));
-const LoginUpdateProfile = lazy(() => import("@keycloak-theme/login/pages/LoginUpdateProfile"));
+const LoginUpdateProfile = lazy(() => import("@/keycloak-theme/profile/LoginUpdateProfile"));
 
 export default function KcPage(props: { kcContext: KcContext }) {
     const { kcContext } = props;
