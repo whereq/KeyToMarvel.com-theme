@@ -30,7 +30,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
     const { kcClsx } = getKcClsx({ doUseDefaultCss, classes });
 
-    const { msg, msgStr, currentLanguage, enabledLanguages } = i18n;
+    const { msg, msgStr, currentLanguage = "en", enabledLanguages } = i18n; // Default to "EN" if not set
 
     const { realm, auth, url, message, isAppInitiatedAction } = kcContext;
 
@@ -51,7 +51,6 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
     const { isReadyToRender } = useInitialize({ kcContext, doUseDefaultCss });
 
     if (!isReadyToRender) {
-        console.log(currentLanguage);
         return null;
     }
 
@@ -116,8 +115,12 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                                     .map(({ languageTag, label, href }) => (
                                         <button
                                             key={languageTag}
-                                            className="ml-1 px-1 py-0 border-1 rounded-sm bg-gray-800 text-orange-400 
-                                                       font-bold hover:bg-gray-300 text-normal"
+                                            className={clsx(
+                                                "ml-1 px-1 py-0 border-1 rounded-sm font-bold hover:bg-gray-300 text-normal",
+                                                languageTag === (typeof currentLanguage === "string" ? currentLanguage : currentLanguage.languageTag)
+                                                    ? "bg-orange-400 text-gray-800"
+                                                    : "bg-gray-800 text-orange-400"
+                                            )}
                                             onClick={() => (window.location.href = href)}
                                             aria-label={label}
                                         >
