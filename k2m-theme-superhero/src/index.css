@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+@import "@fontsource/open-sans";
+
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+@layer components {
+}

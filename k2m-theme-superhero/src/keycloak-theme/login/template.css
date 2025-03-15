@@ -1,0 +1,7 @@
+.root {
+  font-family: 'Open Sans', sans-serif;
+  color: #f97316; /* TailwindCSS text-orange-400 */
+  background-color: #4b5563; /* TailwindCSS bg-gray-700 */
+  margin: 0;
+  padding: 0;
+}
