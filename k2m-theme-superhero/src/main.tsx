@@ -10,8 +10,8 @@ import { getKcContextMock } from "./keycloak-theme/login/KcPageStory";
 
 if (import.meta.env.DEV) {
     window.kcContext = getKcContextMock({
-        pageId: "login.ftl",
-        // pageId: "register.ftl",
+        // pageId: "login.ftl",
+        pageId: "register.ftl",
         overrides: {}
     });
 }
