@@ -2,11 +2,11 @@ import type { KcClsx } from "keycloakify/login/lib/kcClsx";
 import type { Attribute } from "keycloakify/login/KcContext";
 import type { I18n } from "@keycloak-theme/login/i18n";
 import type { FormAction, FormFieldError } from "keycloakify/login/lib/useUserProfileForm";
-import PasswordWrapper from "@keycloak-theme/profile/PasswordWrapper";
-import InputTag from "@keycloak-theme/profile/InputTag";
-import TextareaTag from "@keycloak-theme/profile/TextareaTag";
-import SelectTag from "@keycloak-theme/profile/SelectTag";
-import InputTagSelects from "@keycloak-theme/profile/InputTagSelects";
+import PasswordWrapper from "@/keycloak-theme/profile/elements/PasswordWrapper";
+import InputTag from "@/keycloak-theme/profile/elements/InputTag";
+import TextareaTag from "@/keycloak-theme/profile/elements/TextareaTag";
+import SelectTag from "@/keycloak-theme/profile/elements/SelectTag";
+import InputTagSelects from "@/keycloak-theme/profile/elements/InputTagSelects";
 
 type InputFieldByTypeProps = {
     attribute: Attribute;
