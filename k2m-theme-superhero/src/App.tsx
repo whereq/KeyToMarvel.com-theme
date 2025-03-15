@@ -1,33 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { PiYinYangFill } from "react-icons/pi";
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
+      <div className="body">
+        <a href="https://www.keytomarvel.com" target="_blank">
+          <PiYinYangFill size={81} color="orange" className="mr-2" />
         </a>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
+      <h1>WhereQ --- Key To Marvel</h1>
+      <div className="text-orange-400 bg-gray-900 p-4 font-[Open_Sans]">
         <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
+          <span className="font-bold text-orange-400">WhereQ - Keycloak</span> aims to stay up-to-date with the latest Keycloak releases,
+          while offering integration with additional <span className="font-bold text-orange-400">Social Identity Providers</span> not included in the default Keycloak distribution, such as
+          <span className="font-bold text-orange-400"> Apple</span> and <span className="font-bold text-orange-400">WeChat</span>. Additionally, WhereQ is developing support for
+          <span className="font-bold text-orange-400"> multi-tenancy</span> and providing <span className="font-bold text-orange-400">customizable themes</span> tailored to specific client needs,
+          ensuring flexibility and scalability for a wide range of identity management requirements.
         </p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
