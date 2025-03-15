@@ -1,17 +1,18 @@
 import { Suspense, lazy } from "react";
 import type { ClassKey } from "keycloakify/login";
-import type { KcContext } from "./KcContext";
-import { useI18n } from "./i18n";
+import type { KcContext } from "@keycloak-theme/login/KcContext";
+import { useI18n } from "@keycloak-theme/login/i18n";
 import DefaultPage from "keycloakify/login/DefaultPage";
-import Template from "./Template.tsx";
+import Template from "@keycloak-theme/login/Template.tsx";
 const UserProfileFormFields = lazy(
-    () => import("./UserProfileFormFields")
+    () => import("@keycloak-theme/login/UserProfileFormFields")
 );
 
 const doMakeUserConfirmPassword = true;
 
-const Login = lazy(() => import("./pages/login/Login.tsx"));
-const LoginUpdateProfile = lazy(() => import("./pages/LoginUpdateProfile"));
+const Login = lazy(() => import("@keycloak-theme/login/pages/login/Login"));
+const Register = lazy(() => import("@keycloak-theme/login/pages/register/Register"));
+const LoginUpdateProfile = lazy(() => import("@keycloak-theme/login/pages/LoginUpdateProfile"));
 
 export default function KcPage(props: { kcContext: KcContext }) {
     const { kcContext } = props;
@@ -27,6 +28,15 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             {...{ kcContext, i18n, classes }}
                             Template={Template}
                             doUseDefaultCss={true}
+                        />
+                    );
+                    case "register.ftl": return (
+                        <Register
+                            {...{ kcContext, i18n, classes }}
+                            Template={Template}
+                            doUseDefaultCss={true}
+                            UserProfileFormFields={UserProfileFormFields}
+                            doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                         />
                     );
                     case "login-update-profile.ftl": return (

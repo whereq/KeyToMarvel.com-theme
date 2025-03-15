@@ -3,9 +3,9 @@ import type { PageProps } from "keycloakify/login/pages/PageProps";
 import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import type { KcContext } from "@keycloak-theme/login/KcContext";
 import type { I18n } from "@keycloak-theme/login/i18n";
-import LoginForm from "./LoginForm";
-import RegistrationInfo from "./RegistrationInfo";
-import SocialProviders from "./SocialProviders";
+import LoginForm from "@keycloak-theme/login/pages/login/LoginForm";
+import RegistrationInfo from "@keycloak-theme/login/pages/login/RegistrationInfo";
+import SocialProviders from "@keycloak-theme/login/pages/login/SocialProviders";
 
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
     const { kcContext, i18n, Template, classes } = props;
