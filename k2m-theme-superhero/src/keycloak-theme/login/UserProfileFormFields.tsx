@@ -276,6 +276,7 @@ function InputTag(props: InputFieldByTypeProps & { fieldIndex: number | undefine
 
     const { advancedMsgStr } = i18n;
 
+    console.log(attribute);
     return (
         <>
             <input
@@ -305,7 +306,9 @@ function InputTag(props: InputFieldByTypeProps & { fieldIndex: number | undefine
                 disabled={attribute.readOnly}
                 autoComplete={attribute.autocomplete}
                 placeholder={
-                    attribute.annotations.inputTypePlaceholder === undefined ? undefined : advancedMsgStr(attribute.annotations.inputTypePlaceholder)
+                    (attribute.annotations.inputTypePlaceholder === undefined 
+                        ? advancedMsgStr(attribute.displayName ?? attribute.name) 
+                        : advancedMsgStr(attribute.annotations.inputTypePlaceholder)) + (attribute.required ? " *" : "")
                 }
                 pattern={attribute.annotations.inputTypePattern}
                 size={attribute.annotations.inputTypeSize === undefined ? undefined : parseInt(`${attribute.annotations.inputTypeSize}`)}
