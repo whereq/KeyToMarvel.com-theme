@@ -5,7 +5,7 @@ import { useI18n } from "@keycloak-theme/login/i18n";
 import DefaultPage from "keycloakify/login/DefaultPage";
 import Template from "@keycloak-theme/login/Template.tsx";
 const UserProfileFormFields = lazy(
-    () => import("@keycloak-theme/login/UserProfileFormFields")
+    () => import("@/keycloak-theme/profile/UserProfileFormFields")
 );
 
 const doMakeUserConfirmPassword = true;
