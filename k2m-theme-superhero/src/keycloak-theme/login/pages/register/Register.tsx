@@ -3,7 +3,6 @@ import { useState } from "react";
 import type { LazyOrNot } from "keycloakify/tools/LazyOrNot";
 import { kcSanitize } from "keycloakify/lib/kcSanitize";
 import { getKcClsx, type KcClsx } from "keycloakify/login/lib/kcClsx";
-import { clsx } from "keycloakify/tools/clsx";
 import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFormFieldsProps";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import type { KcContext } from "@keycloak-theme/login/KcContext";
@@ -38,9 +37,11 @@ export default function Register(props: RegisterProps) {
             classes={classes}
             headerNode={messageHeader !== undefined ? advancedMsg(messageHeader) : msg("registerTitle")}
             displayMessage={messagesPerField.exists("global")}
-            displayRequiredFields
+            displayRequiredFields={false}
         >
-            <form id="kc-register-form" className={kcClsx("kcFormClass")} action={url.registrationAction} method="post">
+            <form id="kc-register-form" 
+                className="space-y-4 bg-gray-800 p-4 rounded-sm"
+                action={url.registrationAction} method="post">
                 <UserProfileFormFields
                     kcContext={kcContext}
                     i18n={i18n}
@@ -64,9 +65,9 @@ export default function Register(props: RegisterProps) {
                         </div>
                     </div>
                 )}
-                <div className={kcClsx("kcFormGroupClass")}>
+                <div className="flex justify-between items-center">
                     <div id="kc-form-options" className={kcClsx("kcFormOptionsClass")}>
-                        <div className={kcClsx("kcFormOptionsWrapperClass")}>
+                        <div className="text-blue-400 hover:text-blue-300">
                             <span>
                                 <a href={url.loginUrl}>{msg("backToLogin")}</a>
                             </span>
@@ -76,10 +77,11 @@ export default function Register(props: RegisterProps) {
                     {recaptchaRequired && !recaptchaVisible && recaptchaAction !== undefined ? (
                         <div id="kc-form-buttons" className={kcClsx("kcFormButtonsClass")}>
                             <button
-                                className={clsx(
-                                    kcClsx("kcButtonClass", "kcButtonPrimaryClass", "kcButtonBlockClass", "kcButtonLargeClass"),
-                                    "g-recaptcha"
-                                )}
+                                // className={clsx(
+                                //     kcClsx("kcButtonClass", "kcButtonPrimaryClass", "kcButtonBlockClass", "kcButtonLargeClass"),
+                                //     "g-recaptcha"
+                                // )}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 data-sitekey={recaptchaSiteKey}
                                 data-callback={() => {
                                     (document.getElementById("kc-register-form") as HTMLFormElement).submit();
@@ -94,7 +96,7 @@ export default function Register(props: RegisterProps) {
                         <div id="kc-form-buttons" className={kcClsx("kcFormButtonsClass")}>
                             <input
                                 disabled={!isFormSubmittable || (termsAcceptanceRequired && !areTermsAccepted)}
-                                className={kcClsx("kcButtonClass", "kcButtonPrimaryClass", "kcButtonBlockClass", "kcButtonLargeClass")}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                                 type="submit"
                                 value={msgStr("doRegister")}
                             />

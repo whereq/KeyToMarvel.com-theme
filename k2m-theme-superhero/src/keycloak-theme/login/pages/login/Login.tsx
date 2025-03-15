@@ -8,10 +8,10 @@ import RegistrationInfo from "@keycloak-theme/login/pages/login/RegistrationInfo
 import SocialProviders from "@keycloak-theme/login/pages/login/SocialProviders";
 
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
-    const { kcContext, i18n, Template, classes } = props;
+    const { kcContext, i18n, doUseDefaultCss, Template, classes } = props;
 
     const { kcClsx } = getKcClsx({
-        doUseDefaultCss: false,
+        doUseDefaultCss,
         classes
     });
 
@@ -24,7 +24,7 @@ export default function Login(props: PageProps<Extract<KcContext, { pageId: "log
         <Template
             kcContext={kcContext}
             i18n={i18n}
-            doUseDefaultCss={false}
+            doUseDefaultCss={doUseDefaultCss}
             classes={classes}
             displayMessage={!messagesPerField.existsError("username", "password")}
             headerNode={msg("loginAccountTitle")}
