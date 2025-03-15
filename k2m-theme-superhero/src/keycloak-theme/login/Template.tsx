@@ -62,12 +62,9 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
             {/* Header */}
             <div id="kc-header" 
-                className={`kcClsx("kcHeaderClass") 
-                           bg-blue-700 h-[3.125rem] flex items-center px-4 fixed top-0 left-0 right-0 z-50 w-full`}>
+                className="border-b border-orange-700 bg-blue-700 h-[3.125rem] flex items-center px-4 fixed top-0 left-0 right-0 z-50 w-full">
                 <div id="kc-header-wrapper"
-                    className={`kcClsx("kcHeaderWrapperClass")
-                                 flex items-center h-full
-                                 border-2 border-orange-700`}>
+                    className="flex items-center h-full border-orange-700">
                     <PiYinYangFill size={36} color="orange" className="mr-2" />
                     <span className="text-orange-400 font-bold">{msg("loginTitleHtml", realm.displayNameHtml)}</span>
                 </div>
@@ -75,8 +72,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
             {/* Main Content */}
             <div id="template-main"
-                className={`kcClsx("kcFormCardClass")
-                            flex-grow mt-[3.125rem] mb-[3.125rem] bg-gray-700 border-b border-orange-700`}>
+                className="flex-grow mt-[3.125rem] mb-[3.125rem] bg-gray-700 border-orange-700">
 
                 <div id="top-bar" className="w-1/4 min-w-[20rem] mx-auto flex justify-between items-center p-2">
                     {(() => {
@@ -190,7 +186,8 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
             </div>
 
             {/* Footer */}
-            <div id="kc-footer" className="bg-blue-700 border-t border-orange-700 h-[3.125rem] flex items-center justify-center fixed bottom-0 left-0 right-0 z-50">
+            <div id="kc-footer" 
+                className="bg-blue-700 border-t border-orange-700 h-[3.125rem] flex items-center justify-center fixed bottom-0 left-0 right-0 z-50">
                 <div>
                     <span className="text-orange-400">© 2025 WhereQ Inc. All rights reserved.</span>
                 </div>

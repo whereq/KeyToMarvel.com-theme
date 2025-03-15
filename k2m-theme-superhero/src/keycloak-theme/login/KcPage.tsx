@@ -10,7 +10,7 @@ const UserProfileFormFields = lazy(
 
 const doMakeUserConfirmPassword = true;
 
-const Login = lazy(() => import("./pages/Login"));
+const Login = lazy(() => import("./pages/login/Login.tsx"));
 const LoginUpdateProfile = lazy(() => import("./pages/LoginUpdateProfile"));
 
 export default function KcPage(props: { kcContext: KcContext }) {
