@@ -13,6 +13,7 @@ import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFo
 import type { Attribute } from "keycloakify/login/KcContext";
 import type { KcContext } from "@keycloak-theme/login/KcContext";
 import type { I18n } from "@keycloak-theme/login/i18n";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function UserProfileFormFields(props: UserProfileFormFieldsProps<KcContext, I18n>) {
     const { kcContext, i18n, kcClsx, onIsFormSubmittableValueChange, doMakeUserConfirmPassword, BeforeField, AfterField } = props;
@@ -56,13 +57,15 @@ export default function UserProfileFormFields(props: UserProfileFormFieldsProps<
                                 display: attribute.name === "password-confirm" && !doMakeUserConfirmPassword ? "none" : undefined
                             }}
                         >
-                            <div className={kcClsx("kcLabelWrapperClass")}>
+                            {/* <div className={kcClsx("kcLabelWrapperClass")}>
                                 <label htmlFor={attribute.name} className={kcClsx("kcLabelClass")}>
                                     {advancedMsg(attribute.displayName ?? "")}
                                 </label>
                                 {attribute.required && <> *</>}
-                            </div>
-                            <div className={kcClsx("kcInputWrapperClass")}>
+                            </div> */}
+                            <div 
+                                className="w-full m-1 rounded-sm"
+                            >
                                 {attribute.annotations.inputHelperTextBefore !== undefined && (
                                     <div
                                         className={kcClsx("kcInputHelperTextBeforeClass")}
@@ -83,7 +86,8 @@ export default function UserProfileFormFields(props: UserProfileFormFieldsProps<
                                 <FieldErrors attribute={attribute} displayableErrors={displayableErrors} kcClsx={kcClsx} fieldIndex={undefined} />
                                 {attribute.annotations.inputHelperTextAfter !== undefined && (
                                     <div
-                                        className={kcClsx("kcInputHelperTextAfterClass")}
+                                        className="w-full border-1 mt-10 bg-gray-800 text-red-700 
+                                                   rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         id={`form-help-text-after-${attribute.name}`}
                                         aria-live="polite"
                                     >
@@ -175,7 +179,7 @@ function GroupLabel(props: {
 }
 
 function FieldErrors(props: { attribute: Attribute; displayableErrors: FormFieldError[]; fieldIndex: number | undefined; kcClsx: KcClsx }) {
-    const { attribute, fieldIndex, kcClsx } = props;
+    const { attribute, fieldIndex }  = props;
 
     const displayableErrors = props.displayableErrors.filter(error => error.fieldIndex === fieldIndex);
 
@@ -186,7 +190,8 @@ function FieldErrors(props: { attribute: Attribute; displayableErrors: FormField
     return (
         <span
             id={`input-error-${attribute.name}${fieldIndex === undefined ? "" : `-${fieldIndex}`}`}
-            className={kcClsx("kcInputErrorMessageClass")}
+            className="block w-full mt-1 bg-gray-800 text-red-700 
+                       rounded-sm border-gray-600"
             aria-live="polite"
         >
             {displayableErrors
@@ -249,23 +254,24 @@ function InputFieldByType(props: InputFieldByTypeProps) {
 }
 
 function PasswordWrapper(props: { kcClsx: KcClsx; i18n: I18n; passwordInputId: string; children: JSX.Element }) {
-    const { kcClsx, i18n, passwordInputId, children } = props;
+    const { i18n, passwordInputId, children } = props;
 
     const { msgStr } = i18n;
 
     const { isPasswordRevealed, toggleIsPasswordRevealed } = useIsPasswordRevealed({ passwordInputId });
 
     return (
-        <div className={kcClsx("kcInputGroup")}>
+        <div className="relative">
             {children}
             <button
                 type="button"
-                className={kcClsx("kcFormPasswordVisibilityButtonClass")}
+                className="absolute right-0 top-0 h-full flex items-center 
+                           justify-center px-3 text-orange-400 hover:text-orange-300"
                 aria-label={msgStr(isPasswordRevealed ? "hidePassword" : "showPassword")}
                 aria-controls={passwordInputId}
                 onClick={toggleIsPasswordRevealed}
             >
-                <i className={kcClsx(isPasswordRevealed ? "kcFormPasswordVisibilityIconHide" : "kcFormPasswordVisibilityIconShow")} aria-hidden />
+                {isPasswordRevealed ? <FaEyeSlash className="h-5 w-5" /> : <FaEye className="h-5 w-5" />}
             </button>
         </div>
     );
@@ -275,8 +281,7 @@ function InputTag(props: InputFieldByTypeProps & { fieldIndex: number | undefine
     const { attribute, fieldIndex, kcClsx, dispatchFormAction, valueOrValues, i18n, displayableErrors } = props;
 
     const { advancedMsgStr } = i18n;
-
-    console.log(attribute);
+    
     return (
         <>
             <input
@@ -301,8 +306,12 @@ function InputTag(props: InputFieldByTypeProps & { fieldIndex: number | undefine
 
                     return valueOrValues;
                 })()}
-                className={kcClsx("kcInputClass")}
+
+                className="w-full px-3 py-2 bg-gray-700 text-gray-200 
+                           rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+
                 aria-invalid={displayableErrors.find(error => error.fieldIndex === fieldIndex) !== undefined}
+
                 disabled={attribute.readOnly}
                 autoComplete={attribute.autocomplete}
                 placeholder={

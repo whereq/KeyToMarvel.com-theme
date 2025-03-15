@@ -16,7 +16,8 @@ export default function LoginForm(props: {
     const { msg, msgStr } = i18n;
 
     return (
-        <div id="kc-form" className="bg-gray-800 p-8 rounded-sm shadow-lg font-sans">
+        <div id="kc-form" 
+            className="bg-gray-800 p-8 rounded-sm shadow-lg font-sans">
             <div id="kc-form-wrapper">
                 {realm.password && (
                     <form

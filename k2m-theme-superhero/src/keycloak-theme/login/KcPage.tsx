@@ -27,14 +27,14 @@ export default function KcPage(props: { kcContext: KcContext }) {
                         <Login
                             {...{ kcContext, i18n, classes }}
                             Template={Template}
-                            doUseDefaultCss={true}
+                            doUseDefaultCss={false}
                         />
                     );
                     case "register.ftl": return (
                         <Register
                             {...{ kcContext, i18n, classes }}
                             Template={Template}
-                            doUseDefaultCss={true}
+                            doUseDefaultCss={false}
                             UserProfileFormFields={UserProfileFormFields}
                             doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                         />
@@ -43,7 +43,7 @@ export default function KcPage(props: { kcContext: KcContext }) {
                         <LoginUpdateProfile
                             {...{ kcContext, i18n, classes }}
                             Template={Template}
-                            doUseDefaultCss={true}
+                            doUseDefaultCss={false}
                             UserProfileFormFields={UserProfileFormFields}
                             doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                         />
@@ -55,7 +55,7 @@ export default function KcPage(props: { kcContext: KcContext }) {
                                 i18n={i18n}
                                 classes={classes}
                                 Template={Template}
-                                doUseDefaultCss={true}
+                                doUseDefaultCss={false}
                                 UserProfileFormFields={UserProfileFormFields}
                                 doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                             />
