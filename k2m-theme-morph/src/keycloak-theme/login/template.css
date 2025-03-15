@@ -1,0 +1,36 @@
+:root {
+  --bg-gray-700: #374151;
+}
+
+body.kcBodyClass {
+  /* background: url(../../assets/img/background.jpg) no-repeat center center fixed; */
+  /* This is the hex code for bg-gray-700 in Tailwind CSS */
+  /* background-color: #374151;  */
+  /* @apply bg-gray-700; */
+  background-color: var(--bg-gray-700);
+}
+
+#kc-header-wrapper {
+  height: 100%;
+  /* Ensure it takes the full height of its parent */
+  display: flex;
+  align-items: center;
+  /* Vertically center the content */
+  padding: 0 !important;
+  margin: 0 !important;
+
+  /* line-height: normal !important;
+  font-size: inherit !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  white-space: normal !important; */
+}
+
+#template-main-content {
+  margin-top: 3.125rem; /* mt-[3.125rem] */
+  margin-bottom: 3.125rem; /* mb-[3.125rem] */
+  height: calc(100vh - 6.25rem); /* h-[calc(100vh-6.25rem)] */
+  flex-grow: 1; /* flex-grow */
+  background-color: var(--bg-gray-700); /* bg-gray-700 */
+  border: 1px solid #c2410c; /* border border-orange-700 */
+}
