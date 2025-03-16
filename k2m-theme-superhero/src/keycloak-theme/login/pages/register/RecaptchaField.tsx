@@ -1,5 +1,5 @@
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
-import type { KcContext } from "@keycloak-theme/login/KcContext";
+import type { KcContext } from "@/keycloak-theme/layout/KcContext";
 
 export default function RecaptchaField(props: {
     kcContext: Extract<KcContext, { pageId: "register.ftl" }>;

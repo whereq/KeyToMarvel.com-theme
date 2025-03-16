@@ -4,8 +4,8 @@ import type { LazyOrNot } from "keycloakify/tools/LazyOrNot";
 import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFormFieldsProps";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
-import type { KcContext } from "../login/KcContext";
-import type { I18n } from "../login/i18n";
+import type { KcContext } from "../layout/KcContext";
+import type { I18n } from "../layout/i18n";
 
 type LoginUpdateProfileProps = PageProps<Extract<KcContext, { pageId: "login-update-profile.ftl" }>, I18n> & {
     UserProfileFormFields: LazyOrNot<(props: UserProfileFormFieldsProps) => JSX.Element>;
@@ -50,7 +50,7 @@ export default function LoginUpdateProfile(props: LoginUpdateProfileProps) {
                     <div id="kc-form-options" className={kcClsx("kcFormOptionsClass")}>
                         <div className={kcClsx("kcFormOptionsWrapperClass")} />
                     </div>
-                    <div id="kc-form-buttons" className={kcClsx("kcFormButtonsClass")}>
+                    <div id="kc-form-buttons" className="flex justify-end gap-2">
                         <input
                             disabled={!isFormSubmittable}
                             className="px-4 py-2 bg-blue-600 rounded-sm 
@@ -65,7 +65,11 @@ export default function LoginUpdateProfile(props: LoginUpdateProfileProps) {
                         />
                         {isAppInitiatedAction && (
                             <button
-                                className={kcClsx("kcButtonClass", "kcButtonDefaultClass", "kcButtonLargeClass")}
+                                className="px-4 py-2 bg-gray-600 rounded-sm 
+                                         text-orange-400 text-lg font-bold 
+                                         hover:bg-gray-700 
+                                         focus:outline-none focus:ring-2 
+                                         focus:ring-blue-500"
                                 type="submit"
                                 name="cancel-aia"
                                 value="true"

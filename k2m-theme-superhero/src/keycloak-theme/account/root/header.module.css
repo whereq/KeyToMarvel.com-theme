@@ -1,0 +1,39 @@
+/**
+ * This file has been claimed for ownership from @keycloakify/keycloak-account-ui version 260007.0.3.
+ * To relinquish ownership and restore this file to its original content, run the following command:
+ * 
+ * $ npx keycloakify own --path 'account/root/header.module.css' --revert
+ */
+
+ /* header.module.css */
+ 
+header#k2m-header.pf-v5-c-masthead {
+  margin: 0;
+  padding: 0;
+}
+
+header#k2m-header.pf-v5-c-masthead.pf-m-display-inline {
+  display: flex !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.k2m-header {
+    border-bottom: 1px solid rgb(194 65 12); /* border-orange-700 */
+    background-color: rgb(29 78 216); /* bg-blue-700 */
+    height: 3.125rem; /* h-[3.125rem] */
+    display: flex; /* flex */
+    align-items: center; /* items-center */
+    padding-left: 1rem; /* px-4 */
+    padding-right: 1rem; /* px-4 */
+    position: fixed; /* fixed */
+    top: 0; /* top-0 */
+    left: 0; /* left-0 */
+    right: 0; /* right-0 */
+    z-index: 50; /* z-50 */
+    width: 100%; /* w-full */
+}
+
+.brand {
+  height: 35px;
+}

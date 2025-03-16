@@ -1,6 +1,6 @@
 import type { Attribute } from "keycloakify/login/KcContext";
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import { assert } from "keycloakify/tools/assert";
 
 export default function GroupLabel(props: {

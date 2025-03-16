@@ -3,8 +3,8 @@ import type { LazyOrNot } from "keycloakify/tools/LazyOrNot";
 import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFormFieldsProps";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
-import type { KcContext } from "@keycloak-theme/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { KcContext } from "@/keycloak-theme/layout/KcContext";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import RegisterForm from "./RegisterForm";
 
 type RegisterProps = PageProps<Extract<KcContext, { pageId: "register.ftl" }>, I18n> & {

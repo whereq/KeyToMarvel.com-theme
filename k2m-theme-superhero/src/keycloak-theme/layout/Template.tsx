@@ -5,9 +5,10 @@ import type { TemplateProps } from "keycloakify/login/TemplateProps";
 import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import { useSetClassName } from "keycloakify/tools/useSetClassName";
 import { useInitialize } from "keycloakify/login/Template.useInitialize";
-import type { I18n } from "./i18n";
-import type { KcContext } from "./KcContext";
-import { PiYinYangFill } from "react-icons/pi";
+import type { I18n } from "@keycloak-theme/layout/i18n";
+import type { KcContext } from "@keycloak-theme/layout/KcContext";
+import Header from "@keycloak-theme/layout/Header";
+import Footer from "@keycloak-theme/layout/Footer";
 
 import "./template.css";
 
@@ -32,7 +33,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
     const { msg, msgStr, currentLanguage = "en", enabledLanguages } = i18n; // Default to "EN" if not set
 
-    const { realm, auth, url, message, isAppInitiatedAction } = kcContext;
+    const { auth, url, message, isAppInitiatedAction } = kcContext;
 
     useEffect(() => {
         document.title = documentTitle ?? msgStr("loginTitle", kcContext.realm.displayName);
@@ -58,17 +59,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
         <div id="template-oaa" 
             className={`kcClsx("kcLoginClass") 
                         h-screen flex flex-col overflow-hidden bg-gray-700`}>
-
-            {/* Header */}
-            <div id="kc-header" 
-                className="border-b border-orange-700 bg-blue-700 h-[3.125rem] flex items-center px-4 fixed top-0 left-0 right-0 z-50 w-full">
-                <div id="kc-header-wrapper"
-                    className="flex items-center h-full border-orange-700">
-                    <PiYinYangFill size={36} color="orange" className="mr-2" />
-                    <span className="text-orange-400 font-bold">{msg("loginTitleHtml", realm.displayNameHtml)}</span>
-                </div>
-            </div>
-
+            <Header kcContext={kcContext} i18n={i18n} kcClsx={kcClsx} />
             {/* Main Content */}
             <div id="template-main"
                 className="flex-grow mt-[3.125rem] mb-[3.125rem] bg-gray-700 border-orange-700">
@@ -187,14 +178,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                     </div>
                 </div>
             </div>
-
-            {/* Footer */}
-            <div id="kc-footer" 
-                className="bg-blue-700 border-t border-orange-700 h-[3.125rem] flex items-center justify-center fixed bottom-0 left-0 right-0 z-50">
-                <div>
-                    <span className="text-orange-400">© 2025 WhereQ Inc. All rights reserved.</span>
-                </div>
-            </div>
+            <Footer />
         </div>
     );
 }

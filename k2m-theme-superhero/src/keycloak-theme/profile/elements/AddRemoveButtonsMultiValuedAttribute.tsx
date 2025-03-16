@@ -1,5 +1,5 @@
 import type { Attribute } from "keycloakify/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import { getButtonToDisplayForMultivaluedAttributeField, FormAction } from "keycloakify/login/lib/useUserProfileForm";
 
 export default function AddRemoveButtonsMultiValuedAttribute(props: {

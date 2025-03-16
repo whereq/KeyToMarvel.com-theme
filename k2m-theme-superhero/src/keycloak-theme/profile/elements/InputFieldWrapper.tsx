@@ -1,7 +1,7 @@
 import type { JSX } from "keycloakify/tools/JSX";
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
 import type { Attribute } from "keycloakify/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import type { FormAction, FormFieldError } from "keycloakify/login/lib/useUserProfileForm";
 import InputFieldByType from "@/keycloak-theme/profile/elements/InputFieldByType";
 import FieldErrors from "@keycloak-theme/profile/elements/FieldErrors";
