@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { useIsPasswordRevealed } from "keycloakify/tools/useIsPasswordRevealed";
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 export default function PasswordWrapper(props: { kcClsx: KcClsx; i18n: I18n; passwordInputId: string; children: JSX.Element }) {

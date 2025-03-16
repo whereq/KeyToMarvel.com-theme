@@ -1,8 +1,8 @@
 import { useEffect, Fragment } from "react";
 import { useUserProfileForm } from "keycloakify/login/lib/useUserProfileForm";
 import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFormFieldsProps";
-import type { KcContext } from "@keycloak-theme/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { KcContext } from "@/keycloak-theme/layout/KcContext";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import GroupLabel from "./elements/GroupLabel";
 import InputFieldWrapper from "./elements/InputFieldWrapper";
 

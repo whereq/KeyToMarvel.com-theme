@@ -1,6 +1,6 @@
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
 import type { Attribute } from "keycloakify/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import type { FormAction, FormFieldError } from "keycloakify/login/lib/useUserProfileForm";
 import { assert } from "keycloakify/tools/assert";
 import { inputLabel } from "@keycloak-theme/profile/utils";

@@ -1,4 +1,4 @@
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import type { Attribute } from "keycloakify/login/KcContext";
 
 export function inputLabel(i18n: I18n, attribute: Attribute, option: string) {

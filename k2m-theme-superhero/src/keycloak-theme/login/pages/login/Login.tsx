@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import { getKcClsx } from "keycloakify/login/lib/kcClsx";
-import type { KcContext } from "@keycloak-theme/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { KcContext } from "@/keycloak-theme/layout/KcContext";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import LoginForm from "@keycloak-theme/login/pages/login/LoginForm";
 import RegistrationInfo from "@keycloak-theme/login/pages/login/RegistrationInfo";
 import SocialProviders from "@keycloak-theme/login/pages/login/SocialProviders";

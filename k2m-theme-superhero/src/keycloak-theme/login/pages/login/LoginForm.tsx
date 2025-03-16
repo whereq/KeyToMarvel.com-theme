@@ -1,5 +1,5 @@
-import type { KcContext } from "@keycloak-theme/login/KcContext";
-import type { I18n } from "@keycloak-theme/login/i18n";
+import type { KcContext } from "@/keycloak-theme/layout/KcContext";
+import type { I18n } from "@/keycloak-theme/layout/i18n";
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
 import PasswordWrapper from "@keycloak-theme/login/pages/login/PasswordWrapper";
 import { kcSanitize } from "keycloakify/lib/kcSanitize";

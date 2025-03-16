@@ -6,6 +6,7 @@ import "./index.css";
 
 // The following block can be uncommented to test a specific page with `yarn dev`
 // Don't forget to comment back or your bundle size will increase
+/*
 import { getKcContextMock } from "./keycloak-theme/login/KcPageStory";
 
 if (import.meta.env.DEV) {
@@ -16,6 +17,7 @@ if (import.meta.env.DEV) {
         overrides: {}
     });
 }
+*/
 
 // Lazy load the MainApp component
 const AppEntrypoint = lazy(() => import("./main.app"));
