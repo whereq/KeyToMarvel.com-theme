@@ -5,29 +5,45 @@
  * $ npx keycloakify own --path 'account/root/Root.tsx' --revert
  */
 
-/* eslint-disable */
-
-// @ts-nocheck
-
 import { KeycloakProvider } from "@keycloak-theme/shared/keycloak-ui-shared";
-import { Page, Spinner } from "@keycloak-theme/shared/@patternfly/react-core";
 import { Suspense } from "react";
 import { Outlet } from "react-router-dom";
 
-// import Footer from "@keycloak-theme/layout/Footer";
+import Footer from "@keycloak-theme/layout/Footer";
 
-import { environment } from "../environment";
-import { Header } from "./Header";
-import { PageNav } from "./PageNav";
+import { environment } from "@keycloak-theme/account/environment";
+import { Header } from "@keycloak-theme/account/root/Header";
+import { PageNav } from "@keycloak-theme/account/root/PageNav";
 
 export const Root = () => {
   return (
     <KeycloakProvider environment={environment}>
-      <Page header={<Header />} sidebar={<PageNav />} isManagedSidebar>
-        <Suspense fallback={<Spinner />}>
-          <Outlet />
-        </Suspense>
-      </Page>
+      <div className="flex flex-col h-screen overflow-hidden">
+        {/* Header */}
+        <header className="fixed top-0 left-0 w-full h-[3.125rem] bg-gray-800 text-white z-50">
+          <Header />
+        </header>
+
+        {/* Main Content Area */}
+        <div className="flex flex-1 pt-[3.125rem] pb-[3.125rem]">
+          {/* PageNav */}
+          <nav className="fixed left-0 h-[calc(100vh-6.25rem)] w-[18.125rem] bg-gray-800 text-white overflow-y-auto">
+            <PageNav />
+          </nav>
+
+          {/* Main Area */}
+          <main className="flex-1 ml-[18.125rem] overflow-y-auto">
+            <Suspense fallback={<div className="text-center">Loading...</div>}>
+              <Outlet />
+            </Suspense>
+          </main>
+        </div>
+
+        {/* Footer */}
+        <footer className="fixed bottom-0 left-0 w-full h-[3.125rem] bg-gray-800 text-white z-50">
+          <Footer />
+        </footer>
+      </div>
     </KeycloakProvider>
   );
 };
