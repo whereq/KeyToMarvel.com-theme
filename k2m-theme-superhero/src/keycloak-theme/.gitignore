@@ -7,6 +7,7 @@
 # account/root/Root.tsx
 # account/root/header.module.css
 # account/root/Header.tsx
+# account/root/PageNav.tsx
 # === Owned files end =====
 
 # === @keycloakify/keycloak-account-ui v260007.0.3 ===
@@ -70,7 +71,6 @@
 /account/resources/ResourceToolbar.tsx
 /account/resources/Resources.tsx
 /account/root/ErrorPage.tsx
-/account/root/PageNav.tsx
 /account/utils/joinPath.ts
 /account/utils/useAccountAlerts.ts
 /account/KcContext.ts
