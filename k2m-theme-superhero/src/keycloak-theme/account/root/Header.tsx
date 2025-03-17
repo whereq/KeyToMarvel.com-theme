@@ -115,7 +115,7 @@ export const Header = () => {
   return (
     <div
       id="kc-header"
-      className="border-b border-orange-700 bg-blue-700 h-[3.125rem] 
+      className="border-b-2 border-orange-700 bg-blue-700 h-[3.125rem] 
                  flex items-center px-4 fixed top-0 left-0 right-0 z-50 w-full"
     >
       <div
@@ -128,13 +128,13 @@ export const Header = () => {
 
       <div id="k2m-header-toolbar" 
            className="ml-auto flex items-center h-full bg-gray-800 px-4 rounded-sm absolute right-0">
-        <div className="flex items-center h-full space-x-4 divide-x divide-orange-700">
+        <div className="flex items-center h-full space-x-4 divide-x-2 divide-orange-700">
           {toolbarItems.map((item, index) => (
             <div key={index} className="mr-2">
               {item}
             </div>
           ))}
-          <div className="hidden md:block rounded-sm p-1">
+          <div className="hidden md:block p-1">
             <KeycloakDropdown
               data-testid="options"
               dropDownItems={[extraItems]}

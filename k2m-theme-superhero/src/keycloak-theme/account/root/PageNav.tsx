@@ -5,7 +5,7 @@
  * $ npx keycloakify own --path 'account/root/PageNav.tsx' --revert
  */
 
-import { useEnvironment } from "../../shared/keycloak-ui-shared";
+import { useEnvironment } from "@keycloak-theme/shared/keycloak-ui-shared";
 import {
   PropsWithChildren,
   MouseEvent as ReactMouseEvent,
@@ -22,9 +22,9 @@ import {
 } from "react-router-dom";
 import { BsArrowsExpand, BsArrowsCollapse, BsChevronRight } from "react-icons/bs"; // Import icons
 
-import { content } from "../assets/content"; // Import content.ts directly
-import { environment, type Environment, type Feature } from "../environment";
-import { TFuncKey } from "../i18n";
+import { content } from "@keycloak-theme/account/assets/content"; // Import content.ts directly
+import { environment, type Environment, type Feature } from "@keycloak-theme/account/environment";
+import { TFuncKey } from "@keycloak-theme/account/i18n";
 
 type RootMenuItem = {
   label: TFuncKey;
@@ -46,7 +46,7 @@ export const PageNav = () => {
   const context = useEnvironment<Environment>();
 
   return (
-    <div className="w-[18.125rem] bg-gray-800 text-orange-400">
+    <div className="w-full bg-gray-800 text-orange-400">
       <div className="p-0">
         <nav>
           <ul>
