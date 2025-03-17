@@ -20,19 +20,20 @@ export const Root = () => {
     <KeycloakProvider environment={environment}>
       <div className="flex flex-col h-screen overflow-hidden">
         {/* Header */}
-        <header className="fixed top-0 left-0 w-full h-[3.125rem] bg-gray-800 text-white z-50">
+        <header className="fixed top-0 left-0 w-full h-[3.125rem] bg-gray-800 z-50">
           <Header />
         </header>
 
         {/* Main Content Area */}
         <div className="flex flex-1 pt-[3.125rem] pb-[3.125rem]">
           {/* PageNav */}
-          <nav className="fixed left-0 h-[calc(100vh-6.25rem)] w-[18.125rem] bg-gray-800 text-white overflow-y-auto">
+          <nav className="fixed left-0 h-[calc(100vh-6.25rem)] w-[18.125rem] 
+                        border-r-2 border-orange-700 bg-gray-800 text-white overflow-y-auto">
             <PageNav />
           </nav>
 
           {/* Main Area */}
-          <main className="flex-1 ml-[18.125rem] overflow-y-auto">
+          <main className="flex-1 ml-[18.125rem] overflow-y-auto bg-gray-800">
             <Suspense fallback={<div className="text-center">Loading...</div>}>
               <Outlet />
             </Suspense>
