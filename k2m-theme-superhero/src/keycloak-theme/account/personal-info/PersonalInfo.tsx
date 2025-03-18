@@ -144,7 +144,7 @@ export const PersonalInfo = () => {
               data-testid="save"
               type="submit"
               id="save-btn"
-              className="bg-blue-600 text-orange-400 font-bold px-4 py-2 rounded-sm hover:bg-blue-700"
+              className="bg-orange-400 text-gray-100 font-bold px-4 py-2 rounded-sm hover:bg-orange-600"
             >
               {t("save")}
             </button>
@@ -152,7 +152,7 @@ export const PersonalInfo = () => {
               data-testid="cancel"
               id="cancel-btn"
               type="button"
-              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-sm hover:bg-gray-300" // Changed to secondary button
+              className="bg-gray-600 text-gray-100 px-4 py-2 rounded-sm hover:bg-gray-700" // Changed to secondary button
               onClick={() => reset()}
             >
               {t("cancel")}

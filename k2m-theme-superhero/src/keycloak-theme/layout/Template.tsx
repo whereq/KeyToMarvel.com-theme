@@ -70,11 +70,11 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                             <h1 id="kc-page-title" className="text-orange-400 text-lg font-bold">{headerNode}</h1>
                         ) : (
                             <div id="kc-username" className={kcClsx("kcFormGroupClass")}>
-                                <label id="kc-attempted-username">{auth.attemptedUsername}</label>
+                                <label id="kc-attempted-username" className="text-orange-400">{auth.attemptedUsername}</label>
                                 <a id="reset-login" href={url.loginRestartFlowUrl} aria-label={msgStr("restartLoginTooltip")}>
                                     <div className="kc-login-tooltip">
                                         <i className={kcClsx("kcResetFlowIcon")}></i>
-                                        <span className="kc-tooltip-text">{msg("restartLoginTooltip")}</span>
+                                        <span className="text-orange-300">{msg("restartLoginTooltip")}</span>
                                     </div>
                                 </a>
                             </div>
@@ -142,7 +142,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                                     {message.type === "info" && <span className={kcClsx("kcFeedbackInfoIcon")}></span>}
                                 </div>
                                 <span
-                                    className={kcClsx("kcAlertTitleClass")}
+                                    className="text-orange-800"
                                     dangerouslySetInnerHTML={{
                                         __html: kcSanitize(message.summary)
                                     }}
