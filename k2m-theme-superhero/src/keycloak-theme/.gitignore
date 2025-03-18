@@ -28,6 +28,7 @@
 # shared/keycloak-ui-shared/scroll-form/ScrollPanel.tsx
 # shared/keycloak-ui-shared/scroll-form/ScrollForm.tsx
 # shared/keycloak-ui-shared/scroll-form/FormTitle.tsx
+# account/account-security/SigningIn.tsx
 # === Owned files end =====
 
 # === @keycloakify/keycloak-account-ui v260007.0.3 ===
@@ -50,7 +51,6 @@
 /account/account-security/LinkedAccounts.tsx
 /account/content/ContentComponent.tsx
 /account/account-security/LinkedAccountsToolbar.tsx
-/account/account-security/SigningIn.tsx
 /account/content/fetchContent.ts
 /account/groups/Groups.tsx
 /account/i18n/i18n.ts

@@ -16,6 +16,9 @@ import { CiMenuKebab } from "react-icons/ci";
 import { RxTriangleUp, RxTriangleDown } from "react-icons/rx";
 import { useState } from "react"; // Add useState for dropdown toggle
 
+import { FaSquareCaretLeft, FaSquareCaretRight } from "react-icons/fa6"; // Import the new icons
+import { usePageNavStore } from "@keycloak-theme/store/account-store"; // Import the Zustand store
+
 const hasLogout = true;
 const hasManageAccount = true;
 
@@ -89,6 +92,7 @@ const KeycloakDropdown = ({
 export const Header = () => {
   const { keycloak } = useEnvironment();
   const { t } = useTranslation();
+  const { isPageNavOpen, togglePageNav } = usePageNavStore(); // Use Zustand store
   const toolbarItems = [<ReferrerLink key="link" />];
 
   const extraItems = [];
@@ -122,6 +126,17 @@ export const Header = () => {
         id="kc-header-wrapper"
         className="flex items-center h-full border-orange-700"
       >
+        <button
+          onClick={togglePageNav}
+          className="text-orange-400 hover:text-orange-300 mr-2"
+        >
+          {isPageNavOpen ? (
+            <FaSquareCaretLeft size={24} />
+          ) : (
+            <FaSquareCaretRight size={24} />
+          )}
+        </button>
+
         <PiYinYangFill size={36} color="orange" className="mr-2" />
         <span className="text-orange-400 font-bold">Key To Marvel</span>
       </div>

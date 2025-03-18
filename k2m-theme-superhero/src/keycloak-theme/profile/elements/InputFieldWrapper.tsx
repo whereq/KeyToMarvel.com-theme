@@ -26,6 +26,9 @@ export default function InputFieldWrapper(props: {
     const { attribute, valueOrValues, displayableErrors, dispatchFormAction, kcClsx, i18n, doMakeUserConfirmPassword, AfterField } = props;
     const { advancedMsg } = i18n;
 
+    // Check if the input type is "select" or "multiselect"
+    const isSelectOrMultiselect = attribute.annotations.inputType === "select" || attribute.annotations.inputType === "multiselect";
+
     return (
         <div
             className={kcClsx("kcFormGroupClass")}
@@ -43,14 +46,41 @@ export default function InputFieldWrapper(props: {
                         {advancedMsg(attribute.annotations.inputHelperTextBefore)}
                     </div>
                 )}
-                <InputFieldByType
-                    attribute={attribute}
-                    valueOrValues={valueOrValues}
-                    displayableErrors={displayableErrors}
-                    dispatchFormAction={dispatchFormAction}
-                    kcClsx={kcClsx}
-                    i18n={i18n}
-                />
+
+                {/* Add label for select or multiselect fields */}
+                {isSelectOrMultiselect && (
+                    <div className="flex items-center space-x-4">
+                        <div className="w-48"> {/* Fixed width for label to ensure alignment */}
+                            <label htmlFor={attribute.name} className="font-bold text-orange-400">
+                                {advancedMsg(attribute.displayName ?? "")}
+                                {attribute.required && <> *</>}
+                            </label>
+                        </div>
+                        <div className="flex-1">
+                            <InputFieldByType
+                                attribute={attribute}
+                                valueOrValues={valueOrValues}
+                                displayableErrors={displayableErrors}
+                                dispatchFormAction={dispatchFormAction}
+                                kcClsx={kcClsx}
+                                i18n={i18n}
+                            />
+                        </div>
+                    </div>
+                )}
+
+                {/* Default input field rendering for non-select fields */}
+                {!isSelectOrMultiselect && (
+                    <InputFieldByType
+                        attribute={attribute}
+                        valueOrValues={valueOrValues}
+                        displayableErrors={displayableErrors}
+                        dispatchFormAction={dispatchFormAction}
+                        kcClsx={kcClsx}
+                        i18n={i18n}
+                    />
+                )}
+
                 <FieldErrors attribute={attribute} displayableErrors={displayableErrors} kcClsx={kcClsx} fieldIndex={undefined} />
                 {attribute.annotations.inputHelperTextAfter !== undefined && (
                     <div
