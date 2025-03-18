@@ -5,10 +5,6 @@
  * $ npx keycloakify own --path "account/personal-info/PersonalInfo.tsx" --revert
  */
 
-/* eslint-disable */
-
-// @ts-nocheck
-
 import {
   UserProfileFields,
   beerify,
@@ -16,15 +12,6 @@ import {
   setUserProfileServerError,
   useEnvironment,
 } from "@keycloak-theme/shared/keycloak-ui-shared";
-import {
-  ActionGroup,
-  Alert,
-  AlertVariant,
-  Button,
-  ExpandableSection,
-  Form,
-  Spinner,
-} from "../../shared/@patternfly/react-core";
 import { ExternalLinkSquareAltIcon } from "../../shared/@patternfly/react-icons";
 import { TFunction } from "i18next";
 import { useState } from "react";
@@ -45,6 +32,7 @@ import type { Environment } from "../environment";
 import { TFuncKey, i18n } from "../i18n";
 import { useAccountAlerts } from "../utils/useAccountAlerts";
 import { usePromise } from "../utils/usePromise";
+import { AlertVariant } from "@patternfly/react-core";
 
 export const PersonalInfo = () => {
   const { t } = useTranslation();
@@ -94,16 +82,16 @@ export const PersonalInfo = () => {
       addAlert(t("accountUpdatedError"), AlertVariant.danger);
 
       setUserProfileServerError(
-        { responseData: { errors: error as any } },
+        { responseData: { errors: [{ field: "unknown", errorMessage: (error as Error).message }] } },
         (name: string | number, error: unknown) =>
           setError(name as string, error as ErrorOption),
-        ((key: TFuncKey, param?: object) => t(key, param as any)) as TFunction,
+        ((key: TFuncKey, param?: object) => t(key, param as { defaultValue: string })) as TFunction,
       );
     }
   };
 
   if (!userProfileMetadata) {
-    return <Spinner />;
+    return <div className="flex justify-center items-center h-screen">Loading...</div>;
   }
 
   const allFieldsReadOnly = () =>
@@ -119,85 +107,84 @@ export const PersonalInfo = () => {
   } = context.environment.features;
 
   return (
-    <Page title={t("personalInfo")} description={t("personalInfoDescription")}>
-      <Form isHorizontal onSubmit={handleSubmit(onSubmit)}>
+    <Page title={t("personalInfo")} description={t("personalInfoDescription")}
+      contentClassName="text-orange-400">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-0">
         <UserProfileFields
           form={form}
           userProfileMetadata={userProfileMetadata}
           supportedLocales={supportedLocales}
           currentLocale={context.environment.locale}
           t={
-            ((key: unknown, params) =>
-              t(key as TFuncKey, params as any)) as TFunction
+            ((key: unknown, params: object) =>
+              t(key as TFuncKey, params as { defaultValue: string })) as TFunction
           }
           renderer={(attribute) =>
             attribute.name === "email" &&
             updateEmailFeatureEnabled &&
             updateEmailActionEnabled &&
             (!isRegistrationEmailAsUsername || isEditUserNameAllowed) ? (
-              <Button
+              <button
                 id="update-email-btn"
-                variant="link"
+                type="button"
+                className="text-blue-600 hover:text-blue-800 flex items-center"
                 onClick={() =>
                   context.keycloak.login({ action: "UPDATE_EMAIL" })
                 }
-                icon={<ExternalLinkSquareAltIcon />}
-                iconPosition="right"
               >
                 {t("updateEmail")}
-              </Button>
+                <ExternalLinkSquareAltIcon className="ml-2" />
+              </button>
             ) : undefined
           }
         />
         {!allFieldsReadOnly() && (
-          <ActionGroup>
-            <Button
+          <div className="flex space-x-1 pl-4">
+            <button
               data-testid="save"
               type="submit"
               id="save-btn"
-              variant="primary"
+              className="bg-blue-600 text-orange-400 font-bold px-4 py-2 rounded-sm hover:bg-blue-700"
             >
               {t("save")}
-            </Button>
-            <Button
+            </button>
+            <button
               data-testid="cancel"
               id="cancel-btn"
-              variant="link"
+              type="button"
+              className="bg-gray-200 text-gray-700 px-4 py-2 rounded-sm hover:bg-gray-300" // Changed to secondary button
               onClick={() => reset()}
             >
               {t("cancel")}
-            </Button>
-          </ActionGroup>
+            </button>
+          </div>
         )}
         {context.environment.features.deleteAccountAllowed && (
-          <ExpandableSection
-            data-testid="delete-account"
-            toggleText={t("deleteAccount")}
-          >
-            <Alert
-              isInline
-              title={t("deleteAccount")}
-              variant="danger"
-              actionLinks={
-                <Button
+          <div className="space-y-4">
+            <details className="cursor-pointer mt-2">
+              <summary className="text-red-600 hover:text-red-800">
+                {t("deleteAccount")}
+              </summary>
+              <div className="mt-4 p-4 bg-red-50">
+                <div className="text-red-800 font-bold">{t("deleteAccount")}</div>
+                <p className="mt-2 text-red-700">{t("deleteAccountWarning")}</p>
+                <button
                   id="delete-account-btn"
-                  variant="danger"
+                  type="button"
+                  className="mt-4 bg-red-500 text-white px-4 py-2 rounded-sm hover:bg-red-600 ring-2 ring-red-600" // Changed to red highlighted button
                   onClick={() =>
                     context.keycloak.login({
                       action: "delete_account",
                     })
                   }
-                  className="delete-button"
                 >
                   {t("delete")}
-                </Button>
-              }
-            >
-              {t("deleteAccountWarning")}
-            </Alert>
-          </ExpandableSection>
+                </button>
+              </div>
+            </details>
+          </div>
         )}
-      </Form>
+      </form>
     </Page>
   );
 };

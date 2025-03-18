@@ -18,7 +18,6 @@ export const K2mTitle: React.FunctionComponent<K2mTitleProps> = ({
     '4xl': 'text-5xl',
   };
 
-  console.log(children);
   // Use the size prop if provided, otherwise fall back to the default based on headingLevel
   const size: keyof typeof sizeClasses = 
     sizeProp || (K2mHeadingLevelSizeMap[HeadingLevel] as keyof typeof sizeClasses);
