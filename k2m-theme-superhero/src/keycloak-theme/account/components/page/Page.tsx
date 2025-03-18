@@ -49,7 +49,7 @@ export const Page = ({
       </section>
 
       {/* Content Section */}
-      <section className={`p-4 ${contentClassName}`}>
+      <section className={`m-0 p-0 ${contentClassName}`}>
         <div className="w-full mx-auto">{children}</div>
       </section>
     </div>

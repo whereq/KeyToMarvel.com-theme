@@ -33,7 +33,7 @@ export const Root = () => {
           </nav>
 
           {/* Main Area */}
-          <main className="flex-1 ml-[18.125rem] overflow-y-auto bg-gray-800">
+          <main className="flex-1 ml-[18.125rem] overflow-y-auto bg-gray-900">
             <Suspense fallback={<div className="text-center">Loading...</div>}>
               <Outlet />
             </Suspense>
