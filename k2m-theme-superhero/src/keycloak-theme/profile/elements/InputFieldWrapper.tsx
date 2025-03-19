@@ -27,7 +27,8 @@ export default function InputFieldWrapper(props: {
     const { advancedMsg } = i18n;
 
     // Check if the input type is "select" or "multiselect"
-    const isSelectOrMultiselect = attribute.annotations.inputType === "select" || attribute.annotations.inputType === "multiselect";
+    const isSelectOrMultiselect = 
+        attribute.annotations.inputType === "select" || attribute.annotations.inputType === "multiselect";
 
     return (
         <div
@@ -50,7 +51,7 @@ export default function InputFieldWrapper(props: {
                 {/* Add label for select or multiselect fields */}
                 {isSelectOrMultiselect && (
                     <div className="flex items-center space-x-4">
-                        <div className="w-48"> {/* Fixed width for label to ensure alignment */}
+                        <div className="w-36"> {/* Fixed width for label to ensure alignment */}
                             <label htmlFor={attribute.name} className="font-bold text-orange-400">
                                 {advancedMsg(attribute.displayName ?? "")}
                                 {attribute.required && <> *</>}

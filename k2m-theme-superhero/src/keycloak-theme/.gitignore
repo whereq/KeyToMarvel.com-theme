@@ -29,6 +29,10 @@
 # shared/keycloak-ui-shared/scroll-form/ScrollForm.tsx
 # shared/keycloak-ui-shared/scroll-form/FormTitle.tsx
 # account/account-security/SigningIn.tsx
+# account/account-security/DeviceActivity.tsx
+# shared/keycloak-ui-shared/continue-cancel/ContinueCancelModal.tsx
+# account/applications/Applications.tsx
+# account/groups/Groups.tsx
 # === Owned files end =====
 
 # === @keycloakify/keycloak-account-ui v260007.0.3 ===
@@ -43,16 +47,13 @@
 /account/api/parse-response.ts
 /account/api/representations.ts
 /account/api/request.ts
-/account/applications/Applications.tsx
 /account/assets/content.ts
 /account/account-security/AccountRow.tsx
 /account/assets/favicon.svg
-/account/account-security/DeviceActivity.tsx
 /account/account-security/LinkedAccounts.tsx
 /account/content/ContentComponent.tsx
 /account/account-security/LinkedAccountsToolbar.tsx
 /account/content/fetchContent.ts
-/account/groups/Groups.tsx
 /account/i18n/i18n.ts
 /account/i18n/index.ts
 /account/i18n/messages_ar.properties
@@ -129,7 +130,6 @@
 /shared/keycloak-ui-shared/masthead/DefaultAvatar.tsx
 /shared/keycloak-ui-shared/masthead/Masthead.tsx
 /shared/keycloak-ui-shared/scroll-form/scroll-form.module.css
-/shared/keycloak-ui-shared/continue-cancel/ContinueCancelModal.tsx
 /shared/keycloak-ui-shared/scroll-form/form-title.module.css
 /shared/keycloak-ui-shared/user-profile/MultiInputComponent.tsx
 /shared/keycloak-ui-shared/user-profile/OptionsComponent.tsx

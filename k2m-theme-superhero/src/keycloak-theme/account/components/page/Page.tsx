@@ -32,7 +32,7 @@ export const Page = ({
   return (
     <div className={`h-full w-full ${className}`}>
       {/* Header Section */}
-      <section className="w-full bg-gray-700  border-b border-orange-700 p-2">
+      <section className="w-full bg-gray-700 border-b border-orange-700 p-2">
         <div className="w-full mx-auto flex items-center">
           <h1
             className={`text-xl font-bold text-orange-400 ${titleClassName}`}
