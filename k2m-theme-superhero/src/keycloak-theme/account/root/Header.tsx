@@ -11,9 +11,8 @@ import { ExternalLinkSquareAltIcon } from "@keycloak-theme/shared/@patternfly/re
 import { PiYinYangFill } from "react-icons/pi";
 import { environment } from "@keycloak-theme/account/environment";
 import { label, useEnvironment } from "@keycloak-theme/shared/keycloak-ui-shared";
-import { RxAvatar } from "react-icons/rx";
 import { CiMenuKebab } from "react-icons/ci"; 
-import { RxTriangleUp, RxTriangleDown } from "react-icons/rx";
+import { RxAvatar, RxTriangleUp, RxTriangleDown } from "react-icons/rx";
 import { useState } from "react"; // Add useState for dropdown toggle
 
 import { FaSquareCaretLeft, FaSquareCaretRight } from "react-icons/fa6"; // Import the new icons
