@@ -553,6 +553,45 @@
   "webAuthnPolicyPasswordlessExtraOrigins": [],
   "users": [
     {
+      "id": "cef4311d-336a-4d76-acd8-12d592616421",
+      "username": "foo",
+      "firstName": "foo",
+      "lastName": "bar",
+      "email": "foo@whereq.com",
+      "emailVerified": false,
+      "attributes": {
+        "favourite_pet": [
+          "cat"
+        ],
+        "locale": [
+          "en"
+        ]
+      },
+      "createdTimestamp": 1742937904998,
+      "enabled": true,
+      "totp": false,
+      "credentials": [
+        {
+          "id": "d25790eb-ade7-4596-84eb-b984abf16c67",
+          "type": "password",
+          "userLabel": "My password",
+          "createdDate": 1742937924759,
+          "secretData": "{\"value\":\"TTV25K9ZBi0pwREv0LR1OIhaBmuTIkd3yTTZUtVJL4A=\",\"salt\":\"0ztsgf8esSbbXFAY5zdgDg==\",\"additionalParameters\":{}}",
+          "credentialData": "{\"hashIterations\":5,\"algorithm\":\"argon2\",\"additionalParameters\":{\"hashLength\":[\"32\"],\"memory\":[\"7168\"],\"type\":[\"id\"],\"version\":[\"1.3\"],\"parallelism\":[\"1\"]}}"
+        }
+      ],
+      "disableableCredentialTypes": [],
+      "requiredActions": [
+        "TERMS_AND_CONDITIONS",
+        "UPDATE_PROFILE"
+      ],
+      "realmRoles": [
+        "default-roles-myrealm"
+      ],
+      "notBefore": 0,
+      "groups": []
+    },
+    {
       "id": "d93e1772-4916-4243-850f-a6d9b2615716",
       "username": "testuser",
       "firstName": "Test",
@@ -1745,7 +1784,7 @@
   "smtpServer": {},
   "loginTheme": "k2m-theme-superhero",
   "accountTheme": "k2m-theme-superhero",
-  "adminTheme": "",
+  "adminTheme": "k2m-theme-superhero",
   "emailTheme": "",
   "eventsEnabled": false,
   "eventsListeners": [
@@ -1779,14 +1818,14 @@
         "subComponents": {},
         "config": {
           "allowed-protocol-mapper-types": [
-            "oidc-address-mapper",
-            "oidc-usermodel-attribute-mapper",
-            "oidc-sha256-pairwise-sub-mapper",
-            "saml-role-list-mapper",
             "oidc-full-name-mapper",
-            "saml-user-attribute-mapper",
             "oidc-usermodel-property-mapper",
-            "saml-user-property-mapper"
+            "saml-role-list-mapper",
+            "oidc-sha256-pairwise-sub-mapper",
+            "oidc-address-mapper",
+            "saml-user-property-mapper",
+            "saml-user-attribute-mapper",
+            "oidc-usermodel-attribute-mapper"
           ]
         }
       },
@@ -1819,12 +1858,12 @@
         "config": {
           "allowed-protocol-mapper-types": [
             "oidc-full-name-mapper",
+            "saml-user-property-mapper",
             "saml-user-attribute-mapper",
             "oidc-address-mapper",
-            "oidc-usermodel-property-mapper",
             "oidc-usermodel-attribute-mapper",
-            "saml-user-property-mapper",
             "saml-role-list-mapper",
+            "oidc-usermodel-property-mapper",
             "oidc-sha256-pairwise-sub-mapper"
           ]
         }
