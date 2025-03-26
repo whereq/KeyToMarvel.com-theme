@@ -132,7 +132,8 @@ export const Header = () => {
     );
   }
 
-  const picture = ""; // Should come from keycloak.idTokenParsed?.picture
+  // Should come from keycloak.idTokenParsed?.avatar
+  const avatar = keycloak.idTokenParsed?.avatar || undefined;
 
   return (
     <div
@@ -181,9 +182,9 @@ export const Header = () => {
           <div className="md:hidden">
             <KeycloakDropdown data-testid="options-kebab" isKebab dropDownItems={[extraItems]} />
           </div>
-          {picture ? (
+          {avatar ? (
             <div className="ml-auto">
-              <img src={picture} alt={t("avatar")} className="h-8 w-8 rounded-full" />
+              <img src={avatar} alt={t("avatar")} className="h-8 w-8 rounded-full" />
             </div>
           ) : (
             <RxAvatar size={36} className="mr-2" color="orange" />
