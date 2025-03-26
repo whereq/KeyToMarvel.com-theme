@@ -288,8 +288,6 @@ export default function EditUser() {
     return <KeycloakSpinner />;
   }
 
-  console.log("hello from EditUser.tsx");
-
   return (
     <>
       <ImpersonateConfirm />

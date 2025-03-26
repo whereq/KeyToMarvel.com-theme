@@ -68,7 +68,6 @@ export const App = () => {
 
   if (!adminClient) return <KeycloakSpinner />;
 
-  console.log("hello world");
   return (
     <AdminClientContext.Provider value={{ keycloak, adminClient }}>
       <AppContexts>

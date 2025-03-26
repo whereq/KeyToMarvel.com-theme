@@ -32,6 +32,5 @@ export default function KcAccountUi() {
         return null;
     }
 
-    console.log("hello from KcAccountUi");
     return <RouterProvider router={router} />;
 }

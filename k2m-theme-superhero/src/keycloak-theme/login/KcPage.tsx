@@ -14,6 +14,7 @@ const Login = lazy(() => import("@keycloak-theme/login/pages/login/Login"));
 const Register = lazy(() => import("@keycloak-theme/login/pages/register/Register"));
 const LoginUpdateProfile = lazy(() => import("@keycloak-theme/profile/LoginUpdateProfile"));
 const IdpReviewUserProfile = lazy(() => import("@keycloak-theme/login/pages/idp/IdpReviewUserProfile"));
+const Terms = lazy(() => import("./pages/terms/Terms"));
 
 export default function KcPage(props: { kcContext: KcContext }) {
     const { kcContext } = props;
@@ -56,6 +57,13 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             doUseDefaultCss={false}
                             UserProfileFormFields={UserProfileFormFields}
                             doMakeUserConfirmPassword={doMakeUserConfirmPassword}
+                        />
+                    );
+                    case "terms.ftl": return (
+                        <Terms
+                            {...{ kcContext, i18n, classes }}
+                            Template={Template}
+                            doUseDefaultCss={false}
                         />
                     );
                     default:
