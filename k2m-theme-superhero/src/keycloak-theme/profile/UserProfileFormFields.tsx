@@ -3,8 +3,8 @@ import { useUserProfileForm } from "keycloakify/login/lib/useUserProfileForm";
 import type { UserProfileFormFieldsProps } from "keycloakify/login/UserProfileFormFieldsProps";
 import type { KcContext } from "@/keycloak-theme/layout/KcContext";
 import type { I18n } from "@/keycloak-theme/layout/i18n";
-import GroupLabel from "./elements/GroupLabel";
-import InputFieldWrapper from "./elements/InputFieldWrapper";
+import GroupLabel from "@keycloak-theme/profile/elements/GroupLabel";
+import InputFieldWrapper from "@keycloak-theme/profile/elements/InputFieldWrapper";
 
 export default function UserProfileFormFields(props: UserProfileFormFieldsProps<KcContext, I18n>) {
     const { kcContext, i18n, kcClsx, onIsFormSubmittableValueChange, doMakeUserConfirmPassword, BeforeField, AfterField } = props;

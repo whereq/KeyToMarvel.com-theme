@@ -12,7 +12,8 @@ const doMakeUserConfirmPassword = true;
 
 const Login = lazy(() => import("@keycloak-theme/login/pages/login/Login"));
 const Register = lazy(() => import("@keycloak-theme/login/pages/register/Register"));
-const LoginUpdateProfile = lazy(() => import("@/keycloak-theme/profile/LoginUpdateProfile"));
+const LoginUpdateProfile = lazy(() => import("@keycloak-theme/profile/LoginUpdateProfile"));
+const IdpReviewUserProfile = lazy(() => import("@keycloak-theme/login/pages/idp/IdpReviewUserProfile"));
 
 export default function KcPage(props: { kcContext: KcContext }) {
     const { kcContext } = props;
@@ -41,6 +42,15 @@ export default function KcPage(props: { kcContext: KcContext }) {
                     );
                     case "login-update-profile.ftl": return (
                         <LoginUpdateProfile
+                            {...{ kcContext, i18n, classes }}
+                            Template={Template}
+                            doUseDefaultCss={false}
+                            UserProfileFormFields={UserProfileFormFields}
+                            doMakeUserConfirmPassword={doMakeUserConfirmPassword}
+                        />
+                    );
+                    case "idp-review-user-profile.ftl": return (
+                        <IdpReviewUserProfile
                             {...{ kcContext, i18n, classes }}
                             Template={Template}
                             doUseDefaultCss={false}
