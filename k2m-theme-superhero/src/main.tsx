@@ -14,7 +14,10 @@ if (import.meta.env.DEV) {
         // pageId: "login.ftl",
         // pageId: "register.ftl",
         // pageId: "login-update-profile.ftl",
-        pageId: "idp-review-user-profile.ftl",
+        // pageId: "idp-review-user-profile.ftl",
+        // pageId: "login-idp-link-confirm.ftl",
+        // pageId: "login-page-expired.ftl",
+        pageId: "login-verify-email.ftl",
         overrides: {}
     });
 }

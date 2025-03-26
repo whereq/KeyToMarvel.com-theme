@@ -34,4 +34,4 @@ export const K2MButton = React.forwardRef<HTMLButtonElement, K2MButtonProps>(
     }
 );
 
-K2MButton.displayName = "Button";
+K2MButton.displayName = "K2M Button";
