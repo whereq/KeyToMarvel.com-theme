@@ -31,7 +31,7 @@ export default function RegisterForm(props: {
         setAreTermsAccepted
     } = props;
 
-    const { url, termsAcceptanceRequired = false } = kcContext;
+    const { url, termsAcceptanceRequired = true } = kcContext;
 
     return (
         <form

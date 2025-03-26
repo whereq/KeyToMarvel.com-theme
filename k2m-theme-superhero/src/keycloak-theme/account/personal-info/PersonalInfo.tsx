@@ -34,6 +34,9 @@ import { useAccountAlerts } from "../utils/useAccountAlerts";
 import { usePromise } from "../utils/usePromise";
 import { AlertVariant } from "@patternfly/react-core";
 
+import { K2MButtonStyle } from "@/keycloak-theme/shared/k2m-ui-shared/types/k2m-types";
+import { K2MButton } from "@/keycloak-theme/shared/k2m-ui-shared/buttons/K2MButton";
+
 export const PersonalInfo = () => {
   const { t } = useTranslation();
   const context = useEnvironment<Environment>();
@@ -140,23 +143,24 @@ export const PersonalInfo = () => {
         />
         {!allFieldsReadOnly() && (
           <div className="flex space-x-1 pl-4">
-            <button
+            <K2MButton
               data-testid="save"
-              type="submit"
               id="save-btn"
-              className="bg-orange-400 text-gray-100 font-bold px-4 py-2 rounded-sm hover:bg-orange-600"
+              styleType={K2MButtonStyle.PRIMARY}
+              type="submit"
             >
               {t("save")}
-            </button>
-            <button
+            </K2MButton>
+
+            <K2MButton
               data-testid="cancel"
               id="cancel-btn"
+              styleType={K2MButtonStyle.SECONDARY}
               type="button"
-              className="bg-gray-600 text-gray-100 px-4 py-2 rounded-sm hover:bg-gray-700" // Changed to secondary button
               onClick={() => reset()}
             >
               {t("cancel")}
-            </button>
+            </K2MButton>
           </div>
         )}
         {context.environment.features.deleteAccountAllowed && (

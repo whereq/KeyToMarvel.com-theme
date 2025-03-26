@@ -11,7 +11,7 @@ import { TFunction } from "i18next";
 import { useTranslation } from "react-i18next";
 import { ExternalLinkSquareAltIcon } from "@keycloak-theme/shared/@patternfly/react-icons";
 import { PiYinYangFill } from "react-icons/pi";
-import { environment } from "@keycloak-theme/account/environment";
+import { Environment, environment } from "@keycloak-theme/account/environment";
 import { label, useEnvironment } from "@keycloak-theme/shared/keycloak-ui-shared";
 import { CiMenuKebab } from "react-icons/ci"; 
 import { RxAvatar, RxTriangleUp, RxTriangleDown } from "react-icons/rx";
@@ -19,6 +19,10 @@ import { useState } from "react"; // Add useState for dropdown toggle
 
 import { FaSquareCaretLeft, FaSquareCaretRight } from "react-icons/fa6"; // Import the new icons
 import { usePageNavStore } from "@keycloak-theme/store/account-store"; // Import the Zustand store
+// Add imports for fetching personal info
+import { getPersonalInfo } from "../api/methods";
+import { usePromise } from "../utils/usePromise";
+import type { UserRepresentation } from "../api/representations";
 
 function loggedInUserName(token: KeycloakTokenParsed | undefined, t: TFunction) {
     if (!token) {
@@ -109,6 +113,7 @@ const KeycloakDropdown = ({
 
 export const Header = () => {
   const { keycloak } = useEnvironment();
+  const context = useEnvironment<Environment>();
   const { t } = useTranslation();
   const { isPageNavOpen, togglePageNav } = usePageNavStore(); // Use Zustand store
   const toolbarItems = [<ReferrerLink key="link" />];
@@ -132,8 +137,19 @@ export const Header = () => {
     );
   }
 
-  // Should come from keycloak.idTokenParsed?.avatar
-  const avatar = keycloak.idTokenParsed?.avatar || undefined;
+  // Fetch personal info to get the avatar URL
+  const [personalInfo, setPersonalInfo] = useState<UserRepresentation | undefined>(undefined);
+  usePromise(
+    (signal) => getPersonalInfo({ signal, context }),
+    (personalInfo) => {
+      setPersonalInfo(personalInfo);
+    },
+  );
+
+  // Set the avatar URL from personalInfo.attributes.avatar if it exists and is a valid string
+  const avatar = personalInfo?.attributes?.avatar?.[0] && typeof personalInfo.attributes.avatar[0] === "string" 
+    ? personalInfo.attributes.avatar[0]
+    : undefined;
 
   return (
     <div

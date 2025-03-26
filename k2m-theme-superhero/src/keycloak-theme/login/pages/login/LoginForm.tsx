@@ -4,6 +4,9 @@ import type { KcClsx } from "keycloakify/login/lib/kcClsx";
 import PasswordWrapper from "@keycloak-theme/login/pages/login/PasswordWrapper";
 import { kcSanitize } from "keycloakify/lib/kcSanitize";
 
+import { K2MButtonStyle } from "@/keycloak-theme/shared/k2m-ui-shared/types/k2m-types";
+import { K2MButton } from "@/keycloak-theme/shared/k2m-ui-shared/buttons/K2MButton";
+
 export default function LoginForm(props: {
     kcContext: Extract<KcContext, { pageId: "login.ftl" }>;
     i18n: I18n;
@@ -17,7 +20,7 @@ export default function LoginForm(props: {
 
     return (
         <div id="kc-form" 
-            className="bg-gray-800 p-8 rounded-sm shadow-lg font-sans">
+            className="bg-gray-800 p-8 rounded-sm font-sans">
             <div id="kc-form-wrapper">
                 {realm.password && (
                     <form
@@ -119,18 +122,29 @@ export default function LoginForm(props: {
 
                         <div id="kc-form-buttons">
                             <input type="hidden" id="id-hidden-input" name="credentialId" value={auth.selectedCredential} />
-                            <input
-                                tabIndex={7}
+                            {/* <input
+                                tabIndex={8}
                                 disabled={isLoginButtonDisabled}
                                 className="w-full px-4 py-2 text-orange-400 bg-blue-600 
                                            rounded-sm hover:bg-blue-700 
                                            focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
                                            disabled:opacity-50 disabled:cursor-not-allowed"
+                                name="login-1"
+                                id="kc-login-1"
+                                type="submit"
+                                value={msgStr("doLogIn")}
+                            /> */}
+                            <K2MButton
+                                tabIndex={7}
+                                disabled={isLoginButtonDisabled}
+                                styleType={K2MButtonStyle.PRIMARY}
+                                className="w-full"
                                 name="login"
                                 id="kc-login"
                                 type="submit"
-                                value={msgStr("doLogIn")}
-                            />
+                            >
+                                {msgStr("doLogIn")}
+                            </K2MButton>
                         </div>
                     </form>
                 )}
