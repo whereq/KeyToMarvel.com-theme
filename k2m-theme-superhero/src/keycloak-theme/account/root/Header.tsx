@@ -5,6 +5,8 @@
  * $ npx keycloakify own --path 'account/root/Header.tsx' --revert
  */
 
+import { type KeycloakTokenParsed } from "keycloak-js";
+import { TFunction } from "i18next";
 
 import { useTranslation } from "react-i18next";
 import { ExternalLinkSquareAltIcon } from "@keycloak-theme/shared/@patternfly/react-icons";
@@ -18,8 +20,25 @@ import { useState } from "react"; // Add useState for dropdown toggle
 import { FaSquareCaretLeft, FaSquareCaretRight } from "react-icons/fa6"; // Import the new icons
 import { usePageNavStore } from "@keycloak-theme/store/account-store"; // Import the Zustand store
 
+function loggedInUserName(token: KeycloakTokenParsed | undefined, t: TFunction) {
+    if (!token) {
+        return t("unknownUser");
+    }
+
+    const givenName = token.given_name;
+    const familyName = token.family_name;
+    const preferredUsername = token.preferred_username;
+
+    if (givenName && familyName) {
+        return t("fullName", { givenName, familyName });
+    }
+
+    return givenName || familyName || preferredUsername || t("unknownUser");
+}
+
 const hasLogout = true;
 const hasManageAccount = true;
+const hasUsername = true;
 
 const ReferrerLink = () => {
   const { t } = useTranslation();
@@ -152,7 +171,11 @@ export const Header = () => {
             <KeycloakDropdown
               data-testid="options"
               dropDownItems={[extraItems]}
-              title={t("fullName", { givenName: "John", familyName: "Doe" })}
+              title={
+                hasUsername
+                  ? loggedInUserName(keycloak.idTokenParsed, t)
+                  : undefined
+              }
             />
           </div>
           <div className="md:hidden">
