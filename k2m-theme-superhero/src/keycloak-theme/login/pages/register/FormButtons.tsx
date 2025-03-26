@@ -27,7 +27,7 @@ export default function FormButtons(props: {
             {recaptchaRequired && !recaptchaVisible && recaptchaAction !== undefined ? (
                 <div id="kc-form-buttons" className={kcClsx("kcFormButtonsClass")}>
                     <button
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-blue-600 text-orange-400 rounded-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         data-sitekey={recaptchaSiteKey}
                         data-callback={() => {
                             (document.getElementById("kc-register-form") as HTMLFormElement).submit();
@@ -42,7 +42,7 @@ export default function FormButtons(props: {
                 <div id="kc-form-buttons" className={kcClsx("kcFormButtonsClass")}>
                     <input
                         disabled={!isFormSubmittable || (termsAcceptanceRequired && !areTermsAccepted)}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-blue-600 text-orange-400 rounded-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         type="submit"
                         value={msgStr("doRegister")}
                     />

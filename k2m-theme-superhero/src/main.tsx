@@ -13,7 +13,8 @@ if (import.meta.env.DEV) {
     window.kcContext = getKcContextMock({
         // pageId: "login.ftl",
         // pageId: "register.ftl",
-        pageId: "login-update-profile.ftl",
+        // pageId: "login-update-profile.ftl",
+        pageId: "idp-review-user-profile.ftl",
         overrides: {}
     });
 }
