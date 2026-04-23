@@ -48,3 +48,31 @@
 .read-the-docs {
   color: #888;
 }
+
+.star-wars-container {
+  perspective: 400px;
+  height: 400px;
+  overflow: hidden;
+  color: #f5d742;
+  font-family: 'Pathway Gothic One', sans-serif;
+  font-size: 200%;
+  text-align: center;
+}
+
+.star-wars-text {
+  position: relative;
+  transform-origin: 50% 100%;
+  animation: star-wars 20s linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes star-wars {
+  0% {
+    top: 100%;
+    transform: rotateX(20deg) translateY(100%);
+  }
+  100% {
+    top: -100%;
+    transform: rotateX(25deg) translateY(-100%);
+  }
+}
