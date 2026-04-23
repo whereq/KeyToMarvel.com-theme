@@ -57,8 +57,6 @@ export default function KcPage(props: { kcContext: KcContext }) {
                             {...{ kcContext, i18n, classes }}
                             Template={Template}
                             doUseDefaultCss={doUseDefaultCss}
-                            UserProfileFormFields={UserProfileFormFields}
-                            doMakeUserConfirmPassword={doMakeUserConfirmPassword}
                         />
                     );
                     case "idp-review-user-profile.ftl": return (
