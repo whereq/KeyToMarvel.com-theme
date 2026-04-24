@@ -1,0 +1,25 @@
+/**
+ * template.css — Minimal overrides for Keycloakify default classes.
+ *
+ * We set doUseDefaultCss=false so this is lightweight.
+ * All primary styling is done via CSS custom properties and Tailwind.
+ */
+
+/* Ensure the KC form error class is styled consistently */
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--vg-error);
+}
+
+/* Override KC body class to prevent white flash */
+.kcBodyClass {
+    background-color: var(--vg-bg-base) !important;
+    color: var(--vg-text-primary) !important;
+}
+
+/* Recaptcha container */
+.g-recaptcha {
+    transform-origin: left top;
+}
