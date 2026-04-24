@@ -1,0 +1,19 @@
+import type { Preview } from "@storybook/react";
+import "../src/index.css";
+
+const preview: Preview = {
+    parameters: {
+        backgrounds: {
+            default: "vegeta-dark",
+            values: [{ name: "vegeta-dark", value: "#080a12" }],
+        },
+        controls: {
+            matchers: {
+                color: /(background|color)$/i,
+                date: /Date$/i,
+            },
+        },
+    },
+};
+
+export default preview;

@@ -1,0 +1,241 @@
+@import "@fontsource/inter/300.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "tailwindcss";
+
+/* ==========================================================================
+   K2M Vegeta Theme — Design Token System
+   MetroUI Dark Theme with Frontend/Backend contrast palettes
+   ========================================================================== */
+
+:root {
+    /* --- Background layers --- */
+    --vg-bg-base:     #080a12;   /* deepest dark — page background */
+    --vg-bg-surface:  #0f1120;   /* primary surface */
+    --vg-bg-card:     #171a2e;   /* card / panel */
+    --vg-bg-elevated: #1e2238;   /* elevated / hover surface */
+    --vg-bg-overlay:  #252a45;   /* tooltip / popover */
+
+    /* --- Borders --- */
+    --vg-border-subtle:  #1a1e35;
+    --vg-border-default: #272c48;
+    --vg-border-strong:  #353d60;
+    --vg-border-focus:   #7c6bfa;
+
+    /* --- Accent — Primary: Royal Purple (Vegeta power) --- */
+    --vg-purple-50:  #ede9ff;
+    --vg-purple-100: #d4ccff;
+    --vg-purple-200: #b0a4ff;
+    --vg-purple-400: #8b7bfb;
+    --vg-purple-500: #7c6bfa;   /* primary accent */
+    --vg-purple-600: #6455e0;
+    --vg-purple-700: #4e3fc8;
+    --vg-purple-900: #2a1e8a;
+
+    /* --- Accent — Gold (Saiyan Royalty) — used for backend/admin UI --- */
+    --vg-gold-50:  #fffde7;
+    --vg-gold-200: #ffe97a;
+    --vg-gold-400: #f5c518;   /* primary gold */
+    --vg-gold-500: #e0b010;
+    --vg-gold-600: #c49a0a;
+    --vg-gold-800: #7a5f00;
+
+    /* --- Accent — Cyan (Final Flash energy) — used for frontend/user UI --- */
+    --vg-cyan-50:  #e0f9ff;
+    --vg-cyan-200: #7fe8f7;
+    --vg-cyan-400: #00c9e4;   /* primary cyan */
+    --vg-cyan-500: #00b3cc;
+    --vg-cyan-600: #0099b0;
+    --vg-cyan-800: #005566;
+
+    /* --- Semantic: Frontend (user-facing) contrast color --- */
+    --vg-frontend:       var(--vg-cyan-400);
+    --vg-frontend-hover: var(--vg-cyan-500);
+    --vg-frontend-bg:    rgba(0, 201, 228, 0.08);
+
+    /* --- Semantic: Backend (admin/system) contrast color --- */
+    --vg-backend:        var(--vg-gold-400);
+    --vg-backend-hover:  var(--vg-gold-500);
+    --vg-backend-bg:     rgba(245, 197, 24, 0.08);
+
+    /* --- Text --- */
+    --vg-text-primary:   #eeeffe;   /* near-white with slight blue tint */
+    --vg-text-secondary: #8892b4;   /* muted */
+    --vg-text-muted:     #555e80;   /* very muted / placeholder */
+    --vg-text-inverse:   #080a12;   /* text on light backgrounds */
+    --vg-text-link:      var(--vg-cyan-400);
+    --vg-text-link-hover:var(--vg-cyan-200);
+
+    /* --- Status colors --- */
+    --vg-error:       #ff4757;
+    --vg-error-bg:    rgba(255, 71, 87, 0.10);
+    --vg-error-border:rgba(255, 71, 87, 0.30);
+
+    --vg-success:       #2ed573;
+    --vg-success-bg:    rgba(46, 213, 115, 0.10);
+    --vg-success-border:rgba(46, 213, 115, 0.30);
+
+    --vg-warning:       #ffa502;
+    --vg-warning-bg:    rgba(255, 165, 2, 0.10);
+    --vg-warning-border:rgba(255, 165, 2, 0.30);
+
+    --vg-info:       #1e90ff;
+    --vg-info-bg:    rgba(30, 144, 255, 0.10);
+    --vg-info-border:rgba(30, 144, 255, 0.30);
+
+    /* --- Typography --- */
+    --vg-font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --vg-font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+    /* --- Metro UI spacing scale --- */
+    --vg-space-1: 4px;
+    --vg-space-2: 8px;
+    --vg-space-3: 12px;
+    --vg-space-4: 16px;
+    --vg-space-5: 20px;
+    --vg-space-6: 24px;
+    --vg-space-8: 32px;
+    --vg-space-10: 40px;
+    --vg-space-12: 48px;
+    --vg-space-16: 64px;
+
+    /* --- Border radius (Metro uses minimal rounding) --- */
+    --vg-radius-none: 0px;
+    --vg-radius-sm:   2px;
+    --vg-radius-md:   4px;
+    --vg-radius-lg:   8px;
+
+    /* --- Transitions --- */
+    --vg-transition-fast:   100ms ease;
+    --vg-transition-normal: 200ms ease;
+    --vg-transition-slow:   350ms ease;
+
+    /* --- Shadows (flat MetroUI uses minimal shadows) --- */
+    --vg-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
+    --vg-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --vg-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+
+    /* --- Z-index layers --- */
+    --vg-z-base:    0;
+    --vg-z-raised:  100;
+    --vg-z-overlay: 200;
+    --vg-z-modal:   300;
+    --vg-z-toast:   400;
+}
+
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--vg-font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--vg-text-primary);
+    background-color: var(--vg-bg-base);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 Theme Extension
+   ========================================================================== */
+
+@theme {
+    /* Extend Tailwind with Vegeta tokens */
+    --color-vg-bg-base:     #080a12;
+    --color-vg-bg-surface:  #0f1120;
+    --color-vg-bg-card:     #171a2e;
+    --color-vg-bg-elevated: #1e2238;
+
+    --color-vg-border:      #272c48;
+    --color-vg-focus:       #7c6bfa;
+
+    --color-vg-purple:      #7c6bfa;
+    --color-vg-gold:        #f5c518;
+    --color-vg-cyan:        #00c9e4;
+
+    --color-vg-text:        #eeeffe;
+    --color-vg-muted:       #8892b4;
+
+    --color-vg-error:       #ff4757;
+    --color-vg-success:     #2ed573;
+    --color-vg-warning:     #ffa502;
+    --color-vg-info:        #1e90ff;
+
+    --font-sans: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--vg-bg-surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--vg-border-strong);
+    border-radius: var(--vg-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--vg-purple-500);
+}
+
+/* ==========================================================================
+   Focus Visible
+   ========================================================================== */
+
+:focus-visible {
+    outline: 2px solid var(--vg-border-focus);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+    background-color: rgba(124, 107, 250, 0.35);
+    color: var(--vg-text-primary);
+}
+
+/* ==========================================================================
+   Prose / Content Overrides
+   ========================================================================== */
+
+a {
+    color: var(--vg-text-link);
+    text-decoration: none;
+    transition: color var(--vg-transition-fast);
+}
+
+a:hover {
+    color: var(--vg-text-link-hover);
+    text-decoration: underline;
+}
+
+code, pre {
+    font-family: var(--vg-font-mono);
+}
