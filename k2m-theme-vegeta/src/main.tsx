@@ -5,7 +5,6 @@ import { KcPage, type KcContext } from "./keycloak-theme/kc.gen";
 import "./index.css";
 
 // Uncomment to test a specific page with `yarn dev` / `npm run dev`
-/*
 import { getKcContextMock } from "./keycloak-theme/login/KcPageStory";
 
 if (import.meta.env.DEV) {
@@ -15,10 +14,17 @@ if (import.meta.env.DEV) {
         // pageId: "login-reset-password.ftl",
         // pageId: "login-verify-email.ftl",
         // pageId: "login-otp.ftl",
-        overrides: {}
+        overrides: {
+            social: {
+                displayInfo: true,
+                providers: [
+                    { alias: "google",  displayName: "Google",  loginUrl: "#", providerId: "google" },
+                    { alias: "wechat",  displayName: "WeChat",  loginUrl: "#", providerId: "wechat" },
+                ],
+            },
+        }
     });
 }
-*/
 
 const AppEntrypoint = lazy(() => import("./main.app"));
 
