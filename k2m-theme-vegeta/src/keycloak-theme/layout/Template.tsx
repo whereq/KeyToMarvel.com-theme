@@ -243,41 +243,14 @@ export default function Template(props: VgTemplateProps) {
 
             {/* ── Main area ── */}
             {isSplit ? (
-                <main
-                    id="vg-main"
-                    style={{
-                        flex: 1,
-                        display: "flex",
-                        paddingTop: "48px",   /* header height */
-                        paddingBottom: "40px", /* footer height */
-                        overflow: "hidden",
-                    }}
-                >
-                    {/* Left: brand panel */}
-                    <div
-                        style={{
-                            flex: "1 1 0",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: "48px 64px",
-                            borderRight: "1px solid var(--vg-border-subtle)",
-                        }}
-                    >
+                <main id="vg-main" className="vg-split">
+                    {/* Left: brand panel — hidden on mobile via CSS */}
+                    <div className="vg-split-brand">
                         {leftPanelNode}
                     </div>
 
                     {/* Right: login card */}
-                    <div
-                        style={{
-                            flex: "0 0 480px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            padding: "32px 40px",
-                            overflowY: "auto",
-                        }}
-                    >
+                    <div className="vg-split-card-wrap">
                         {card}
                     </div>
                 </main>

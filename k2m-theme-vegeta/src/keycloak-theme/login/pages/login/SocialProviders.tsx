@@ -5,11 +5,12 @@ import { VgSocialButton } from "@keycloak-theme/shared/ui";
 import { IoLogoGoogle, IoLogoGithub, IoLogoMicrosoft } from "react-icons/io5";
 import { SiWechat } from "react-icons/si";
 
+/** Brand colors for each provider icon — distinct from the label's theme cyan. */
 const knownIcons: Record<string, React.ReactNode> = {
-    google:    <IoLogoGoogle />,
-    github:    <IoLogoGithub />,
-    microsoft: <IoLogoMicrosoft />,
-    wechat:    <SiWechat />,
+    google:    <IoLogoGoogle    style={{ color: "#4285F4" }} />,
+    github:    <IoLogoGithub   style={{ color: "#e6edf3" }} />,
+    microsoft: <IoLogoMicrosoft style={{ color: "#00a4ef" }} />,
+    wechat:    <SiWechat        style={{ color: "#07C160" }} />,
 };
 
 function resolveIcon(providerId: string): React.ReactNode | undefined {
