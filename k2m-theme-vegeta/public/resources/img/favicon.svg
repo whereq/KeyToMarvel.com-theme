@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!--
+    Golden YinYang favicon — matches the BsYinYang logo used in the Vegeta theme header.
+    Construction (layered paint):
+      1. Full dark circle  (yin base)
+      2. Gold right semicircle
+      3. Gold top small circle  (yang head protrudes into yin territory)
+      4. Dark bottom small circle  (yin head cuts into yang territory)
+      5. Dark eye inside yang head
+      6. Gold eye inside yin head
+  -->
+
+  <!-- 1. Yin (dark) base -->
+  <circle cx="50" cy="50" r="50" fill="#0f1120"/>
+
+  <!-- 2. Yang (gold) right semicircle -->
+  <path d="M50,0 A50,50,0,0,1,50,100 L50,0 Z" fill="#f59e0b"/>
+
+  <!-- 3. Yang head (gold top circle) -->
+  <circle cx="50" cy="25" r="25" fill="#f59e0b"/>
+
+  <!-- 4. Yin head (dark bottom circle) -->
+  <circle cx="50" cy="75" r="25" fill="#0f1120"/>
+
+  <!-- 5. Yin eye — dark dot inside yang (gold) area -->
+  <circle cx="50" cy="25" r="10" fill="#0f1120"/>
+
+  <!-- 6. Yang eye — gold dot inside yin (dark) area -->
+  <circle cx="50" cy="75" r="10" fill="#f59e0b"/>
+</svg>

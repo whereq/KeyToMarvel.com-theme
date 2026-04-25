@@ -23,3 +23,91 @@
 .g-recaptcha {
     transform-origin: left top;
 }
+
+/* ── Split layout (two-column: brand | card) ── */
+#vg-main.vg-split {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    padding-top: 48px;   /* header height */
+    padding-bottom: 40px;
+    overflow: hidden;
+}
+
+.vg-split-brand {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 64px;
+    border-right: 1px solid var(--vg-border-subtle);
+}
+
+.vg-split-card-wrap {
+    flex: 0 0 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 40px;
+    overflow-y: auto;
+}
+
+/* ── Responsive: tablet (768 – 1023 px) ── */
+@media (max-width: 1023px) {
+    .vg-split-brand {
+        padding: 32px 40px;
+    }
+
+    .vg-split-card-wrap {
+        flex: 0 0 420px;
+        padding: 24px 28px;
+    }
+}
+
+/* ── Responsive: mobile (< 768 px) ── */
+@media (max-width: 767px) {
+    /* Non-split: reduce top/bottom padding so form isn't pushed off-screen */
+    #vg-root > #vg-main:not(.vg-split) {
+        padding: 64px 16px 48px !important;
+        align-items: stretch;
+    }
+
+    #vg-root > #vg-main:not(.vg-split) > #vg-login-card {
+        max-width: 100% !important;
+    }
+    #vg-main.vg-split {
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-top: 48px; /* header height */
+        padding-bottom: 0;
+        align-items: stretch;
+    }
+
+    /* Hide brand panel on mobile — the header already shows the logo */
+    .vg-split-brand {
+        display: none;
+    }
+
+    .vg-split-card-wrap {
+        flex: none;
+        width: 100%;
+        padding: 20px 16px 40px;
+        overflow-y: visible;
+        justify-content: center;
+    }
+
+    /* Allow the card to fill the mobile viewport width */
+    #vg-login-card {
+        max-width: 100% !important;
+    }
+
+    /* Tighten card padding on small screens */
+    #vg-card-header {
+        padding: 20px 20px 0 !important;
+    }
+
+    #vg-card-body {
+        padding: 16px 20px 24px !important;
+    }
+}

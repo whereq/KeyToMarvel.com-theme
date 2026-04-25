@@ -30,7 +30,7 @@ export function VgSocialButton({ icon, label, className = "", ...rest }: VgSocia
                 .join(" ")}
             {...rest}
         >
-            {icon && <span className="shrink-0 text-base">{icon}</span>}
+            {icon && <span className="shrink-0 text-xl leading-none">{icon}</span>}
             <span>{label}</span>
         </a>
     );
