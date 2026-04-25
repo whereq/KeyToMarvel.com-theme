@@ -25,7 +25,8 @@ export default function SocialProviders(props: {
     /** When true, renders larger full-width buttons as primary CTAs. */
     prominent?: boolean;
 }) {
-    const { kcContext, prominent = false } = props;
+    const { kcContext, i18n, prominent = false } = props;
+    const { msgStr } = i18n;
     const { social } = kcContext;
 
     if (!social?.providers || social.providers.length === 0) return null;
@@ -41,7 +42,7 @@ export default function SocialProviders(props: {
                         key={provider.alias}
                         href={provider.loginUrl}
                         icon={resolveIcon(provider.alias)}
-                        label={`Continue with ${provider.displayName}`}
+                        label={msgStr("continueWith", provider.displayName)}
                         className={prominent ? "py-3.5 text-base font-medium" : ""}
                     />
                 ))}
