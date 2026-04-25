@@ -4,8 +4,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Welcome to ${productName}</title>
+    <title>Key to Marvel</title>
     <link rel="icon" type="image/png" href="${resourcesPath}/img/favicon.png"/>
+    <#-- Redirect all visitors to the WhereQ realm login.
+         Admins should navigate directly to /admin for the admin console. -->
+    <script>window.location.replace('/realms/WhereQ/account/');</script>
+    <noscript><meta http-equiv="refresh" content="0;url=/realms/WhereQ/account/"/></noscript>
     <style>
         :root {
             --vg-bg-base: #080a12;
