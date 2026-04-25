@@ -5,6 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Welcome to ${productName}</title>
+    <link rel="icon" type="image/png" href="${resourcesPath}/img/favicon.png"/>
     <style>
         :root {
             --vg-bg-base: #080a12;

@@ -22,6 +22,11 @@ A comprehensive guide covering theme initialization, local development workflows
     - 10.1 [Build with Yarn](#101-build-with-yarn)
     - 10.2 [Build with npm](#102-build-with-npm)
 11. [Deploying to Keycloak](#11-deploying-to-keycloak)
+    - 11.1 [Method 1: Drop JAR into providers directory](#111-method-1-drop-jar-into-providers-directory)
+    - 11.2 [Method 2: Docker run](#112-method-2-docker-run-quick-test)
+    - 11.3 [Method 3: Keycloakify test server](#113-method-3-keycloakify-test-server-dev-only)
+    - 11.4 [Welcome Theme — Docker Volume Mount](#114-welcome-theme--docker-volume-mount)
+    - 11.5 [Activating login / account / admin / email themes](#115-activating-login--account--admin--email-themes)
 12. [Key Architecture Decisions](#12-key-architecture-decisions)
 13. [Troubleshooting](#13-troubleshooting)
 
@@ -31,13 +36,13 @@ A comprehensive guide covering theme initialization, local development workflows
 
 `k2m-theme-vegeta` is a custom Keycloak theme built with [Keycloakify](https://keycloakify.dev) 11.x. It provides fully customized UI for all five Keycloak theme types:
 
-| Type      | Implementation         | Location                              |
-|-----------|------------------------|---------------------------------------|
-| `login`   | React (custom)         | `src/keycloak-theme/login/`           |
-| `account` | React SPA (upstream)   | `src/keycloak-theme/account/`         |
-| `admin`   | React SPA (upstream)   | `src/keycloak-theme/admin/`           |
-| `email`   | FreeMarker FTL         | `src/keycloak-theme/email/`           |
-| `welcome` | FreeMarker FTL         | `src/keycloak-theme/welcome/`         |
+| Type      | Implementation       | Location                          | Deployment         |
+|-----------|----------------------|-----------------------------------|--------------------|
+| `login`   | React (custom)       | `src/keycloak-theme/login/`       | bundled in JAR     |
+| `account` | React SPA (upstream) | `src/keycloak-theme/account/`     | bundled in JAR     |
+| `admin`   | React SPA (upstream) | `src/keycloak-theme/admin/`       | bundled in JAR     |
+| `email`   | FreeMarker FTL       | `src/keycloak-theme/email/`       | bundled in JAR     |
+| `welcome` | FreeMarker FTL       | `src/keycloak-theme/welcome/`     | **separate volume mount** — not in JAR |
 
 **Design system:** Dark MetroUI — flat, sharp corners, bold typography, `--vg-*` CSS custom properties.
 **Frontend accent:** cyan (`--vg-cyan-400`) for user-facing surfaces.
@@ -154,11 +159,12 @@ src/
     ├── account/                      # AUTO-MANAGED — run `keycloakify own` before editing
     ├── admin/                        # AUTO-MANAGED — run `keycloakify own` before editing
     ├── email/
+    │   ├── theme.properties          # Required for Keycloakify to detect & bundle email theme
     │   ├── html/                     # HTML email templates (.ftl)
     │   ├── text/                     # Plain-text email templates (.ftl)
     │   └── messages/                 # Email i18n messages
     └── welcome/
-        └── index.ftl                 # Welcome page FreeMarker template
+        └── index.ftl                 # Welcome page — deployed via themes/ volume, NOT bundled in JAR
 ```
 
 ### Key Files to Know
@@ -584,13 +590,26 @@ npm run build-keycloak-theme
 
 ## 11. Deploying to Keycloak
 
-### Method 1: Drop JAR into providers directory
+### What the JAR contains
+
+`yarn build-keycloak-theme` produces two JARs in `dist_keycloak/`:
+
+| JAR | Target |
+|-----|--------|
+| `keycloak-theme-for-kc-22-to-25.jar` | Keycloak 22–25 |
+| `keycloak-theme-for-kc-all-other-versions.jar` | Keycloak 26+ (**use this one**) |
+
+The JAR bundles: `login`, `account`, `admin`, `email`. The `welcome` theme is **not in the JAR** — see [Section 11.4](#114-welcome-theme-docker-volume-mount) for how to deploy it.
+
+---
+
+### 11.1 Method 1: Drop JAR into providers directory
 
 Copy the JAR to Keycloak's `providers/` directory and restart:
 
 ```bash
-cp dist_keycloak/keycloak-theme-k2m-theme-vegeta-*.jar /opt/keycloak/providers/
-/opt/keycloak/bin/kc.sh build   # triggers static file build
+cp dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar /opt/keycloak/providers/k2m-theme.jar
+/opt/keycloak/bin/kc.sh build   # triggers static file build (production only)
 /opt/keycloak/bin/kc.sh start   # start Keycloak
 ```
 
@@ -602,17 +621,21 @@ For development mode:
 
 > Keycloak scans `providers/` on startup. No additional configuration is needed — any `.jar` with a Keycloak theme is automatically discovered.
 
-### Method 2: Docker with volume mount
+---
+
+### 11.2 Method 2: Docker run (quick test)
 
 ```bash
 docker run --rm -p 8080:8080 \
-  -v "$(pwd)/dist_keycloak/keycloak-theme-k2m-theme-vegeta-0.1.0.jar:/opt/keycloak/providers/k2m-theme.jar" \
+  -v "$(pwd)/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar:/opt/keycloak/providers/k2m-theme.jar" \
   -e KC_BOOTSTRAP_ADMIN_USERNAME=admin \
   -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin \
   quay.io/keycloak/keycloak:26.0.7 start-dev
 ```
 
-### Method 3: Keycloakify test server (dev only)
+---
+
+### 11.3 Method 3: Keycloakify test server (dev only)
 
 ```bash
 npx keycloakify start-keycloak
@@ -620,16 +643,108 @@ npx keycloakify start-keycloak
 
 Automatically downloads Keycloak, installs your built JAR, and starts on port 8080.
 
-### After deploying
+---
 
-1. Log into Keycloak Admin Console: `http://localhost:8080/admin`
+### 11.4 Welcome Theme — Docker Volume Mount
+
+The `welcome` theme is **server-wide** (not per-realm) and is **not bundled into the JAR** by Keycloakify. It must be deployed as a raw FTL directory mounted into the container's `/opt/keycloak/themes/` path, alongside the JAR in `/opt/keycloak/providers/`.
+
+#### Host directory structure
+
+Alongside your existing `provider/` volume, create a `themes/` directory:
+
+```
+docker/volumes/keycloak/
+├── provider/                                        ← JAR lives here (already set up)
+│   └── keycloak-theme-for-kc-all-other-versions.jar
+└── themes/                                          ← add this for welcome
+    └── k2m-theme-vegeta/
+        └── welcome/
+            ├── theme.properties
+            └── index.ftl
+```
+
+#### Step 1 — Create the directory
+
+```bash
+mkdir -p docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome
+```
+
+#### Step 2 — Copy the welcome files
+
+Run from the `k2m-theme-vegeta` project root:
+
+```bash
+cp src/keycloak-theme/welcome/index.ftl \
+   path/to/docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome/
+
+echo "parent=keycloak" > \
+   path/to/docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome/theme.properties
+```
+
+#### Step 3 — Update docker-compose.yml
+
+Add the `themes` volume mount and `KC_SPI_THEME_WELCOME_THEME` environment variable:
+
+```yaml
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.7
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_SPI_THEME_WELCOME_THEME: k2m-theme-vegeta      # ← activates welcome theme
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./volumes/keycloak/provider:/opt/keycloak/providers  # ← JAR (login/account/admin/email)
+      - ./volumes/keycloak/themes:/opt/keycloak/themes       # ← welcome FTL files
+```
+
+#### Step 4 — Restart
+
+```bash
+docker compose down && docker compose up -d
+```
+
+Navigate to `http://your-keycloak/` to see the Vegeta welcome page.
+
+#### Why two separate volume mounts
+
+| Mount | Contents | How Keycloak uses it |
+|-------|----------|----------------------|
+| `/opt/keycloak/providers/` | JAR file | Scanned at startup; login, account, admin, email registered automatically |
+| `/opt/keycloak/themes/` | Raw FTL directories | Loaded directly by Keycloak's theme engine; no JAR needed |
+
+Keycloak merges themes from both locations without conflict.
+
+#### Updating the welcome page
+
+Since `index.ftl` has no build step (inline CSS, no compiled assets), updates are instant:
+
+```bash
+cp src/keycloak-theme/welcome/index.ftl \
+   docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome/
+# dev mode (start-dev): Keycloak reloads FTL on each request — no restart needed
+# production mode (start): restart the container after changing FTL files
+```
+
+---
+
+### 11.5 Activating login / account / admin / email themes
+
+These are all per-realm and activated through the Keycloak Admin Console:
+
+1. Log into Keycloak Admin Console: `http://your-keycloak/admin`
 2. Select your realm → **Realm Settings** → **Themes**
 3. Set:
    - **Login Theme**: `k2m-theme-vegeta`
    - **Account Theme**: `k2m-theme-vegeta`
-   - **Admin Theme**: `k2m-theme-vegeta` *(if admin customization was applied)*
+   - **Admin Theme**: `k2m-theme-vegeta`
+   - **Email Theme**: `k2m-theme-vegeta`
 4. Click **Save**
-5. Open the realm's login URL to verify: `http://localhost:8080/realms/<your-realm>/account`
+5. Verify: `http://your-keycloak/realms/<your-realm>/account`
 
 ---
 
@@ -654,6 +769,16 @@ Keycloakify's `msg()` is strictly typed to only accept message keys in Keycloak'
 ### `formState` wrapper in `useUserProfileForm`
 
 In Keycloakify 11.x the hook returns `{ formState, dispatchFormAction }` where `formState` contains both `formFieldStates` and `isFormSubmittable`. Older examples or docs may destructure these directly at the top level — that API no longer exists.
+
+### Why the welcome theme is not in the JAR
+
+Keycloakify v11's build pipeline only processes `login`, `email`, `account`, and `admin` theme types — `welcome` is intentionally absent from its `implementedThemeTypes` type system. Attempting to bundle it via the JAR is not possible without forking Keycloakify itself.
+
+Additionally, the `welcome` theme is **server-wide** (not per-realm), so it is configured differently: via the `KC_SPI_THEME_WELCOME_THEME` environment variable rather than through Realm Settings. Deploying it as a raw FTL directory mounted to `/opt/keycloak/themes/` is the correct and officially supported approach for this theme type.
+
+### Why `email/theme.properties` is required
+
+Keycloakify detects native FTL themes by checking for the presence of a `theme.properties` file in the directory (`getIsNative` in the vite plugin). Without it, even a fully populated `email/` directory with `html/`, `text/`, and `messages/` subdirectories will be silently ignored and excluded from the JAR. The file only needs one line: `parent=base`.
 
 ---
 
@@ -727,16 +852,56 @@ Common fixes:
 
 ---
 
-### Changes to FTL files (email / welcome) not reflecting
+### Changes to email FTL files not reflecting
 
-FreeMarker templates are bundled into the JAR. You must rebuild and redeploy:
+Email FTL templates are bundled inside the JAR. After editing any file under `src/keycloak-theme/email/`, rebuild and redeploy the JAR:
 
 ```bash
 yarn build-keycloak-theme
-# then redeploy the JAR
+# then copy the new JAR to providers/ and restart Keycloak
 ```
 
-There is no hot-reload path for FTL files; they always require a full rebuild.
+In production mode, a container restart is required. In `start-dev` mode a restart is also needed because the JAR is read once on startup.
+
+---
+
+### Changes to welcome FTL not reflecting
+
+The welcome `index.ftl` is **not in the JAR** — it lives in the Docker volume at:
+```
+docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome/index.ftl
+```
+
+Copy the updated file to the volume:
+
+```bash
+cp src/keycloak-theme/welcome/index.ftl \
+   docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome/
+```
+
+- **`start-dev` mode**: Keycloak reloads FTL on every request — no restart needed.
+- **`start` (production) mode**: restart the container after the file is updated.
+
+---
+
+### Welcome theme not appearing (`http://your-keycloak/` still shows default page)
+
+Check the following in order:
+
+1. Confirm `KC_SPI_THEME_WELCOME_THEME=k2m-theme-vegeta` is set in the container environment:
+   ```bash
+   docker compose exec keycloak env | grep WELCOME
+   ```
+2. Confirm `theme.properties` exists in the volume:
+   ```bash
+   cat docker/volumes/keycloak/themes/k2m-theme-vegeta/welcome/theme.properties
+   # must print: parent=keycloak
+   ```
+3. Confirm the `themes/` volume is mounted to `/opt/keycloak/themes/` (not `providers/`):
+   ```bash
+   docker compose exec keycloak ls /opt/keycloak/themes/k2m-theme-vegeta/welcome/
+   ```
+4. Restart the container — the welcome theme env var is read at startup.
 
 ---
 
