@@ -10,7 +10,14 @@ import LoginForm from "./LoginForm";
 import SocialProviders from "./SocialProviders";
 
 /* ── Left panel: brand identity ── */
-function BrandPanel() {
+function BrandPanel({ i18n }: { i18n: I18n }) {
+    const { msgStr } = i18n;
+    const bullets = [
+        msgStr("brandBullet1"),
+        msgStr("brandBullet2"),
+        msgStr("brandBullet3"),
+    ];
+
     return (
         <div
             style={{
@@ -58,7 +65,7 @@ function BrandPanel() {
                         lineHeight: 1.5,
                     }}
                 >
-                    Your gateway to unlock the universe
+                    {msgStr("brandTagline")}
                 </p>
             </div>
 
@@ -74,11 +81,7 @@ function BrandPanel() {
                     gap: "2px",
                 }}
             >
-                {[
-                    "One account, every universe",
-                    "Sign in with your preferred account",
-                    "Secure · Fast · Magical",
-                ].map(text => (
+                {bullets.map(text => (
                     <li
                         key={text}
                         style={{
@@ -148,7 +151,7 @@ export default function Login(
                 </span>
             }
             layoutVariant="split"
-            leftPanelNode={<BrandPanel />}
+            leftPanelNode={<BrandPanel i18n={i18n} />}
         >
             {/* Social providers — shown first (primary CTAs) */}
             {hasSocialProviders && (
@@ -164,7 +167,7 @@ export default function Login(
 
             {/* Divider between social and email/password form */}
             {hasSocialProviders && realm.password && (
-                <VgDivider>or</VgDivider>
+                <VgDivider>{msg("or")}</VgDivider>
             )}
 
             {/* Email / password form */}
