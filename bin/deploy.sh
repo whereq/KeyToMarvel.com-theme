@@ -24,11 +24,12 @@ header()  { echo -e "\n${BOLD}$*${RESET}"; }
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 THEME_NAME="k2m-theme-vegeta"
 
 # Source
-JAR_SRC="$SCRIPT_DIR/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar"
-WELCOME_SRC="$SCRIPT_DIR/src/keycloak-theme/welcome"
+JAR_SRC="$REPO_DIR/$THEME_NAME/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar"
+WELCOME_SRC="$REPO_DIR/$THEME_NAME/src/keycloak-theme/welcome"
 
 # Target — adjust KEYCLOAK_VOLUMES_DIR if your layout differs
 KEYCLOAK_VOLUMES_DIR="$HOME/github/KeyToMarvel.com/docker/volumes/keycloak"
