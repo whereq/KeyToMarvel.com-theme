@@ -593,28 +593,53 @@ npm run build-keycloak-theme
 
 ## 11. Deploying to Keycloak
 
-### 11.0 One-command deploy script (recommended)
+### 11.0 Deploy scripts (recommended)
 
-`bin/deploy.sh` handles the complete build-and-deploy pipeline in one step:
+Two scripts in `bin/` cover both the build-on-WSL and deploy-on-Pi workflows.
+
+#### `bin/build-and-deploy.sh` — WSL local dev (has Node.js/Yarn)
+
+Builds the JAR then deploys all artifacts in one step:
 
 ```bash
-# Deploy to the default target (../KeyToMarvel.com/docker/volumes/keycloak)
-./bin/deploy.sh
+# Deploy to the default target (../../KeyToMarvel.com/docker/volumes/keycloak)
+./bin/build-and-deploy.sh
 
 # Deploy to a custom target
-./bin/deploy.sh /path/to/keycloak/volumes
+./bin/build-and-deploy.sh /path/to/keycloak/volumes
 ```
-
-What the script does:
 
 | Step | Action |
 |------|--------|
-| 1 | `yarn build-keycloak-theme` — TypeScript check + Vite bundle + Keycloakify JAR |
-| 2 | Copy JAR → `providers/keycloak-theme-for-kc-all-other-versions.jar` |
-| 3 | Copy `welcome/index.ftl` + generate `welcome/theme.properties` → `themes/k2m-theme-vegeta/welcome/` |
-| 4 | Copy `login/messages/*.properties` + generate `login/theme.properties` → `themes/k2m-theme-vegeta/login/` |
+| 1 | `yarn build-keycloak-theme` — TypeScript check + Vite bundle + JAR |
+| 2 | Calls `deploy.sh` to copy all artifacts |
 
-After running the script, restart Keycloak and verify the WhereQ realm has Login theme set to `k2m-theme-vegeta`.
+#### `bin/deploy.sh` — Raspberry Pi PROD (no build needed)
+
+Copies pre-built artifacts to the Keycloak volumes. **Run this on the Pi after `git pull`:**
+
+```bash
+cd ~/git/KeyToMarvel.com-theme/k2m-theme-vegeta
+git pull
+./bin/deploy.sh          # uses default path ../../KeyToMarvel.com/docker/volumes/keycloak
+```
+
+| Step | Action |
+|------|--------|
+| 1 | Copy JAR (`dist_keycloak/`) → `providers/` |
+| 2 | Copy `src/keycloak-theme/welcome/index.ftl` + generate `theme.properties` → `themes/…/welcome/` |
+| 3 | Copy `src/keycloak-theme/login/messages/*.properties` + generate `theme.properties` → `themes/…/login/` |
+
+> **Why the JAR must already exist:** `deploy.sh` does not run a build. If `dist_keycloak/` is missing or stale, build the JAR on WSL first (`yarn build-keycloak-theme`), commit the JAR to the repo (or transfer it separately), then run `deploy.sh` on the Pi.
+
+> **`docker/volumes/` is gitignored in `KeyToMarvel.com`** — all volume content is managed exclusively by these scripts. Never edit files under `docker/volumes/` directly; always modify the source in this repo and re-run `deploy.sh`.
+
+After deploying on the Pi, restart Keycloak (production `start` mode requires a restart):
+
+```bash
+cd ~/git/KeyToMarvel.com/docker
+docker compose -f docker-compose-rp4.yml restart keycloak
+```
 
 ---
 
