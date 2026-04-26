@@ -21,11 +21,6 @@ function isDataUrl(v: string) {
 /**
  * Resize + JPEG-compress an image File client-side.
  * Iterates quality downward until the encoded size ≤ MAX_BYTES.
- *
- * TODO (k2m backend): replace the returned data-URL with an upload call to
- *   the k2m avatar API, store only the returned URL in the Keycloak attribute.
- *   Until that API exists the full base64 payload is stored in the attribute,
- *   which requires the Keycloak USER_ATTRIBUTE.VALUE column to be TEXT / >255.
  */
 async function compressToDataUrl(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -63,6 +58,40 @@ async function compressToDataUrl(file: File): Promise<string> {
     });
 }
 
+/**
+ * Upload a compressed JPEG data-URL to the k2m avatar API and return the
+ * permanent URL to store in the Keycloak user attribute.
+ *
+ * The realm is extracted from the current page path
+ * (/realms/{realm}/login-actions/…), so no extra props are required.
+ * Keycloak session cookies are forwarded automatically via credentials:'include',
+ * which works for both the login-update-profile flow and the Account SPA.
+ *
+ * Throws on network error or a non-2xx response.
+ */
+async function uploadAvatar(dataUrl: string): Promise<string> {
+    const realm = window.location.pathname.split("/")[2] ?? "";
+    const uploadUrl = `/realms/${realm}/avatars/upload`;
+
+    const response = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ data: dataUrl }),
+    });
+
+    if (!response.ok) {
+        const msg = response.status === 413
+            ? "Image too large for server (> 16 KB)."
+            : `Upload failed (HTTP ${response.status}).`;
+        throw new Error(msg);
+    }
+
+    const json = (await response.json()) as { url?: string };
+    if (!json.url) throw new Error("Upload response missing url field.");
+    return json.url;
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export interface VgAvatarUploadProps {
@@ -80,7 +109,7 @@ export interface VgAvatarUploadProps {
     onBlur?:   () => void;
 }
 
-type Status = "idle" | "processing" | "error";
+type Status = "idle" | "processing" | "error" | "uploading";
 
 export function VgAvatarUpload({
     name,
@@ -91,9 +120,10 @@ export function VgAvatarUpload({
     onBlur,
 }: VgAvatarUploadProps) {
     const fileRef  = useRef<HTMLInputElement>(null);
-    const [preview, setPreview] = useState(currentValue);
-    const [status,  setStatus]  = useState<Status>("idle");
-    const [oversized, setOversized] = useState(false);
+    const [preview,      setPreview]      = useState(currentValue);
+    const [status,       setStatus]       = useState<Status>("idle");
+    const [oversized,    setOversized]    = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     // Sync if parent resets the value
     useEffect(() => { setPreview(currentValue); }, [currentValue]);
@@ -106,18 +136,35 @@ export function VgAvatarUpload({
 
         setStatus("processing");
         setOversized(false);
+        setErrorMessage(null);
 
+        let dataUrl: string;
         try {
-            const dataUrl   = await compressToDataUrl(file);
-            const byteCount = Math.round(dataUrl.length * 0.75);
-            setOversized(byteCount > MAX_BYTES);
-            setPreview(dataUrl);
-            onChange(dataUrl);
+            dataUrl = await compressToDataUrl(file);
         } catch {
             setStatus("error");
+            setErrorMessage("Failed to load image. Please try a different file.");
+            if (fileRef.current) fileRef.current.value = "";
             return;
+        }
+
+        const byteCount = Math.round(dataUrl.length * 0.75);
+        setOversized(byteCount > MAX_BYTES);
+
+        // Upload to the k2m avatar API and store only the returned URL in the
+        // Keycloak attribute (~100 chars, well within varchar(255)).
+        setStatus("uploading");
+        try {
+            const avatarUrl = await uploadAvatar(dataUrl);
+            setPreview(avatarUrl);
+            onChange(avatarUrl);
+            setStatus("idle");
+        } catch (err) {
+            setStatus("error");
+            setErrorMessage(
+                err instanceof Error ? err.message : "Upload failed. Please try again."
+            );
         } finally {
-            setStatus(s => s === "error" ? "error" : "idle");
             if (fileRef.current) fileRef.current.value = "";
         }
     };
@@ -178,8 +225,8 @@ export function VgAvatarUpload({
                         </svg>
                     )}
 
-                    {/* Spinner overlay while processing */}
-                    {status === "processing" && (
+                    {/* Spinner overlay while processing or uploading */}
+                    {(status === "processing" || status === "uploading") && (
                         <div
                             style={{
                                 position: "absolute",
@@ -208,7 +255,7 @@ export function VgAvatarUpload({
                 <div className="flex flex-col gap-2">
                     <button
                         type="button"
-                        disabled={disabled || status === "processing"}
+                        disabled={disabled || status === "processing" || status === "uploading"}
                         onClick={() => fileRef.current?.click()}
                         style={{
                             padding: "6px 16px",
@@ -218,7 +265,7 @@ export function VgAvatarUpload({
                             borderRadius: "var(--vg-radius-sm)",
                             background: "var(--vg-bg-elevated)",
                             color: "var(--vg-cyan-400)",
-                            cursor: disabled || status === "processing" ? "not-allowed" : "pointer",
+                            cursor: disabled || status === "processing" || status === "uploading" ? "not-allowed" : "pointer",
                             opacity: disabled ? 0.5 : 1,
                             transition: "border-color 0.15s, color 0.15s",
                         }}
@@ -231,6 +278,8 @@ export function VgAvatarUpload({
                     >
                         {status === "processing"
                             ? "Processing…"
+                            : status === "uploading"
+                            ? "Uploading…"
                             : hasImage ? "Change photo" : "Upload photo"}
                     </button>
 
@@ -261,9 +310,9 @@ export function VgAvatarUpload({
                     Image is still large after compression. Consider a smaller photo.
                 </p>
             )}
-            {status === "error" && (
+            {status === "error" && errorMessage && (
                 <p style={{ fontSize: "0.75rem", color: "var(--vg-error)", margin: 0 }}>
-                    Failed to load image. Please try a different file.
+                    {errorMessage}
                 </p>
             )}
             <p style={{ fontSize: "0.73rem", color: "var(--vg-text-muted)", margin: 0 }}>
