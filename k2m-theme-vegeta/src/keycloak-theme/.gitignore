@@ -1,6 +1,8 @@
 # This file is managed by Keycloakify, do not edit it manually.
 
 # === Owned files start ===
+# admin/realm-settings/NewAttributeSettings.tsx
+# admin/realm-settings/user-profile/AttributesGroupForm.tsx
 # === Owned files end =====
 
 # === @keycloakify/keycloak-admin-ui v260007.0.4 ===
@@ -123,7 +125,6 @@
 /admin/realm-settings/ExecutorForm.tsx
 /admin/realm-settings/GeneralTab.tsx
 /admin/realm-settings/LoginTab.tsx
-/admin/realm-settings/NewAttributeSettings.tsx
 /admin/realm-settings/NewClientPolicy.tsx
 /admin/realm-settings/NewClientPolicyCondition.tsx
 /admin/realm-settings/partial-export.css
@@ -500,7 +501,6 @@
 /admin/realm-settings/security-defences/SecurityDefenses.tsx
 /admin/realm-settings/security-defences/Time.tsx
 /admin/realm-settings/user-profile/AttributesGroupDetails.tsx
-/admin/realm-settings/user-profile/AttributesGroupForm.tsx
 /admin/realm-settings/user-profile/AttributesGroupTab.tsx
 /admin/realm-settings/user-profile/AttributesTab.tsx
 /admin/realm-settings/user-profile/JsonEditorTab.tsx
