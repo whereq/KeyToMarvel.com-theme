@@ -30,3 +30,6 @@ export type { VgTextareaProps } from "./Textarea";
 
 export { VgSocialButton } from "./SocialButton";
 export type { VgSocialButtonProps } from "./SocialButton";
+
+export { VgAvatarUpload } from "./AvatarUpload";
+export type { VgAvatarUploadProps } from "./AvatarUpload";
