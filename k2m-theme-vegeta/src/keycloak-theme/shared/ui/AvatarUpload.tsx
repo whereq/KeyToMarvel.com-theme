@@ -95,8 +95,6 @@ async function uploadAvatar(dataUrl: string): Promise<string> {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export interface VgAvatarUploadProps {
-    /** Keycloak attribute name — used as the hidden <input> name. */
-    name: string;
     /**
      * Current attribute value.
      * May be an https:// URL (social-provider picture) or a data:image/ base64,
@@ -112,7 +110,6 @@ export interface VgAvatarUploadProps {
 type Status = "idle" | "processing" | "error" | "uploading";
 
 export function VgAvatarUpload({
-    name,
     currentValue,
     hasError = false,
     disabled = false,

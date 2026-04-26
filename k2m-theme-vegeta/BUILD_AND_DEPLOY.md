@@ -22,11 +22,13 @@ A comprehensive guide covering theme initialization, local development workflows
     - 10.1 [Build with Yarn](#101-build-with-yarn)
     - 10.2 [Build with npm](#102-build-with-npm)
 11. [Deploying to Keycloak](#11-deploying-to-keycloak)
+    - 11.0 [One-command deploy script](#110-one-command-deploy-script-recommended)
     - 11.1 [Method 1: Drop JAR into providers directory](#111-method-1-drop-jar-into-providers-directory)
     - 11.2 [Method 2: Docker run](#112-method-2-docker-run-quick-test)
     - 11.3 [Method 3: Keycloakify test server](#113-method-3-keycloakify-test-server-dev-only)
     - 11.4 [Welcome Theme — Docker Volume Mount](#114-welcome-theme--docker-volume-mount)
-    - 11.5 [Activating login / account / admin / email themes](#115-activating-login--account--admin--email-themes)
+    - 11.5 [Login Message Overrides — Docker Volume Mount](#115-login-message-overrides--docker-volume-mount)
+    - 11.6 [Activating login / account / admin / email themes](#116-activating-login--account--admin--email-themes)
 12. [Key Architecture Decisions](#12-key-architecture-decisions)
 13. [Troubleshooting](#13-troubleshooting)
 
@@ -38,11 +40,12 @@ A comprehensive guide covering theme initialization, local development workflows
 
 | Type      | Implementation       | Location                          | Deployment         |
 |-----------|----------------------|-----------------------------------|--------------------|
-| `login`   | React (custom)       | `src/keycloak-theme/login/`       | bundled in JAR     |
-| `account` | React SPA (upstream) | `src/keycloak-theme/account/`     | bundled in JAR     |
-| `admin`   | React SPA (upstream) | `src/keycloak-theme/admin/`       | bundled in JAR     |
-| `email`   | FreeMarker FTL       | `src/keycloak-theme/email/`       | bundled in JAR     |
-| `welcome` | FreeMarker FTL       | `src/keycloak-theme/welcome/`     | **separate volume mount** — not in JAR |
+| `login`   | React (custom)       | `src/keycloak-theme/login/`              | bundled in JAR     |
+| `account` | React SPA (upstream) | `src/keycloak-theme/account/`            | bundled in JAR     |
+| `admin`   | React SPA (upstream) | `src/keycloak-theme/admin/`              | bundled in JAR     |
+| `email`   | FreeMarker FTL       | `src/keycloak-theme/email/`              | bundled in JAR     |
+| `welcome` | FreeMarker FTL       | `src/keycloak-theme/welcome/`            | **separate volume mount** — not in JAR |
+| `login messages` | `.properties` | `src/keycloak-theme/login/messages/` | **separate volume mount** — overrides JAR messages |
 
 **Design system:** Dark MetroUI — flat, sharp corners, bold typography, `--vg-*` CSS custom properties.
 **Frontend accent:** cyan (`--vg-cyan-400`) for user-facing surfaces.
@@ -590,6 +593,31 @@ npm run build-keycloak-theme
 
 ## 11. Deploying to Keycloak
 
+### 11.0 One-command deploy script (recommended)
+
+`bin/deploy.sh` handles the complete build-and-deploy pipeline in one step:
+
+```bash
+# Deploy to the default target (../KeyToMarvel.com/docker/volumes/keycloak)
+./bin/deploy.sh
+
+# Deploy to a custom target
+./bin/deploy.sh /path/to/keycloak/volumes
+```
+
+What the script does:
+
+| Step | Action |
+|------|--------|
+| 1 | `yarn build-keycloak-theme` — TypeScript check + Vite bundle + Keycloakify JAR |
+| 2 | Copy JAR → `providers/keycloak-theme-for-kc-all-other-versions.jar` |
+| 3 | Copy `welcome/index.ftl` + generate `welcome/theme.properties` → `themes/k2m-theme-vegeta/welcome/` |
+| 4 | Copy `login/messages/*.properties` + generate `login/theme.properties` → `themes/k2m-theme-vegeta/login/` |
+
+After running the script, restart Keycloak and verify the WhereQ realm has Login theme set to `k2m-theme-vegeta`.
+
+---
+
 ### What the JAR contains
 
 `yarn build-keycloak-theme` produces two JARs in `dist_keycloak/`:
@@ -599,7 +627,7 @@ npm run build-keycloak-theme
 | `keycloak-theme-for-kc-22-to-25.jar` | Keycloak 22–25 |
 | `keycloak-theme-for-kc-all-other-versions.jar` | Keycloak 26+ (**use this one**) |
 
-The JAR bundles: `login`, `account`, `admin`, `email`. The `welcome` theme is **not in the JAR** — see [Section 11.4](#114-welcome-theme-docker-volume-mount) for how to deploy it.
+The JAR bundles: `login`, `account`, `admin`, `email`. The `welcome` theme is **not in the JAR** — see [Section 11.4](#114-welcome-theme-docker-volume-mount) for how to deploy it. Login message overrides are volume-mounted separately — see [Section 11.5](#115-login-message-overrides--docker-volume-mount).
 
 ---
 
@@ -732,7 +760,68 @@ cp src/keycloak-theme/welcome/index.ftl \
 
 ---
 
-### 11.5 Activating login / account / admin / email themes
+### 11.5 Login Message Overrides — Docker Volume Mount
+
+Keycloak validates that any `${key}` display name set on a User Profile attribute can be
+resolved from the active login theme's message bundle before saving. If a key is missing,
+the Admin Console throws:
+
+```
+Error! User Profile configuration has not been saved
+Please add translations before saving: {{error}}
+```
+
+The JAR (compiled from `src/keycloak-theme/layout/i18n.ts`) already contains these keys.
+The volume-mounted override files at `src/keycloak-theme/login/messages/` take precedence
+over the JAR messages, so fixes to i18n keys take effect without a JAR rebuild.
+
+#### Source files
+
+```
+src/keycloak-theme/login/messages/
+├── messages_en.properties     # English: firstName, lastName, username, email, locale, avatar
+└── messages_zh_CN.properties  # zh-CN translations of the same keys
+```
+
+#### Important: key format must match the display name
+
+The `${key}` in the display name field must exactly match the key in the `.properties` file:
+
+| Display name field | Required key | Correct |
+|--------------------|--------------|---------|
+| `${firstName}` | `firstName` | `firstName=First name` |
+| `${lastName}` | `lastName` | `lastName=Last name` |
+| `${profile.attribute.firstName}` | `profile.attribute.firstName` | `profile.attribute.firstName=First name` |
+
+The default Keycloak attribute display names use the bare key format (e.g., `${firstName}`),
+not the `profile.attribute.*` prefix.
+
+#### Deployed structure
+
+`bin/deploy.sh` copies these files to the volume:
+
+```
+themes/k2m-theme-vegeta/login/
+├── theme.properties          # parent=keycloak (generated by deploy script)
+└── messages/
+    ├── messages_en.properties
+    └── messages_zh_CN.properties
+```
+
+`theme.properties` with `parent=keycloak` ensures all standard Keycloak login message keys
+are still available through inheritance. Only the keys explicitly defined in the override
+files shadow the JAR; everything else falls through to the parent.
+
+#### Updating
+
+1. Edit `src/keycloak-theme/login/messages/messages_en.properties`
+2. Run `./bin/deploy.sh` (or manually copy the file — no JAR rebuild needed)
+3. In `start-dev` mode Keycloak reloads message files on each request (no restart needed).
+   In production `start` mode, restart the container.
+
+---
+
+### 11.6 Activating login / account / admin / email themes
 
 These are all per-realm and activated through the Keycloak Admin Console:
 
