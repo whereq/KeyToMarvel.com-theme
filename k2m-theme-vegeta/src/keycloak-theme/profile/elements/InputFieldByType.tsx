@@ -75,7 +75,6 @@ export default function InputFieldByType(props: {
                 return (
                     <div className="flex flex-col gap-1">
                         <VgAvatarUpload
-                            name={attribute.name}
                             currentValue={currentVal}
                             hasError={displayableErrors.length > 0}
                             onChange={value =>
