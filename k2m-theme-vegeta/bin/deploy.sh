@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-# deploy.sh — Build k2m-theme-vegeta and deploy artifacts to Keycloak volumes
+# deploy.sh — Copy pre-built k2m-theme-vegeta artifacts to Keycloak volumes
+#
+# Run this on ANY machine that has the KeyToMarvel.com repo alongside this one.
+# It does NOT build the JAR — run build-and-deploy.sh (or yarn build-keycloak-theme)
+# first on a machine with Node.js/Yarn if you need a fresh JAR.
 #
 # Usage:
 #   ./bin/deploy.sh [KEYCLOAK_VOLUMES_DIR]
@@ -9,18 +13,17 @@
 #
 # ─── What gets deployed and where ────────────────────────────────────────────
 #
-#  Theme type  │ Source                                      │ Destination
-#  ────────────┼─────────────────────────────────────────────┼──────────────────────────────────────────────
-#  login       │ dist_keycloak/*.jar  (built from src/)      │ providers/  (JAR provider)
-#  account     │ dist_keycloak/*.jar                         │ providers/  (JAR provider)
-#  admin       │ dist_keycloak/*.jar                         │ providers/  (JAR provider)
-#  email       │ dist_keycloak/*.jar                         │ providers/  (JAR provider)
-#  welcome     │ src/keycloak-theme/welcome/index.ftl        │ themes/k2m-theme-vegeta/welcome/  (FTL)
-#  login msgs  │ src/keycloak-theme/login/messages/*.props   │ themes/k2m-theme-vegeta/login/messages/
+#  Artifact        │ Source (this repo)                           │ Destination
+#  ────────────────┼──────────────────────────────────────────────┼──────────────────────────────────────────
+#  Theme JAR       │ dist_keycloak/*.jar                          │ providers/  (JAR provider)
+#  Welcome FTL     │ src/keycloak-theme/welcome/index.ftl         │ themes/k2m-theme-vegeta/welcome/
+#  Login messages  │ src/keycloak-theme/login/messages/*.properties│ themes/k2m-theme-vegeta/login/messages/
 #
-# The welcome theme cannot be bundled into the JAR (Keycloakify limitation).
-# The login messages override takes precedence over JAR messages, enabling hotfixes
-# to user-profile i18n keys without a full JAR rebuild.
+# Why login messages need a separate volume mount (not just the JAR):
+#   Keycloak Admin validates ${key} display names in User Profile attributes against
+#   the active login theme's message bundle. The JAR also contains these keys (compiled
+#   from layout/i18n.ts), but volume-mounted files take precedence and allow hotfixes
+#   without a JAR rebuild.
 # ─────────────────────────────────────────────────────────────────────────────
 
 set -euo pipefail
@@ -35,6 +38,7 @@ PROVIDERS_DIR="$KC_VOLUMES_DIR/providers"
 THEME_DIR="$KC_VOLUMES_DIR/themes/k2m-theme-vegeta"
 
 JAR_NAME="keycloak-theme-for-kc-all-other-versions.jar"
+JAR_SRC="$PROJECT_DIR/dist_keycloak/$JAR_NAME"
 
 echo "======================================="
 echo " k2m-theme-vegeta deploy"
@@ -43,42 +47,38 @@ echo " Project : $PROJECT_DIR"
 echo " Target  : $KC_VOLUMES_DIR"
 echo ""
 
-# ── Step 1: Build theme JAR ──────────────────────────────────────────────────
-echo "[1/4] Building Keycloak theme JAR..."
-cd "$PROJECT_DIR"
-yarn build-keycloak-theme
-echo "      Done."
-echo ""
+# Guard: JAR must exist (run yarn build-keycloak-theme first if missing)
+if [[ ! -f "$JAR_SRC" ]]; then
+    echo "ERROR: $JAR_SRC not found."
+    echo "Run 'yarn build-keycloak-theme' first, then re-run this script."
+    exit 1
+fi
 
-# ── Step 2: Deploy JAR → providers/ ─────────────────────────────────────────
-echo "[2/4] Deploying JAR..."
+# ── 1. JAR → providers/ ──────────────────────────────────────────────────────
+echo "[1/3] Deploying JAR..."
 mkdir -p "$PROVIDERS_DIR"
-cp "$PROJECT_DIR/dist_keycloak/$JAR_NAME" "$PROVIDERS_DIR/$JAR_NAME"
+cp "$JAR_SRC" "$PROVIDERS_DIR/$JAR_NAME"
 echo "      → $PROVIDERS_DIR/$JAR_NAME"
 echo ""
 
-# ── Step 3: Deploy welcome theme → themes/…/welcome/ ────────────────────────
-# The welcome theme is not bundled by Keycloakify; it must be mounted as raw FTL.
-echo "[3/4] Deploying welcome theme..."
+# ── 2. Welcome theme → themes/…/welcome/ ─────────────────────────────────────
+# The welcome theme cannot be bundled into the JAR (Keycloakify limitation).
+echo "[2/3] Deploying welcome theme..."
 mkdir -p "$THEME_DIR/welcome"
 cp "$PROJECT_DIR/src/keycloak-theme/welcome/index.ftl" "$THEME_DIR/welcome/index.ftl"
 printf "parent=keycloak\n" > "$THEME_DIR/welcome/theme.properties"
 echo "      → $THEME_DIR/welcome/"
 echo ""
 
-# ── Step 4: Deploy login message overrides → themes/…/login/messages/ ───────
-# These keys resolve ${firstName}, ${lastName}, etc. in User Profile attribute
-# display names, preventing the Admin Console error:
-#   "Please add translations before saving: {{error}}"
-# The volume-mounted file takes precedence over the JAR's compiled messages.
-echo "[4/4] Deploying login message overrides..."
+# ── 3. Login message overrides → themes/…/login/messages/ ────────────────────
+echo "[3/3] Deploying login message overrides..."
 mkdir -p "$THEME_DIR/login/messages"
 cp "$PROJECT_DIR/src/keycloak-theme/login/messages/messages_en.properties" \
    "$THEME_DIR/login/messages/messages_en.properties"
 cp "$PROJECT_DIR/src/keycloak-theme/login/messages/messages_zh_CN.properties" \
    "$THEME_DIR/login/messages/messages_zh_CN.properties"
-# parent=keycloak lets Keycloak inherit all standard login message keys.
-# Only the keys defined above are overridden; everything else comes from the parent.
+# parent=keycloak: inherit all standard Keycloak message keys not in our override file.
+# The login pages (JS/CSS/FTL) still come from the JAR — only messages are overridden here.
 printf "parent=keycloak\n" > "$THEME_DIR/login/theme.properties"
 echo "      → $THEME_DIR/login/"
 echo ""
@@ -88,8 +88,9 @@ echo " Deploy complete"
 echo "======================================="
 echo ""
 echo "Post-deploy checklist:"
-echo "  1. Restart the Keycloak container (or use start-dev which auto-reloads FTL)."
+echo "  1. Restart the Keycloak container (required in production 'start' mode):"
+echo "     docker compose -f docker-compose-rp4.yml restart keycloak"
 echo "  2. Verify the WhereQ realm has Login theme = 'k2m-theme-vegeta'"
 echo "     Keycloak Admin → WhereQ realm → Realm settings → Themes → Login theme."
-echo "  3. Test: edit a User Profile attribute display name in Realm settings → User profile."
+echo "  3. Test: edit a User Profile attribute in Realm settings → User profile."
 echo ""
