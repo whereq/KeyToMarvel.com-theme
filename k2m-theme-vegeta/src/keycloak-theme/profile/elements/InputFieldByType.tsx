@@ -5,7 +5,7 @@ import InputTag from "./InputTag";
 import SelectTag from "./SelectTag";
 import TextareaTag from "./TextareaTag";
 import InputTagSelects from "./InputTagSelects";
-import { VgPasswordInput } from "@keycloak-theme/shared/ui";
+import { VgPasswordInput, VgAvatarUpload } from "@keycloak-theme/shared/ui";
 import FieldErrors from "./FieldErrors";
 
 export default function InputFieldByType(props: {
@@ -56,6 +56,48 @@ export default function InputFieldByType(props: {
             );
 
         default: {
+            // ── Avatar field — custom upload widget ──────────────────────────
+            // Keycloak stores the avatar as a string attribute (URL or base64).
+            // Social-provider login (Google, WeChat) may pre-populate it with a
+            // picture URL.  Uploaded images are compressed client-side to ≤16 KB.
+            //
+            // Storage note: base64 payloads (~21 KB text) exceed Keycloak's
+            // default USER_ATTRIBUTE.VALUE column (varchar 255).  For production:
+            //   • Alter the column to TEXT, OR
+            //   • Implement the k2m avatar API (see AvatarUpload.tsx TODO) so
+            //     only the returned URL (~100 chars) is stored in the attribute.
+            if (attribute.name === "avatar") {
+                const currentVal =
+                    typeof valueOrValues === "string"
+                        ? valueOrValues
+                        : (valueOrValues[0] ?? "");
+
+                return (
+                    <div className="flex flex-col gap-1">
+                        <VgAvatarUpload
+                            name={attribute.name}
+                            currentValue={currentVal}
+                            hasError={displayableErrors.length > 0}
+                            onChange={value =>
+                                dispatchFormAction({
+                                    action: "update",
+                                    name: attribute.name,
+                                    valueOrValues: value,
+                                })
+                            }
+                            onBlur={() =>
+                                dispatchFormAction({
+                                    action: "focus lost",
+                                    name: attribute.name,
+                                    fieldIndex: 0,
+                                })
+                            }
+                        />
+                        <FieldErrors fieldErrors={displayableErrors} fieldIndex={undefined} />
+                    </div>
+                );
+            }
+
             // Multi-valued string input
             if (Array.isArray(valueOrValues)) {
                 return (
