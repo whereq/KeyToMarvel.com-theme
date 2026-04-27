@@ -23,6 +23,7 @@ import {
   Button,
   ExpandableSection,
   Form,
+  FormGroup,
   Spinner,
 } from "../../shared/@patternfly/react-core";
 import { ExternalLinkSquareAltIcon } from "../../shared/@patternfly/react-icons";
@@ -118,33 +119,38 @@ export const PersonalInfo = () => {
     isRegistrationEmailAsUsername,
     isEditUserNameAllowed,
   } = context.environment.features;
+
+  // Filter avatar out of UserProfileFields — the upstream renderer only appends
+  // a widget alongside the default TextInput (see UserProfileGroup.tsx), so we
+  // render the avatar field manually below UserProfileFields instead.
+  const filteredMetadata = {
+    ...userProfileMetadata,
+    attributes: (userProfileMetadata.attributes ?? []).filter(
+      (a) => a.name !== "avatar",
+    ),
+  };
+  const hasAvatarField = (userProfileMetadata.attributes ?? []).some(
+    (a) => a.name === "avatar",
+  );
+  const avatarFieldName = `attributes[${beerify("avatar")}]`;
+
   return (
     <Page title={t("personalInfo")} description={t("personalInfoDescription")}>
       <Form isHorizontal onSubmit={handleSubmit(onSubmit)}>
         <UserProfileFields
           form={form}
-          userProfileMetadata={userProfileMetadata}
+          userProfileMetadata={filteredMetadata}
           supportedLocales={supportedLocales}
           currentLocale={context.environment.locale}
           t={
             ((key: unknown, params) =>
               t(key as TFuncKey, params as any)) as TFunction
           }
-          renderer={(attribute) => {
-            if (attribute.name === "avatar") {
-              const fieldName = `attributes[${beerify("avatar")}]`;
-              const currentValue = (form.watch(fieldName) as string) ?? "";
-              return (
-                <VgAvatarUpload
-                  currentValue={currentValue}
-                  onChange={(value) => setValue(fieldName, value)}
-                />
-              );
-            }
-            return attribute.name === "email" &&
-              updateEmailFeatureEnabled &&
-              updateEmailActionEnabled &&
-              (!isRegistrationEmailAsUsername || isEditUserNameAllowed) ? (
+          renderer={(attribute) =>
+            attribute.name === "email" &&
+            updateEmailFeatureEnabled &&
+            updateEmailActionEnabled &&
+            (!isRegistrationEmailAsUsername || isEditUserNameAllowed) ? (
               <Button
                 id="update-email-btn"
                 variant="link"
@@ -156,9 +162,17 @@ export const PersonalInfo = () => {
               >
                 {t("updateEmail")}
               </Button>
-            ) : undefined;
-          }}
+            ) : undefined
+          }
         />
+        {hasAvatarField && (
+          <FormGroup label={t("avatar" as TFuncKey)} fieldId="avatar">
+            <VgAvatarUpload
+              currentValue={(form.watch(avatarFieldName) as string) ?? ""}
+              onChange={(value) => setValue(avatarFieldName, value)}
+            />
+          </FormGroup>
+        )}
         {!allFieldsReadOnly() && (
           <ActionGroup>
             <Button
