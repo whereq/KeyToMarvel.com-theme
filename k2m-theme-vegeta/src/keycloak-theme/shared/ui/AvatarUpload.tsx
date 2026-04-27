@@ -160,18 +160,21 @@ export function VgAvatarUpload({
     function applyZoom(newScale: number) {
         const img = sourceImgRef.current;
         if (!img) return;
+        // Always read from liveRef (not the render-closure) so back-to-back calls
+        // during a single drag/scroll burst don't see stale values.
         const { scale: s, imgLeft: l, imgTop: t } = liveRef.current;
         const cx = CROP_SIZE / 2;
         const cy = CROP_SIZE / 2;
-        // Where is the center of the circle in fractional image coords?
         const relX = (cx - l) / (img.naturalWidth  * s);
         const relY = (cy - t) / (img.naturalHeight * s);
-        // Reposition so the same image point stays at the circle center
         const [nl, nt] = clamp(
             cx - relX * img.naturalWidth  * newScale,
             cy - relY * img.naturalHeight * newScale,
             newScale,
         );
+        // Update liveRef eagerly so the very next call in the same tick sees
+        // the values we just computed, not what was rendered last frame.
+        liveRef.current = { scale: newScale, imgLeft: nl, imgTop: nt };
         setScale(newScale);
         setImgLeft(nl);
         setImgTop(nt);
@@ -358,12 +361,14 @@ export function VgAvatarUpload({
                     onWheel={(e) => {
                         if (isUploading) return;
                         e.preventDefault();
-                        const step     = minScale * 0.08;
-                        const newScale = Math.min(
-                            Math.max(scale + (e.deltaY < 0 ? step : -step), minScale),
+                        // Read from liveRef so rapid wheel events don't use stale closure
+                        const cur  = liveRef.current.scale;
+                        const step = minScale * 0.08;
+                        const next = Math.min(
+                            Math.max(cur + (e.deltaY < 0 ? step : -step), minScale),
                             minScale * 4,
                         );
-                        applyZoom(newScale);
+                        applyZoom(next);
                     }}
                 >
                     {cropObjectUrl && (
@@ -415,27 +420,35 @@ export function VgAvatarUpload({
                             <button
                                 type="button"
                                 style={ZOOM_BTN}
-                                onClick={() =>
-                                    applyZoom(Math.max(scale - minScale * 0.1, minScale))
-                                }
+                                onClick={() => {
+                                    const cur  = liveRef.current.scale;
+                                    applyZoom(Math.max(cur - minScale * 0.1, minScale));
+                                }}
                             >
                                 −
                             </button>
+                            {/* Integer 0-100 slider avoids floating-point snap issues.
+                                Maps linearly: 0 → minScale, 100 → minScale * 4 */}
                             <input
                                 type="range"
-                                min={minScale}
-                                max={minScale * 4}
-                                step={minScale * 0.02}
-                                value={scale}
-                                onChange={(e) => applyZoom(parseFloat(e.target.value))}
+                                min={0}
+                                max={100}
+                                step={1}
+                                value={Math.round((scale - minScale) / (minScale * 3) * 100)}
+                                onChange={(e) => {
+                                    const frac     = parseInt(e.target.value, 10) / 100;
+                                    const newScale = minScale + frac * minScale * 3;
+                                    applyZoom(newScale);
+                                }}
                                 style={{ flex: 1, accentColor: "var(--vg-cyan-400)" }}
                             />
                             <button
                                 type="button"
                                 style={ZOOM_BTN}
-                                onClick={() =>
-                                    applyZoom(Math.min(scale + minScale * 0.1, minScale * 4))
-                                }
+                                onClick={() => {
+                                    const cur  = liveRef.current.scale;
+                                    applyZoom(Math.min(cur + minScale * 0.1, minScale * 4));
+                                }}
                             >
                                 +
                             </button>
