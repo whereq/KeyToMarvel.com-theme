@@ -11,10 +11,51 @@ const CROP_SIZE = 256;
 /** Output canvas size — also the stored image dimension (px). */
 const OUTPUT_SIZE = 128;
 
+// ── i18n strings ─────────────────────────────────────────────────────────────
+
+const STRINGS = {
+    en: {
+        uploadPhoto:       "Upload photo",
+        changePhoto:       "Change photo",
+        remove:            "Remove",
+        apply:             "Apply",
+        cancel:            "Cancel",
+        cropHint:          "Drag to reposition · scroll or +/− to zoom",
+        applyHint:         "Click Apply to confirm and upload your avatar",
+        idleHint:          "JPG · PNG · GIF · max 16 KB",
+        uploading:         "Uploading…",
+    },
+    zh: {
+        uploadPhoto:       "上传头像",
+        changePhoto:       "更换头像",
+        remove:            "移除",
+        apply:             "确认上传",
+        cancel:            "取消",
+        cropHint:          "拖动调整位置 · 滚轮或 +/− 缩放",
+        applyHint:         "调整完成后点击「确认上传」保存头像",
+        idleHint:          "支持 JPG · PNG · GIF · 最大 16 KB",
+        uploading:         "上传中…",
+    },
+} as const;
+
+type Locale = keyof typeof STRINGS;
+
+function resolveLocale(locale?: string): Locale {
+    if (!locale) return "en";
+    const tag = locale.toLowerCase();
+    if (tag === "zh" || tag.startsWith("zh-")) return "zh";
+    return "en";
+}
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
 function isHttpUrl(v: string) {
     return v.startsWith("http://") || v.startsWith("https://");
+}
+
+/** Root-relative avatar paths returned by the SPI (e.g. /realms/foo/avatars/files/uuid.jpg). */
+function isRelativePath(v: string) {
+    return v.startsWith("/realms/");
 }
 
 function isDataUrl(v: string) {
@@ -95,13 +136,16 @@ const ZOOM_BTN: React.CSSProperties = {
 
 export interface VgAvatarUploadProps {
     /**
-     * Current attribute value — https:// URL, data:image/ URL, or empty string.
+     * Current attribute value — https:// URL, root-relative /realms/ path,
+     * data:image/ URL, or empty string.
      */
     currentValue: string;
     hasError?: boolean;
     disabled?: boolean;
     onChange:  (value: string) => void;
     onBlur?:   () => void;
+    /** BCP-47 locale tag (e.g. "en", "zh-CN"). Defaults to "en". */
+    locale?:   string;
 }
 
 type UiState = "idle" | "cropping" | "uploading" | "error";
@@ -112,7 +156,9 @@ export function VgAvatarUpload({
     disabled = false,
     onChange,
     onBlur,
+    locale,
 }: VgAvatarUploadProps) {
+    const s   = STRINGS[resolveLocale(locale)];
     const fileRef = useRef<HTMLInputElement>(null);
 
     // ── Normal-state preview ──────────────────────────────────────────────────
@@ -147,12 +193,12 @@ export function VgAvatarUpload({
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     /** Clamp image position so it never reveals black borders inside the circle. */
-    function clamp(left: number, top: number, s: number): [number, number] {
+    function clamp(left: number, top: number, sc: number): [number, number] {
         const img = sourceImgRef.current;
         if (!img) return [left, top];
         return [
-            Math.min(0, Math.max(CROP_SIZE - img.naturalWidth  * s, left)),
-            Math.min(0, Math.max(CROP_SIZE - img.naturalHeight * s, top)),
+            Math.min(0, Math.max(CROP_SIZE - img.naturalWidth  * sc, left)),
+            Math.min(0, Math.max(CROP_SIZE - img.naturalHeight * sc, top)),
         ];
     }
 
@@ -160,20 +206,16 @@ export function VgAvatarUpload({
     function applyZoom(newScale: number) {
         const img = sourceImgRef.current;
         if (!img) return;
-        // Always read from liveRef (not the render-closure) so back-to-back calls
-        // during a single drag/scroll burst don't see stale values.
-        const { scale: s, imgLeft: l, imgTop: t } = liveRef.current;
+        const { scale: sc, imgLeft: l, imgTop: t } = liveRef.current;
         const cx = CROP_SIZE / 2;
         const cy = CROP_SIZE / 2;
-        const relX = (cx - l) / (img.naturalWidth  * s);
-        const relY = (cy - t) / (img.naturalHeight * s);
+        const relX = (cx - l) / (img.naturalWidth  * sc);
+        const relY = (cy - t) / (img.naturalHeight * sc);
         const [nl, nt] = clamp(
             cx - relX * img.naturalWidth  * newScale,
             cy - relY * img.naturalHeight * newScale,
             newScale,
         );
-        // Update liveRef eagerly so the very next call in the same tick sees
-        // the values we just computed, not what was rendered last frame.
         liveRef.current = { scale: newScale, imgLeft: nl, imgTop: nt };
         setScale(newScale);
         setImgLeft(nl);
@@ -193,13 +235,13 @@ export function VgAvatarUpload({
                 ? (e as TouchEvent).touches[0].clientY
                 : (e as MouseEvent).clientY;
             if (!dragRef.current) return;
-            const { scale: s } = liveRef.current;
+            const { scale: sc } = liveRef.current;
             const dx = clientX - dragRef.current.startX;
             const dy = clientY - dragRef.current.startY;
             const [nl, nt] = clamp(
                 dragRef.current.startLeft + dx,
                 dragRef.current.startTop  + dy,
-                s,
+                sc,
             );
             setImgLeft(nl);
             setImgTop(nt);
@@ -232,7 +274,6 @@ export function VgAvatarUpload({
         const img    = new Image();
 
         img.onload = () => {
-            // Scale so the shorter dimension fills CROP_SIZE exactly
             const ms = Math.max(CROP_SIZE / img.naturalWidth, CROP_SIZE / img.naturalHeight);
             const iw = img.naturalWidth  * ms;
             const ih = img.naturalHeight * ms;
@@ -269,25 +310,23 @@ export function VgAvatarUpload({
 
         setUiState("uploading");
 
-        // Draw the visible CROP_SIZE×CROP_SIZE area onto an OUTPUT_SIZE×OUTPUT_SIZE canvas
         const canvas = document.createElement("canvas");
         canvas.width  = OUTPUT_SIZE;
         canvas.height = OUTPUT_SIZE;
         const ctx = canvas.getContext("2d")!;
 
-        const { scale: s, imgLeft: l, imgTop: t } = liveRef.current;
+        const { scale: sc, imgLeft: l, imgTop: t } = liveRef.current;
         ctx.drawImage(
             img,
-            -l / s,         // sx: left edge of visible area in original-image coords
-            -t / s,         // sy
-            CROP_SIZE / s,  // sw: visible width in original-image coords
-            CROP_SIZE / s,  // sh
-            0, 0,           // dest origin
-            OUTPUT_SIZE,    // dest width
-            OUTPUT_SIZE,    // dest height
+            -l / sc,
+            -t / sc,
+            CROP_SIZE / sc,
+            CROP_SIZE / sc,
+            0, 0,
+            OUTPUT_SIZE,
+            OUTPUT_SIZE,
         );
 
-        // Reduce JPEG quality until the payload fits within MAX_BYTES
         let quality = 0.85;
         let dataUrl  = canvas.toDataURL("image/jpeg", quality);
         while (dataUrl.length * 0.75 > MAX_BYTES && quality > 0.1) {
@@ -339,8 +378,9 @@ export function VgAvatarUpload({
         const isUploading = uiState === "uploading";
         return (
             <div style={{ display: "flex", flexDirection: "column", gap: 10, width: CROP_SIZE }}>
+                {/* Hint: reposition/zoom */}
                 <p style={{ fontSize: "0.73rem", color: "var(--vg-text-muted)", margin: 0 }}>
-                    Drag to reposition · scroll or +/− to zoom
+                    {s.cropHint}
                 </p>
 
                 {/* Circular crop viewport */}
@@ -361,7 +401,6 @@ export function VgAvatarUpload({
                     onWheel={(e) => {
                         if (isUploading) return;
                         e.preventDefault();
-                        // Read from liveRef so rapid wheel events don't use stale closure
                         const cur  = liveRef.current.scale;
                         const step = minScale * 0.08;
                         const next = Math.min(
@@ -398,8 +437,10 @@ export function VgAvatarUpload({
                             inset:      0,
                             background: "rgba(8,10,18,0.65)",
                             display:    "flex",
+                            flexDirection: "column",
                             alignItems: "center",
                             justifyContent: "center",
+                            gap: 10,
                         }}>
                             <div style={{
                                 width:           32,
@@ -409,11 +450,14 @@ export function VgAvatarUpload({
                                 borderTopColor:  "transparent",
                                 animation:       "spin 0.8s linear infinite",
                             }} />
+                            <span style={{ fontSize: "0.75rem", color: "var(--vg-cyan-400)" }}>
+                                {s.uploading}
+                            </span>
                         </div>
                     )}
                 </div>
 
-                {/* Zoom slider — hidden while uploading */}
+                {/* Zoom slider + Apply/Cancel — hidden while uploading */}
                 {!isUploading && (
                     <>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -421,14 +465,12 @@ export function VgAvatarUpload({
                                 type="button"
                                 style={ZOOM_BTN}
                                 onClick={() => {
-                                    const cur  = liveRef.current.scale;
+                                    const cur = liveRef.current.scale;
                                     applyZoom(Math.max(cur - minScale * 0.1, minScale));
                                 }}
                             >
                                 −
                             </button>
-                            {/* Integer 0-100 slider avoids floating-point snap issues.
-                                Maps linearly: 0 → minScale, 100 → minScale * 4 */}
                             <input
                                 type="range"
                                 min={0}
@@ -446,7 +488,7 @@ export function VgAvatarUpload({
                                 type="button"
                                 style={ZOOM_BTN}
                                 onClick={() => {
-                                    const cur  = liveRef.current.scale;
+                                    const cur = liveRef.current.scale;
                                     applyZoom(Math.min(cur + minScale * 0.1, minScale * 4));
                                 }}
                             >
@@ -454,12 +496,22 @@ export function VgAvatarUpload({
                             </button>
                         </div>
 
+                        {/* Hint: must click Apply to upload */}
+                        <p style={{
+                            fontSize:   "0.73rem",
+                            color:      "var(--vg-cyan-400)",
+                            margin:     0,
+                            fontStyle:  "italic",
+                        }}>
+                            {s.applyHint}
+                        </p>
+
                         <div style={{ display: "flex", gap: 8 }}>
                             <button type="button" style={APPLY_BTN}  onClick={handleApply}>
-                                Apply
+                                {s.apply}
                             </button>
                             <button type="button" style={CANCEL_BTN} onClick={handleCancel}>
-                                Cancel
+                                {s.cancel}
                             </button>
                         </div>
                     </>
@@ -469,7 +521,7 @@ export function VgAvatarUpload({
     }
 
     // ── Render: Normal (idle / error) ─────────────────────────────────────────
-    const hasImage  = isHttpUrl(preview) || isDataUrl(preview);
+    const hasImage  = isHttpUrl(preview) || isDataUrl(preview) || isRelativePath(preview);
     const ringColor = hasError
         ? "var(--vg-error)"
         : hasImage
@@ -536,7 +588,7 @@ export function VgAvatarUpload({
                                 "var(--vg-border-default)";
                         }}
                     >
-                        {hasImage ? "Change photo" : "Upload photo"}
+                        {hasImage ? s.changePhoto : s.uploadPhoto}
                     </button>
 
                     {hasImage && (
@@ -549,7 +601,7 @@ export function VgAvatarUpload({
                                 cursor: disabled ? "not-allowed" : "pointer",
                             }}
                         >
-                            Remove
+                            {s.remove}
                         </button>
                     )}
                 </div>
@@ -562,7 +614,7 @@ export function VgAvatarUpload({
             )}
 
             <p style={{ fontSize: "0.73rem", color: "var(--vg-text-muted)", margin: 0 }}>
-                JPG · PNG · GIF — drag to crop · scroll to zoom · max 16 KB
+                {s.idleHint}
             </p>
 
             <input

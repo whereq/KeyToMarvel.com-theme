@@ -168,8 +168,16 @@ export const PersonalInfo = () => {
         {hasAvatarField && (
           <FormGroup label={t("avatar" as TFuncKey)} fieldId="avatar">
             <VgAvatarUpload
-              currentValue={(form.watch(avatarFieldName) as string) ?? ""}
-              onChange={(value) => setValue(avatarFieldName, value)}
+              currentValue={(() => {
+                // Keycloak stores attributes as string[]; normalise to plain string
+                const v = form.watch(avatarFieldName);
+                return Array.isArray(v) ? (v[0] ?? "") : ((v as string) ?? "");
+              })()}
+              onChange={(value) =>
+                // Must wrap in array — Keycloak account API expects string[]
+                setValue(avatarFieldName, value ? [value] : [])
+              }
+              locale={context.environment.locale}
             />
           </FormGroup>
         )}
