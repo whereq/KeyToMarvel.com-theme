@@ -26,7 +26,7 @@ export default function Error(
                     </VgAlert>
                 )}
 
-                {!skipLink && client.baseUrl && (
+                {!skipLink && client?.baseUrl && (
                     <div className="text-center">
                         <a
                             href={client.baseUrl}
