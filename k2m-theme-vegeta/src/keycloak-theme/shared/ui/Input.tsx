@@ -39,7 +39,7 @@ export const VgInput = forwardRef<HTMLInputElement, VgInputProps>(function VgInp
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 // Autofill override
                 "[&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--vg-bg-elevated)]",
-                "[&:-webkit-autofill]:[color:var(--vg-text-primary)]",
+                "[&:-webkit-autofill]:[-webkit-text-fill-color:var(--vg-text-primary)]",
                 className,
             ]
                 .filter(Boolean)
