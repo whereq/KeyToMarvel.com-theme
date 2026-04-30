@@ -17,12 +17,12 @@
   <g transform="translate(18, 20)">
     <!-- Outer circle -->
     <circle cx="0" cy="0" r="14" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
-    <!-- Dark half (right) -->
+    <!-- Gold half (right) -->
     <path d="M0,-14 A14,14 0 0,1 0,14 A7,7 0 0,1 0,0 A7,7 0 0,0 0,-14" fill="#f59e0b"/>
-    <!-- Light half (left) -->
-    <path d="M0,-14 A14,14 0 0,0 0,14 A7,7 0 0,0 0,0 A7,7 0 0,1 0,-14" fill="#1a1a2e"/>
+    <!-- Cyan half (left) -->
+    <path d="M0,-14 A14,14 0 0,0 0,14 A7,7 0 0,0 0,0 A7,7 0 0,1 0,-14" fill="#22d3ee"/>
     <!-- Small dots -->
-    <circle cx="0" cy="-7" r="2.2" fill="#1a1a2e"/>
+    <circle cx="0" cy="-7" r="2.2" fill="#22d3ee"/>
     <circle cx="0" cy="7" r="2.2" fill="#f59e0b"/>
   </g>
 

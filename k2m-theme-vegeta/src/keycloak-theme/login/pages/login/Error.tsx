@@ -33,7 +33,12 @@ export default function Error(
     const { msg } = i18n;
 
     const hint = message ? getHint(message.summary) : null;
-    const backUrl = client?.baseUrl || null;
+
+    // Prefer client.baseUrl (Home URL), fall back to redirect_uri from the URL query string
+    const redirectUri = typeof window !== "undefined"
+        ? new URLSearchParams(window.location.search).get("redirect_uri")
+        : null;
+    const backUrl = client?.baseUrl || redirectUri || null;
 
     return (
         <Template
