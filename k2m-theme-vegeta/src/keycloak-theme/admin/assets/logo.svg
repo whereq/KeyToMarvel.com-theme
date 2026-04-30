@@ -1,0 +1,31 @@
+<!--
+ This file has been claimed for ownership from @keycloakify/keycloak-admin-ui version 260007.0.4.
+ To relinquish ownership and restore this file to its original content, run the following command:
+
+ $ npx keycloakify own -t "admin/assets/logo.svg" -r
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40">
+  <defs>
+    <linearGradient id="k2m-text-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+
+  <!-- YinYang symbol -->
+  <g transform="translate(18, 20)">
+    <!-- Outer circle -->
+    <circle cx="0" cy="0" r="14" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.9"/>
+    <!-- Dark half (right) -->
+    <path d="M0,-14 A14,14 0 0,1 0,14 A7,7 0 0,1 0,0 A7,7 0 0,0 0,-14" fill="#f59e0b"/>
+    <!-- Light half (left) -->
+    <path d="M0,-14 A14,14 0 0,0 0,14 A7,7 0 0,0 0,0 A7,7 0 0,1 0,-14" fill="#1a1a2e"/>
+    <!-- Small dots -->
+    <circle cx="0" cy="-7" r="2.2" fill="#1a1a2e"/>
+    <circle cx="0" cy="7" r="2.2" fill="#f59e0b"/>
+  </g>
+
+  <!-- "Key to Marvel" text -->
+  <text x="40" y="26" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" letter-spacing="-0.5" fill="url(#k2m-text-grad)">Key to Marvel</text>
+</svg>

@@ -1,7 +1,12 @@
 # This file is managed by Keycloakify, do not edit it manually.
 
 # === Owned files start ===
+# admin/index.css
+# admin/PageHeader.tsx
 # account/personal-info/PersonalInfo.tsx
+# admin/assets/favicon.svg
+# admin/assets/icon.svg
+# admin/assets/logo.svg
 # admin/realm-settings/NewAttributeSettings.tsx
 # admin/realm-settings/user-profile/AttributesGroupForm.tsx
 # === Owned files end =====
@@ -14,21 +19,16 @@
 /admin/ForbiddenSection.tsx
 /admin/help-urls.ts
 /admin/i18next.d.ts
-/admin/index.css
 /admin/KcAdminUi.tsx
 /admin/KcContext.ts
 /admin/KcPage.tsx
 /admin/page-nav.css
-/admin/PageHeader.tsx
 /admin/PageNav.tsx
 /admin/PageNotFoundSection.tsx
 /admin/Root.tsx
 /admin/routes.tsx
 /admin/util.ts
-/admin/assets/favicon.svg
-/admin/assets/icon.svg
 /admin/assets/img_avatar.svg
-/admin/assets/logo.svg
 /admin/authentication/AuthenticationSection.tsx
 /admin/authentication/BindFlowDialog.tsx
 /admin/authentication/build-in-label.module.css

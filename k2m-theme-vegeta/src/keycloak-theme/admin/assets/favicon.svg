@@ -1,0 +1,19 @@
+<!--
+ This file has been claimed for ownership from @keycloakify/keycloak-admin-ui version 260007.0.4.
+ To relinquish ownership and restore this file to its original content, run the following command:
+
+ $ npx keycloakify own -t "admin/assets/favicon.svg" -r
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Background circle -->
+  <circle cx="32" cy="32" r="30" fill="#1a1a2e"/>
+  <!-- YinYang -->
+  <g transform="translate(32, 32)">
+    <circle cx="0" cy="0" r="18" fill="none" stroke="#f59e0b" stroke-width="1.5" opacity="0.7"/>
+    <path d="M0,-18 A18,18 0 0,1 0,18 A9,9 0 0,1 0,0 A9,9 0 0,0 0,-18" fill="#f59e0b"/>
+    <path d="M0,-18 A18,18 0 0,0 0,18 A9,9 0 0,0 0,0 A9,9 0 0,1 0,-18" fill="#22d3ee"/>
+    <circle cx="0" cy="-9" r="3" fill="#22d3ee"/>
+    <circle cx="0" cy="9" r="3" fill="#f59e0b"/>
+  </g>
+</svg>
