@@ -8,6 +8,7 @@
 # admin/assets/icon.svg
 # admin/assets/logo.svg
 # admin/realm-settings/NewAttributeSettings.tsx
+# admin/user/UserForm.tsx
 # admin/realm-settings/user-profile/AttributesGroupForm.tsx
 # === Owned files end =====
 
@@ -158,7 +159,6 @@
 /admin/user/UserAttributes.tsx
 /admin/user/UserConsents.tsx
 /admin/user/UserCredentials.tsx
-/admin/user/UserForm.tsx
 /admin/user/UserGroups.tsx
 /admin/user/UserIdentityProviderLinks.tsx
 /admin/user/UserIdPModal.tsx
