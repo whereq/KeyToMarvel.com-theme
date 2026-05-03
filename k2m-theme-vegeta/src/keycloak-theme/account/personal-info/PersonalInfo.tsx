@@ -33,6 +33,7 @@ import { ErrorOption, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { VgAvatarUpload } from "../../shared/ui";
+import { WelcomePanel } from "../root/WelcomePanel";
 import {
   getPersonalInfo,
   getSupportedLocales,
@@ -135,102 +136,105 @@ export const PersonalInfo = () => {
   const avatarFieldName = `attributes[${beerify("avatar")}]`;
 
   return (
-    <Page title={t("personalInfo")} description={t("personalInfoDescription")}>
-      <Form isHorizontal onSubmit={handleSubmit(onSubmit)}>
-        <UserProfileFields
-          form={form}
-          userProfileMetadata={filteredMetadata}
-          supportedLocales={supportedLocales}
-          currentLocale={context.environment.locale}
-          t={
-            ((key: unknown, params) =>
-              t(key as TFuncKey, params as any)) as TFunction
-          }
-          renderer={(attribute) =>
-            attribute.name === "email" &&
-            updateEmailFeatureEnabled &&
-            updateEmailActionEnabled &&
-            (!isRegistrationEmailAsUsername || isEditUserNameAllowed) ? (
-              <Button
-                id="update-email-btn"
-                variant="link"
-                onClick={() =>
-                  context.keycloak.login({ action: "UPDATE_EMAIL" })
-                }
-                icon={<ExternalLinkSquareAltIcon />}
-                iconPosition="right"
-              >
-                {t("updateEmail")}
-              </Button>
-            ) : undefined
-          }
-        />
-        {hasAvatarField && (
-          <FormGroup label={t("avatar" as TFuncKey)} fieldId="avatar">
-            <VgAvatarUpload
-              currentValue={(() => {
-                // Keycloak stores attributes as string[]; normalise to plain string
-                const v = form.watch(avatarFieldName);
-                return Array.isArray(v) ? (v[0] ?? "") : ((v as string) ?? "");
-              })()}
-              onChange={(value) =>
-                // Must wrap in array — Keycloak account API expects string[]
-                setValue(avatarFieldName, value ? [value] : [])
-              }
-              locale={context.environment.locale}
-            />
-          </FormGroup>
-        )}
-        {!allFieldsReadOnly() && (
-          <ActionGroup>
-            <Button
-              data-testid="save"
-              type="submit"
-              id="save-btn"
-              variant="primary"
-            >
-              {t("save")}
-            </Button>
-            <Button
-              data-testid="cancel"
-              id="cancel-btn"
-              variant="link"
-              onClick={() => reset()}
-            >
-              {t("cancel")}
-            </Button>
-          </ActionGroup>
-        )}
-        {context.environment.features.deleteAccountAllowed && (
-          <ExpandableSection
-            data-testid="delete-account"
-            toggleText={t("deleteAccount")}
-          >
-            <Alert
-              isInline
-              title={t("deleteAccount")}
-              variant="danger"
-              actionLinks={
+    <>
+      <WelcomePanel />
+      <Page title={t("personalInfo")} description={t("personalInfoDescription")}>
+        <Form isHorizontal onSubmit={handleSubmit(onSubmit)}>
+          <UserProfileFields
+            form={form}
+            userProfileMetadata={filteredMetadata}
+            supportedLocales={supportedLocales}
+            currentLocale={context.environment.locale}
+            t={
+              ((key: unknown, params) =>
+                t(key as TFuncKey, params as any)) as TFunction
+            }
+            renderer={(attribute) =>
+              attribute.name === "email" &&
+              updateEmailFeatureEnabled &&
+              updateEmailActionEnabled &&
+              (!isRegistrationEmailAsUsername || isEditUserNameAllowed) ? (
                 <Button
-                  id="delete-account-btn"
-                  variant="danger"
+                  id="update-email-btn"
+                  variant="link"
                   onClick={() =>
-                    context.keycloak.login({
-                      action: "delete_account",
-                    })
+                    context.keycloak.login({ action: "UPDATE_EMAIL" })
                   }
-                  className="delete-button"
+                  icon={<ExternalLinkSquareAltIcon />}
+                  iconPosition="right"
                 >
-                  {t("delete")}
+                  {t("updateEmail")}
                 </Button>
-              }
+              ) : undefined
+            }
+          />
+          {hasAvatarField && (
+            <FormGroup label={t("avatar" as TFuncKey)} fieldId="avatar">
+              <VgAvatarUpload
+                currentValue={(() => {
+                  // Keycloak stores attributes as string[]; normalise to plain string
+                  const v = form.watch(avatarFieldName);
+                  return Array.isArray(v) ? (v[0] ?? "") : ((v as string) ?? "");
+                })()}
+                onChange={(value) =>
+                  // Must wrap in array — Keycloak account API expects string[]
+                  setValue(avatarFieldName, value ? [value] : [])
+                }
+                locale={context.environment.locale}
+              />
+            </FormGroup>
+          )}
+          {!allFieldsReadOnly() && (
+            <ActionGroup>
+              <Button
+                data-testid="save"
+                type="submit"
+                id="save-btn"
+                variant="primary"
+              >
+                {t("save")}
+              </Button>
+              <Button
+                data-testid="cancel"
+                id="cancel-btn"
+                variant="link"
+                onClick={() => reset()}
+              >
+                {t("cancel")}
+              </Button>
+            </ActionGroup>
+          )}
+          {context.environment.features.deleteAccountAllowed && (
+            <ExpandableSection
+              data-testid="delete-account"
+              toggleText={t("deleteAccount")}
             >
-              {t("deleteAccountWarning")}
-            </Alert>
-          </ExpandableSection>
-        )}
-      </Form>
-    </Page>
+              <Alert
+                isInline
+                title={t("deleteAccount")}
+                variant="danger"
+                actionLinks={
+                  <Button
+                    id="delete-account-btn"
+                    variant="danger"
+                    onClick={() =>
+                      context.keycloak.login({
+                        action: "delete_account",
+                      })
+                    }
+                    className="delete-button"
+                  >
+                    {t("delete")}
+                  </Button>
+                }
+              >
+                {t("deleteAccountWarning")}
+              </Alert>
+            </ExpandableSection>
+          )}
+        </Form>
+      </Page>
+    </>
   );
 };
 
