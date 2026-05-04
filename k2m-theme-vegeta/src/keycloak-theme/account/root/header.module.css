@@ -1,0 +1,36 @@
+/**
+ * This file has been claimed for ownership from @keycloakify/keycloak-account-ui version 260007.0.3.
+ * To relinquish ownership and restore this file to its original content, run the following command:
+ *
+ * $ npx keycloakify own --path "account/root/header.module.css" --revert
+ */
+
+.brand {
+  height: 35px;
+}
+
+.tagline {
+  font-size: 0.7rem;
+  color: #8892b4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50vw;
+}
+
+/*
+ * PatternFly's KeycloakMasthead forces alignRight on every toolbarItem,
+ * which adds margin-left:auto. Override the first toolbar item (tagline)
+ * so it sits immediately after the brand logo instead of floating right.
+ */
+:global([data-testid="page-header"]) :global(.pf-v5-c-toolbar__content-section) > :global(.pf-v5-c-toolbar__item:first-child) {
+  margin-left: 0 !important;
+  margin-right: auto;
+}
+
+/* Hide tagline on narrow screens to keep header clean */
+@media (max-width: 992px) {
+  .tagline {
+    display: none;
+  }
+}

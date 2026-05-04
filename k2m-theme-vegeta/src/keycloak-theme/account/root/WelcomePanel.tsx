@@ -3,7 +3,11 @@
  * This is a fresh-owned component (not from keycloakify upstream).
  */
 
+import { useTranslation } from "react-i18next";
+
 export const WelcomePanel = () => {
+  const { t } = useTranslation();
+
   return (
     <div
       style={{
@@ -64,7 +68,7 @@ export const WelcomePanel = () => {
             maxWidth: "360px",
           }}
         >
-          Your unified identity and access management platform. Manage your account, security, and connected applications.
+          {t("headerTagline")}
         </p>
       </div>
 

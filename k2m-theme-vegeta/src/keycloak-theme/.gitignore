@@ -6,6 +6,8 @@
 # account/assets/favicon.svg
 # account/assets/logo.svg
 # account/personal-info/PersonalInfo.tsx
+# account/root/header.module.css
+# account/root/Header.tsx
 # admin/assets/favicon.svg
 # admin/assets/icon.svg
 # admin/assets/logo.svg
@@ -719,8 +721,6 @@
 /account/resources/SharedWith.tsx
 /account/resources/ShareTheResource.tsx
 /account/root/ErrorPage.tsx
-/account/root/header.module.css
-/account/root/Header.tsx
 /account/root/PageNav.tsx
 /account/root/Root.tsx
 /account/utils/formatDate.ts
