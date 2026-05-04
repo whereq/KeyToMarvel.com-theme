@@ -1,8 +1,8 @@
 <!--
- This file has been claimed for ownership from @keycloakify/keycloak-admin-ui version 260007.0.4.
+ This file has been claimed for ownership from @keycloakify/keycloak-account-ui version 260007.0.3.
  To relinquish ownership and restore this file to its original content, run the following command:
 
- $ npx keycloakify own -t "admin/assets/logo.svg" -r
+ $ npx keycloakify own -t "account/assets/logo.svg" -r
 -->
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40">

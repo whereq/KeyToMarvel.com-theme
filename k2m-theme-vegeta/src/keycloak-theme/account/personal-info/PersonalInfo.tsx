@@ -33,7 +33,6 @@ import { ErrorOption, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
 import { VgAvatarUpload } from "../../shared/ui";
-import { WelcomePanel } from "../root/WelcomePanel";
 import {
   getPersonalInfo,
   getSupportedLocales,
@@ -137,7 +136,6 @@ export const PersonalInfo = () => {
 
   return (
     <>
-      <WelcomePanel />
       <Page title={t("personalInfo")} description={t("personalInfoDescription")}>
         <Form isHorizontal onSubmit={handleSubmit(onSubmit)}>
           <UserProfileFields

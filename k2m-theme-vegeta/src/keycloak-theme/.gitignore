@@ -3,6 +3,8 @@
 # === Owned files start ===
 # admin/index.css
 # admin/PageHeader.tsx
+# account/assets/favicon.svg
+# account/assets/logo.svg
 # account/personal-info/PersonalInfo.tsx
 # admin/assets/favicon.svg
 # admin/assets/icon.svg
@@ -672,8 +674,6 @@
 /account/api/request.ts
 /account/applications/Applications.tsx
 /account/assets/content.ts
-/account/assets/favicon.svg
-/account/assets/logo.svg
 /account/content/ContentComponent.tsx
 /account/content/fetchContent.ts
 /account/groups/Groups.tsx

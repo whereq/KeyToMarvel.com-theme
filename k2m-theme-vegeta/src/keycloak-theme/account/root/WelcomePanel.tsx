@@ -3,8 +3,6 @@
  * This is a fresh-owned component (not from keycloakify upstream).
  */
 
-import { BsYinYang } from "react-icons/bs";
-
 export const WelcomePanel = () => {
   return (
     <div
@@ -20,16 +18,25 @@ export const WelcomePanel = () => {
         marginBottom: "8px",
       }}
     >
-      {/* Spinning YinYang */}
-      <BsYinYang
-        size={72}
+      {/* Spinning golden YinYang — matches favicon.svg */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 100 100"
+        width={72}
+        height={72}
         style={{
-          color: "#f59e0b",
           filter: "drop-shadow(0 0 16px #f59e0b55) drop-shadow(0 0 4px #fbbf24)",
           animation: "spin 25s linear infinite",
         }}
         aria-hidden="true"
-      />
+      >
+        <circle cx="50" cy="50" r="50" fill="#0f1120"/>
+        <path d="M50,0 A50,50,0,0,1,50,100 L50,0 Z" fill="#f59e0b"/>
+        <circle cx="50" cy="25" r="25" fill="#f59e0b"/>
+        <circle cx="50" cy="75" r="25" fill="#0f1120"/>
+        <circle cx="50" cy="25" r="10" fill="#0f1120"/>
+        <circle cx="50" cy="75" r="10" fill="#f59e0b"/>
+      </svg>
 
       {/* Title + tagline */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>

@@ -5,7 +5,7 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Key to Marvel</title>
-    <link rel="icon" type="image/png" href="${resourcesPath}/img/favicon.png"/>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%230f1120'/%3E%3Cpath d='M50,0 A50,50,0,0,1,50,100 L50,0 Z' fill='%23f59e0b'/%3E%3Ccircle cx='50' cy='25' r='25' fill='%23f59e0b'/%3E%3Ccircle cx='50' cy='75' r='25' fill='%230f1120'/%3E%3Ccircle cx='50' cy='25' r='10' fill='%230f1120'/%3E%3Ccircle cx='50' cy='75' r='10' fill='%23f59e0b'/%3E%3C/svg%3E"/>
     <style>
         :root {
             --vg-bg-base: #080a12;
@@ -52,40 +52,11 @@
             gap: 32px;
         }
 
-        /* ── YinYang spinner (pure CSS) ── */
+        /* ── YinYang spinner (SVG) ── */
         .yinyang {
-            width: 96px;
-            height: 96px;
-            position: relative;
+            display: inline-block;
             animation: spin 25s linear infinite;
-        }
-
-        .yinyang::before {
-            content: '';
-            position: absolute;
-            width: 96px;
-            height: 96px;
-            border: 18px solid var(--vg-gold);
-            border-bottom-color: transparent;
-            border-left-color: transparent;
-            border-radius: 50%;
-            transform: rotate(45deg);
-            top: 0; left: 0;
-        }
-
-        .yinyang::after {
-            content: '';
-            position: absolute;
-            width: 96px;
-            height: 96px;
-            background: transparent;
-            border-radius: 50%;
-            top: 0; left: 0;
-            box-shadow:
-                48px 0 0 24px #18192e,
-                0 48px 0 24px var(--vg-gold),
-                -48px 0 0 24px #18192e,
-                0 -48px 0 24px var(--vg-gold);
+            filter: drop-shadow(0 0 18px #f59e0b55) drop-shadow(0 0 4px #fbbf24);
         }
 
         @keyframes spin {
@@ -310,7 +281,11 @@
 <div class="split">
     <!-- Left: Brand Panel -->
     <div class="brand-panel">
-        <div class="yinyang" aria-hidden="true"></div>
+        <div class="yinyang" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" fill="#f59e0b" viewBox="0 0 16 16">
+                <path d="M9.167 4.5a1.167 1.167 0 1 1-2.334 0 1.167 1.167 0 0 1 2.334 0M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M1 8a7 7 0 0 1 7-7 3.5 3.5 0 0 1 0 7 3.5 3.5 0 0 0 0 7 7 7 0 0 1-7-7m7 4.667a1.167 1.167 0 1 1 0-2.334 1.167 1.167 0 0 1 0 2.334"/>
+            </svg>
+        </div>
         <div class="brand-text">
             <h1 class="brand-title">Key to Marvel</h1>
             <p class="brand-tagline">
@@ -359,7 +334,7 @@
             </a>
 
             <#if isAuth>
-                <a href="/realms/WhereQ/account/" class="tile acct-btn">
+                <a href="/realms/whereq/account/" class="tile acct-btn">
                     <span class="tile-label">Account</span>
                     <span class="tile-title">Your Account</span>
                     <span class="tile-desc">Personal info, security, and connected apps.</span>
@@ -371,7 +346,7 @@
                     <span class="tile-desc">Forums, mailing lists, and GitHub.</span>
                 </a>
             <#else>
-                <a href="/realms/WhereQ/protocol/openid-connect/auth?client_id=account-console&redirect_uri=/realms/WhereQ/account/&response_type=code&scope=openid"
+                <a href="/realms/whereq/account/"
                    class="tile acct-btn">
                     <span class="tile-label">Login</span>
                     <span class="tile-title">Sign In</span>
@@ -387,7 +362,7 @@
             </div>
 
             <#if !isAuth>
-            <a href="/realms/WhereQ/protocol/openid-connect/auth?client_id=account-console&redirect_uri=/realms/WhereQ/account/&response_type=code&scope=openid"
+            <a href="/realms/whereq/account/"
                class="login-btn">
                 Sign In to Your Account
             </a>
