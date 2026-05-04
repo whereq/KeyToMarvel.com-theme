@@ -1,0 +1,40 @@
+<!--
+ This file has been claimed for ownership from @keycloakify/keycloak-account-ui version 260007.0.3.
+ To relinquish ownership and restore this file to its original content, run the following command:
+
+ $ npx keycloakify own -t "account/assets/logo.svg" -r
+-->
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40">
+  <defs>
+    <linearGradient id="k2m-text-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Spinning golden YinYang -->
+  <g transform="translate(18, 20)">
+    <!-- Gold outline for visibility on dark header backgrounds -->
+    <circle cx="0" cy="0" r="15" fill="none" stroke="#f59e0b" stroke-width="0.8" opacity="0.45"/>
+    <g>
+      <!-- Dark base -->
+      <circle cx="0" cy="0" r="14" fill="#0f1120"/>
+      <!-- Gold right semicircle -->
+      <path d="M0,-14 A14,14 0 0,1 0,14 L0,-14 Z" fill="#f59e0b"/>
+      <!-- Gold top head -->
+      <circle cx="0" cy="-7" r="7" fill="#f59e0b"/>
+      <!-- Dark bottom head -->
+      <circle cx="0" cy="7" r="7" fill="#0f1120"/>
+      <!-- Dark eye in gold area -->
+      <circle cx="0" cy="-7" r="2.8" fill="#0f1120"/>
+      <!-- Gold eye in dark area -->
+      <circle cx="0" cy="7" r="2.8" fill="#f59e0b"/>
+      <!-- SMIL slow spin -->
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="25s" repeatCount="indefinite"/>
+    </g>
+  </g>
+
+  <!-- "Key to Marvel" gradient text -->
+  <text x="40" y="26" font-family="'Segoe UI', system-ui, -apple-system, sans-serif" font-size="20" font-weight="700" letter-spacing="-0.5" fill="url(#k2m-text-grad)">Key to Marvel</text>
+</svg>
