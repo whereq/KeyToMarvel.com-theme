@@ -17,8 +17,8 @@
             --vg-gold: #f5c518;
             --vg-text: #eeeffe;
             --vg-muted: #8892b4;
-            --vg-radius-sm: 6px;
-            --vg-radius-md: 10px;
+            --vg-radius-sm: 2px;
+            --vg-radius-md: 4px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -231,22 +231,27 @@
         .tile.acct-btn  { border-top-color: var(--vg-purple); }
         .tile.acct-btn  .tile-label { color: var(--vg-purple); }
 
+        .tile.community   { border-top-color: #2ed573; }
+        .tile.community   .tile-label { color: #2ed573; }
+
         .login-btn {
             display: block;
             width: 100%;
             padding: 14px;
-            background: var(--vg-cyan);
-            color: #080a12;
+            background: #252a45;
+            color: var(--vg-text);
             font-size: 0.9rem;
             font-weight: 700;
             text-align: center;
             text-decoration: none;
+            border: 1px solid var(--vg-purple);
             border-radius: var(--vg-radius-sm);
-            transition: background 150ms ease, transform 80ms ease;
+            transition: background 150ms ease, border-color 150ms ease, transform 80ms ease;
         }
 
         .login-btn:hover {
-            background: #33d9f0;
+            background: #2e3455;
+            border-color: #8b7bfb;
             transform: translateY(-1px);
         }
 
@@ -340,7 +345,7 @@
                     <span class="tile-desc">Personal info, security, and connected apps.</span>
                 </a>
                 <a href="${properties.communityUrl!'https://www.keycloak.org/community'}"
-                   class="tile" target="_blank" rel="noopener noreferrer">
+                   class="tile community" target="_blank" rel="noopener noreferrer">
                     <span class="tile-label">Community</span>
                     <span class="tile-title">Community</span>
                     <span class="tile-desc">Forums, mailing lists, and GitHub.</span>
@@ -353,7 +358,7 @@
                     <span class="tile-desc">Access your account and manage your identity.</span>
                 </a>
                 <a href="${properties.communityUrl!'https://www.keycloak.org/community'}"
-                   class="tile" target="_blank" rel="noopener noreferrer">
+                   class="tile community" target="_blank" rel="noopener noreferrer">
                     <span class="tile-label">Community</span>
                     <span class="tile-title">Community</span>
                     <span class="tile-desc">Forums, mailing lists, and GitHub.</span>
