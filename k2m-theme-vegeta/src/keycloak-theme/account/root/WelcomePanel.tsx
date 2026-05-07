@@ -4,6 +4,7 @@
  */
 
 import { useTranslation } from "react-i18next";
+import { VgYinYangIcon } from "@keycloak-theme/shared/ui";
 
 export const WelcomePanel = () => {
   const { t } = useTranslation();
@@ -22,25 +23,11 @@ export const WelcomePanel = () => {
         marginBottom: "8px",
       }}
     >
-      {/* Spinning golden YinYang — matches favicon.svg */}
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 100 100"
-        width={72}
-        height={72}
-        style={{
-          filter: "drop-shadow(0 0 16px #f59e0b55) drop-shadow(0 0 4px #fbbf24)",
-          animation: "spin 25s linear infinite",
-        }}
-        aria-hidden="true"
-      >
-        <circle cx="50" cy="50" r="50" fill="#0f1120"/>
-        <path d="M50,0 A50,50,0,0,1,50,100 L50,0 Z" fill="#f59e0b"/>
-        <circle cx="50" cy="25" r="25" fill="#f59e0b"/>
-        <circle cx="50" cy="75" r="25" fill="#0f1120"/>
-        <circle cx="50" cy="25" r="10" fill="#0f1120"/>
-        <circle cx="50" cy="75" r="10" fill="#f59e0b"/>
-      </svg>
+      <VgYinYangIcon
+        size={72}
+        spinning
+        style={{ filter: "drop-shadow(0 0 16px #f59e0b55) drop-shadow(0 0 4px #fbbf24)" }}
+      />
 
       {/* Title + tagline */}
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -72,13 +59,6 @@ export const WelcomePanel = () => {
         </p>
       </div>
 
-      {/* CSS for spin animation */}
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to   { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };
