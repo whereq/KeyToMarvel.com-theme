@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BsYinYang } from "react-icons/bs";
+import { VgYinYangIcon } from "@keycloak-theme/shared/ui";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
 import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import type { KcContext } from "@keycloak-theme/layout/KcContext";
@@ -30,14 +30,10 @@ function BrandPanel({ i18n }: { i18n: I18n }) {
             }}
         >
             {/* Slow-spinning YinYang */}
-            <BsYinYang
+            <VgYinYangIcon
                 size={96}
-                style={{
-                    color: "#f59e0b",
-                    filter: "drop-shadow(0 0 18px #f59e0b55) drop-shadow(0 0 4px #fbbf24)",
-                    animation: "spin 25s linear infinite",
-                }}
-                aria-hidden="true"
+                spinning
+                style={{ filter: "drop-shadow(0 0 18px #f59e0b55) drop-shadow(0 0 4px #fbbf24)" }}
             />
 
             {/* Title + tagline */}

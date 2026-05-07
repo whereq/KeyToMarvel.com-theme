@@ -33,3 +33,5 @@ export type { VgSocialButtonProps } from "./SocialButton";
 
 export { VgAvatarUpload } from "./AvatarUpload";
 export type { VgAvatarUploadProps } from "./AvatarUpload";
+
+export { VgYinYangIcon } from "./YinYangIcon";

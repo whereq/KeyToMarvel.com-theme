@@ -1,4 +1,4 @@
-import { BsYinYang } from "react-icons/bs";
+import { VgYinYangIcon } from "@keycloak-theme/shared/ui";
 import type { KcContext } from "./KcContext";
 import type { I18n } from "./i18n";
 import type { KcClsx } from "keycloakify/login/lib/kcClsx";
@@ -47,13 +47,9 @@ export default function Header({ kcContext: _kcContext, i18n }: HeaderProps) {
             <div className="h-full flex items-center justify-between px-6">
                 {/* Brand */}
                 <div className="flex items-center gap-3">
-                    <BsYinYang
+                    <VgYinYangIcon
                         size={26}
-                        style={{
-                            color: "#f59e0b",
-                            filter: "drop-shadow(0 0 4px #f59e0b99) drop-shadow(0 0 1px #fbbf24)",
-                        }}
-                        aria-hidden="true"
+                        style={{ filter: "drop-shadow(0 0 4px #f59e0b99) drop-shadow(0 0 1px #fbbf24)" }}
                     />
                     <span
                         className="text-sm font-semibold uppercase tracking-[0.15em]"

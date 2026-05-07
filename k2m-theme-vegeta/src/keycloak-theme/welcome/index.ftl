@@ -52,9 +52,11 @@
             gap: 32px;
         }
 
-        /* ── YinYang spinner (SVG) ── */
+        /* ── YinYang spinner (same detailed SVG as admin logo) ── */
         .yinyang {
             display: inline-block;
+            width: 96px;
+            height: 96px;
             animation: spin 25s linear infinite;
             filter: drop-shadow(0 0 18px #f59e0b55) drop-shadow(0 0 4px #fbbf24);
         }
@@ -287,9 +289,28 @@
     <!-- Left: Brand Panel -->
     <div class="brand-panel">
         <div class="yinyang" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" fill="#f59e0b" viewBox="0 0 16 16">
-                <path d="M9.167 4.5a1.167 1.167 0 1 1-2.334 0 1.167 1.167 0 0 1 2.334 0M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0M1 8a7 7 0 0 1 7-7 3.5 3.5 0 0 1 0 7 3.5 3.5 0 0 0 0 7 7 7 0 0 1-7-7m7 4.667a1.167 1.167 0 1 1 0-2.334 1.167 1.167 0 0 1 0 2.334"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 40" width="96" height="96">
+  <defs>
+    <linearGradient id="k2m-text-grad-w" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Spinning golden YinYang (same design as admin logo.svg) -->
+  <g transform="translate(18, 20)">
+    <circle cx="0" cy="0" r="15" fill="none" stroke="#f59e0b" stroke-width="0.8" opacity="0.45"/>
+    <g>
+      <circle cx="0" cy="0" r="14" fill="#0f1120"/>
+      <path d="M0,-14 A14,14 0 0,1 0,14 L0,-14 Z" fill="#f59e0b"/>
+      <circle cx="0" cy="-7" r="7" fill="#f59e0b"/>
+      <circle cx="0" cy="7" r="7" fill="#0f1120"/>
+      <circle cx="0" cy="-7" r="2.8" fill="#0f1120"/>
+      <circle cx="0" cy="7" r="2.8" fill="#f59e0b"/>
+      <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="25s" repeatCount="indefinite"/>
+    </g>
+  </g>
+</svg>
         </div>
         <div class="brand-text">
             <h1 class="brand-title">Key to Marvel</h1>
