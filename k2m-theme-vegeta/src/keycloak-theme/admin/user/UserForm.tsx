@@ -20,7 +20,7 @@ import {
   TextControl,
   UserProfileFields,
 } from "../../shared/keycloak-ui-shared";
-import { BsEmojiSmile } from "react-icons/bs";
+import { RxAvatar } from "react-icons/rx";
 import {
   AlertVariant,
   Button,
@@ -263,9 +263,9 @@ export const UserForm = ({
                 label={t("profile.attributes.avatar")}
                 fieldId="avatar"
               >
-                <BsEmojiSmile
+                <RxAvatar
                   size={48}
-                  color="#FFD700"
+                  color="var(--pf-v5-global--Color--200, #8a8d90)"
                   aria-label="Default avatar"
                 />
               </FormGroup>
