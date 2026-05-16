@@ -1,0 +1,131 @@
+/**
+ * template.css — FlowDesk Keycloak theme layout overrides.
+ *
+ * doUseDefaultCss=false so this is minimal.
+ * All primary styling via CSS custom properties and Tailwind.
+ */
+
+/* KC error message class */
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--fd-error);
+}
+
+/* Prevent white flash on body */
+.kcBodyClass {
+    background-color: var(--fd-bg-base) !important;
+    color: var(--fd-text-primary) !important;
+}
+
+/* Recaptcha container */
+.g-recaptcha {
+    transform-origin: left top;
+}
+
+/* ── Split layout (two-column: brand | card) ── */
+#fd-main.fd-split {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    padding-top: 48px;   /* header height */
+    padding-bottom: 40px; /* footer height */
+    overflow: hidden;
+}
+
+.fd-split-brand {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 64px;
+    border-right: 2px solid var(--fd-border-chrome);
+    background: linear-gradient(
+        160deg,
+        var(--fd-bg-base) 0%,
+        rgba(0, 120, 212, 0.04) 50%,
+        var(--fd-bg-base) 100%
+    );
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle grid overlay on brand panel */
+.fd-split-brand::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--fd-border-subtle) 1px, transparent 1px),
+        linear-gradient(90deg, var(--fd-border-subtle) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+.fd-split-card-wrap {
+    flex: 0 0 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 40px;
+    overflow-y: auto;
+}
+
+/* ── Responsive: tablet (768 – 1023 px) ── */
+@media (max-width: 1023px) {
+    .fd-split-brand {
+        padding: 32px 40px;
+    }
+
+    .fd-split-card-wrap {
+        flex: 0 0 420px;
+        padding: 24px 28px;
+    }
+}
+
+/* ── Responsive: mobile (< 768 px) ── */
+@media (max-width: 767px) {
+    #fd-root > #fd-main:not(.fd-split) {
+        padding: 64px 16px 48px !important;
+        align-items: stretch;
+    }
+
+    #fd-root > #fd-main:not(.fd-split) > #fd-login-card {
+        max-width: 100% !important;
+    }
+
+    #fd-main.fd-split {
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-top: 48px;
+        padding-bottom: 0;
+        align-items: stretch;
+    }
+
+    .fd-split-brand {
+        display: none;
+    }
+
+    .fd-split-card-wrap {
+        flex: none;
+        width: 100%;
+        padding: 20px 16px 40px;
+        overflow-y: visible;
+        justify-content: center;
+    }
+
+    #fd-login-card {
+        max-width: 100% !important;
+    }
+
+    #fd-card-header {
+        padding: 20px 20px 0 !important;
+    }
+
+    #fd-card-body {
+        padding: 16px 20px 24px !important;
+    }
+}

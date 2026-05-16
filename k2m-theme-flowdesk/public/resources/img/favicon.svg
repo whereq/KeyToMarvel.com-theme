@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40" role="img" aria-label="FlowDesk logo">
+  <rect width="40" height="40" fill="#0d0d0d"/>
+  <!-- F letterform -->
+  <rect x="8" y="7" width="4" height="26" fill="#0078d4"/>
+  <rect x="8" y="7" width="17" height="4" fill="#0078d4"/>
+  <rect x="8" y="17" width="13" height="4" fill="#0078d4"/>
+  <!-- Data flow curves (cyan accent) -->
+  <path d="M12 34 Q20 28 26 30 Q32 32 36 26" stroke="#00bcf2" stroke-width="1.5" stroke-linecap="square" fill="none" opacity="0.85"/>
+  <path d="M12 37 Q22 32 30 34 Q36 36 38 31" stroke="#00bcf2" stroke-width="1" stroke-linecap="square" fill="none" opacity="0.4"/>
+  <!-- Data node dot -->
+  <circle cx="26" cy="30" r="1.5" fill="#00bcf2" opacity="0.9"/>
+</svg>
