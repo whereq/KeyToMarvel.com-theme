@@ -198,13 +198,13 @@ function CandlestickChart() {
     );
 }
 
-/* ── Market ticker row ── */
+/* ── Market ticker row — 2×2 grid ── */
 function MarketTicker() {
     return (
         <div
             style={{
-                display: "flex",
-                flexDirection: "column",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
                 gap: "2px",
                 width: "100%",
             }}
@@ -228,32 +228,31 @@ function MarketTicker() {
                             color: "var(--fd-text-primary)",
                             fontFamily: "var(--fd-font-mono)",
                             letterSpacing: "0.05em",
-                            minWidth: "48px",
                         }}
                     >
                         {symbol}
                     </span>
-                    <span
-                        style={{
-                            fontSize: "0.75rem",
-                            color: "var(--fd-text-secondary)",
-                            fontFamily: "var(--fd-font-mono)",
-                        }}
-                    >
-                        ${price}
-                    </span>
-                    <span
-                        style={{
-                            fontSize: "0.72rem",
-                            fontWeight: 600,
-                            color: up ? "var(--fd-stock-green)" : "var(--fd-stock-red)",
-                            fontFamily: "var(--fd-font-mono)",
-                            minWidth: "52px",
-                            textAlign: "right",
-                        }}
-                    >
-                        {change}
-                    </span>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "1px" }}>
+                        <span
+                            style={{
+                                fontSize: "0.72rem",
+                                color: "var(--fd-text-secondary)",
+                                fontFamily: "var(--fd-font-mono)",
+                            }}
+                        >
+                            ${price}
+                        </span>
+                        <span
+                            style={{
+                                fontSize: "0.68rem",
+                                fontWeight: 600,
+                                color: up ? "var(--fd-stock-green)" : "var(--fd-stock-red)",
+                                fontFamily: "var(--fd-font-mono)",
+                            }}
+                        >
+                            {change}
+                        </span>
+                    </div>
                 </div>
             ))}
         </div>
@@ -274,25 +273,24 @@ function BrandPanel({ i18n }: { i18n: I18n }) {
             style={{
                 display: "flex",
                 flexDirection: "column",
-                alignItems: "center",
-                gap: "28px",
-                maxWidth: "400px",
+                alignItems: "flex-start",
+                gap: "20px",
                 width: "100%",
                 position: "relative",
                 zIndex: 1,
             }}
         >
-            {/* Logo + name */}
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
-                <FlowDeskLogo size={72} showBackground={false} />
-                <div style={{ textAlign: "center" }}>
+            {/* Logo + name: horizontal wordmark */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                    <FlowDeskLogo size={48} showBackground={false} />
                     <h2
                         style={{
-                            margin: "0 0 6px",
+                            margin: 0,
                             fontSize: "2rem",
                             fontWeight: 700,
                             letterSpacing: "-0.02em",
-                            lineHeight: 1.1,
+                            lineHeight: 1,
                             background: "linear-gradient(90deg, #0078d4 0%, #00bcf2 100%)",
                             WebkitBackgroundClip: "text",
                             WebkitTextFillColor: "transparent",
@@ -301,25 +299,25 @@ function BrandPanel({ i18n }: { i18n: I18n }) {
                     >
                         FlowDesk
                     </h2>
-                    <p
-                        style={{
-                            margin: 0,
-                            fontSize: "0.85rem",
-                            color: "var(--fd-text-secondary)",
-                            lineHeight: 1.5,
-                            maxWidth: "280px",
-                        }}
-                    >
-                        {msgStr("brandTagline")}
-                    </p>
                 </div>
+                <p
+                    style={{
+                        margin: 0,
+                        fontSize: "0.9rem",
+                        color: "var(--fd-text-secondary)",
+                        lineHeight: 1.4,
+                        whiteSpace: "nowrap",
+                    }}
+                >
+                    {msgStr("brandTagline")}
+                </p>
             </div>
 
             {/* Line chart */}
             <div
                 style={{
                     width: "100%",
-                    padding: "14px 16px 10px",
+                    padding: "12px 14px 8px",
                     background: "rgba(0, 120, 212, 0.04)",
                     border: "1px solid var(--fd-border-subtle)",
                     borderTop: "2px solid var(--fd-blue-500)",
@@ -332,7 +330,7 @@ function BrandPanel({ i18n }: { i18n: I18n }) {
             <div
                 style={{
                     width: "100%",
-                    padding: "10px 16px 8px",
+                    padding: "8px 14px 6px",
                     background: "var(--fd-bg-elevated)",
                     border: "1px solid var(--fd-border-subtle)",
                 }}

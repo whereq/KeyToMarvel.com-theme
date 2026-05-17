@@ -16,7 +16,6 @@ export default function Footer() {
             }}
         >
             <p className="text-xs" style={{ color: "var(--fd-text-muted)", margin: 0 }}>
-                &copy; {year}{" "}
                 <a
                     href="https://flowdesk.top"
                     target="_blank"
@@ -27,11 +26,10 @@ export default function Footer() {
                 >
                     FlowDesk
                 </a>
-                {" "}— Real-time Stock Data
+                {" "}— Deep Stock Analysis · Powered by AI
             </p>
             <p className="text-xs" style={{ color: "var(--fd-text-muted)", margin: 0 }}>
-                Powered by{" "}
-                <span style={{ color: "var(--fd-border-chrome)" }}>KeyToMarvel</span>
+                &copy; {year} FlowDesk.top. All rights reserved.
             </p>
         </footer>
     );
