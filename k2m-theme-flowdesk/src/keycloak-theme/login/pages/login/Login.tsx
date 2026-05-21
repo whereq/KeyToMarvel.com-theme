@@ -56,66 +56,83 @@ function StockSparkline() {
                 </span>
             </div>
 
-            <svg
-                viewBox="0 0 300 100"
-                width="100%"
-                height="80"
-                preserveAspectRatio="none"
-                style={{ display: "block", overflow: "visible" }}
-            >
-                <defs>
-                    <linearGradient id="fd-area-grad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#0078d4" stopOpacity="0.18" />
-                        <stop offset="100%" stopColor="#0078d4" stopOpacity="0" />
-                    </linearGradient>
-                    {/* Grid line pattern */}
-                    <pattern id="fd-grid" x="0" y="0" width="60" height="25" patternUnits="userSpaceOnUse">
-                        <line x1="0" y1="0" x2="0" y2="100" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-                    </pattern>
-                </defs>
+            {/* Relative wrapper so CSS dot overlay can be positioned over the SVG */}
+            <div style={{ position: "relative", width: "100%" }}>
+                <svg
+                    viewBox="0 0 300 100"
+                    width="100%"
+                    height="80"
+                    preserveAspectRatio="none"
+                    style={{ display: "block", overflow: "visible" }}
+                >
+                    <defs>
+                        <linearGradient id="fd-area-grad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#0078d4" stopOpacity="0.18" />
+                            <stop offset="100%" stopColor="#0078d4" stopOpacity="0" />
+                        </linearGradient>
+                        {/* Grid line pattern */}
+                        <pattern id="fd-grid" x="0" y="0" width="60" height="25" patternUnits="userSpaceOnUse">
+                            <line x1="0" y1="0" x2="0" y2="100" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
+                        </pattern>
+                    </defs>
 
-                {/* Horizontal grid lines */}
-                <line x1="0" y1="25" x2="300" y2="25" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-                <line x1="0" y1="50" x2="300" y2="50" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-                <line x1="0" y1="75" x2="300" y2="75" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
+                    {/* Horizontal grid lines */}
+                    <line x1="0" y1="25" x2="300" y2="25" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
+                    <line x1="0" y1="50" x2="300" y2="50" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
+                    <line x1="0" y1="75" x2="300" y2="75" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
 
-                {/* Area fill */}
-                <path d={areaPath} fill="url(#fd-area-grad)" />
+                    {/* Area fill */}
+                    <path d={areaPath} fill="url(#fd-area-grad)" />
 
-                {/* Price line — animated draw-in */}
-                <path
-                    d={linePath}
-                    stroke="#0078d4"
-                    strokeWidth="1.5"
-                    fill="none"
-                    strokeLinecap="square"
-                    style={{
-                        strokeDasharray: "800",
-                        strokeDashoffset: "800",
-                        animation: "fd-draw-line 2s ease-out 0.3s forwards",
-                    }}
-                />
+                    {/* Price line — animated draw-in */}
+                    <path
+                        d={linePath}
+                        stroke="#0078d4"
+                        strokeWidth="1.5"
+                        fill="none"
+                        strokeLinecap="square"
+                        style={{
+                            strokeDasharray: "800",
+                            strokeDashoffset: "800",
+                            animation: "fd-draw-line 2s ease-out 0.3s forwards",
+                        }}
+                    />
+                </svg>
 
-                {/* Cyan highlight on the last point */}
-                <circle
-                    cx="300"
-                    cy="10"
-                    r="2.5"
-                    fill="#00bcf2"
-                    style={{ animation: "fd-fade-in 0.3s ease 2.2s both" }}
-                />
+                {/*
+                  * Endpoint dot + pulse ring are rendered as CSS elements outside the
+                  * preserveAspectRatio="none" SVG to prevent circle distortion.
+                  *
+                  * The last data point is at viewBox (300, 10) → screen (100%, 10% of 80px = 8px).
+                  * `right: 0; top: 8px; transform: translate(50%, -50%)` centers each element there.
+                  */}
+                {/* Cyan dot — outer div positions, inner div animates (avoids transform conflict) */}
+                <div style={{ position: "absolute", right: 0, top: "8px", transform: "translate(50%, -50%)", pointerEvents: "none" }}>
+                    <div
+                        style={{
+                            width: "5px",
+                            height: "5px",
+                            borderRadius: "50%",
+                            background: "#00bcf2",
+                            animation: "fd-fade-in 0.3s ease 2.2s both",
+                            opacity: 0,
+                        }}
+                    />
+                </div>
                 {/* Pulse ring */}
-                <circle
-                    cx="300"
-                    cy="10"
-                    r="5"
-                    fill="none"
-                    stroke="#00bcf2"
-                    strokeWidth="1"
-                    opacity="0.4"
-                    style={{ animation: "fd-fade-in 0.3s ease 2.2s both" }}
-                />
-            </svg>
+                <div style={{ position: "absolute", right: 0, top: "8px", transform: "translate(50%, -50%)", pointerEvents: "none" }}>
+                    <div
+                        style={{
+                            width: "10px",
+                            height: "10px",
+                            borderRadius: "50%",
+                            border: "1px solid #00bcf2",
+                            opacity: 0,
+                            animation: "fd-fade-in 0.3s ease 2.2s both",
+                        }}
+                    />
+                </div>
+            </div>
 
             {/* Time axis labels */}
             <div

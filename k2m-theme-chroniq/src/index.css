@@ -1,0 +1,248 @@
+/* ==========================================================================
+   K2M Chroniq Theme — Google Fonts
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+@import "tailwindcss";
+
+/* ==========================================================================
+   K2M Chroniq Theme — Design Token System
+   Metro Dark / Light UI — Time & Calendar Intelligence
+   Color identity: Chroniq accent blue + Metro xs radii
+   ========================================================================== */
+
+/* ── DARK (default) ── */
+:root,
+[data-theme="dark"] {
+    --cq-bg: #0B0B0E;
+    --cq-surface: #131318;
+    --cq-surface-2: #1A1A20;
+    --cq-border: #2A2A33;
+    --cq-border-strong: #3A3A45;
+    --cq-text: #F2F2F5;
+    --cq-text-2: #C6C6CC;
+    --cq-muted: #8A8A95;
+    --cq-accent: #0091FF;
+    --cq-accent-ink: #FFFFFF;
+
+    /* Status */
+    --cq-error: #ef4444;
+    --cq-error-bg: rgba(239, 68, 68, 0.10);
+    --cq-error-border: rgba(239, 68, 68, 0.30);
+    --cq-success: #10b981;
+    --cq-success-bg: rgba(16, 185, 129, 0.10);
+    --cq-success-border: rgba(16, 185, 129, 0.30);
+    --cq-warning: #f59e0b;
+    --cq-warning-bg: rgba(245, 158, 11, 0.10);
+    --cq-warning-border: rgba(245, 158, 11, 0.30);
+    --cq-info: #0091FF;
+    --cq-info-bg: rgba(0, 145, 255, 0.10);
+    --cq-info-border: rgba(0, 145, 255, 0.30);
+
+    /* Input / card surface aliases */
+    --cq-bg-card: var(--cq-surface);
+    --cq-bg-elevated: var(--cq-surface-2);
+    --cq-border-focus: var(--cq-accent);
+}
+
+/* ── LIGHT ── */
+[data-theme="light"] {
+    --cq-bg: #F4F4F6;
+    --cq-surface: #FFFFFF;
+    --cq-surface-2: #FAFAFB;
+    --cq-border: #E2E2E6;
+    --cq-border-strong: #C8C8CE;
+    --cq-text: #15151A;
+    --cq-text-2: #3A3A44;
+    --cq-muted: #6B6B75;
+    --cq-accent: #006FCC;
+    --cq-accent-ink: #FFFFFF;
+
+    /* Status */
+    --cq-error: #dc2626;
+    --cq-error-bg: rgba(220, 38, 38, 0.07);
+    --cq-error-border: rgba(220, 38, 38, 0.25);
+    --cq-success: #059669;
+    --cq-success-bg: rgba(5, 150, 105, 0.07);
+    --cq-success-border: rgba(5, 150, 105, 0.25);
+    --cq-warning: #d97706;
+    --cq-warning-bg: rgba(217, 119, 6, 0.07);
+    --cq-warning-border: rgba(217, 119, 6, 0.25);
+    --cq-info: #006FCC;
+    --cq-info-bg: rgba(0, 111, 204, 0.07);
+    --cq-info-border: rgba(0, 111, 204, 0.25);
+
+    --cq-bg-card: var(--cq-surface);
+    --cq-bg-elevated: var(--cq-surface-2);
+    --cq-border-focus: var(--cq-accent);
+}
+
+/* ── Accent tile palette ── */
+:root {
+    --cq-tile-blue: #0091FF;
+    --cq-tile-amber: #FFB400;
+    --cq-tile-emerald: #10B981;
+    --cq-tile-coral: #FF5A4E;
+
+    /* Fonts */
+    --cq-font-display: "Space Grotesk", -apple-system, sans-serif;
+    --cq-font-body: "Geist", "Inter Tight", -apple-system, sans-serif;
+    --cq-font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+    /* Radii — xs Metro */
+    --cq-r-xs: 2px;
+    --cq-r-sm: 4px;
+
+    /* Transitions */
+    --cq-transition-fast: 100ms ease;
+    --cq-transition-normal: 200ms ease;
+
+    /* Z-index layers */
+    --cq-z-base: 0;
+    --cq-z-raised: 100;
+    --cq-z-overlay: 200;
+    --cq-z-modal: 300;
+}
+
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--cq-font-body);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--cq-text);
+    background-color: var(--cq-bg);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 Theme Extension
+   ========================================================================== */
+
+@theme {
+    --color-cq-bg: #0B0B0E;
+    --color-cq-surface: #131318;
+    --color-cq-surface-2: #1A1A20;
+    --color-cq-border: #2A2A33;
+    --color-cq-accent: #0091FF;
+    --color-cq-text: #F2F2F5;
+    --color-cq-muted: #8A8A95;
+    --color-cq-error: #ef4444;
+    --color-cq-success: #10b981;
+    --color-cq-warning: #f59e0b;
+    --color-cq-info: #0091FF;
+
+    --font-display: "Space Grotesk", -apple-system, sans-serif;
+    --font-body: "Geist", "Inter Tight", -apple-system, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* ==========================================================================
+   Scrollbar Styling — thin amber
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--cq-surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--cq-border-strong);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cq-tile-amber);
+}
+
+/* ==========================================================================
+   Focus Visible
+   ========================================================================== */
+
+:focus-visible {
+    outline: 2px solid var(--cq-border-focus);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+    background-color: rgba(0, 145, 255, 0.25);
+    color: var(--cq-text);
+}
+
+/* ==========================================================================
+   Prose
+   ========================================================================== */
+
+a {
+    color: var(--cq-accent);
+    text-decoration: none;
+    transition: color var(--cq-transition-fast);
+}
+
+a:hover {
+    color: var(--cq-accent);
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+code, pre {
+    font-family: var(--cq-font-mono);
+}
+
+/* ==========================================================================
+   Chroniq Animations
+   ========================================================================== */
+
+@keyframes cq-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+
+@keyframes cq-pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+@keyframes cq-bob {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes cq-logo-shake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-5deg); }
+    40% { transform: rotate(5deg); }
+    60% { transform: rotate(-3deg); }
+    80% { transform: rotate(3deg); }
+}
+
+@keyframes cq-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cq-dash-tail {
+    0% { stroke-dashoffset: 20; }
+    100% { stroke-dashoffset: 0; }
+}
