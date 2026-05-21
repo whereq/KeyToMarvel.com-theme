@@ -1,0 +1,138 @@
+// i18nBuilder lives in login/i18n.ts so Keycloakify's build scanner can find it.
+import { i18nBuilder } from "keycloakify/login";
+import type { ThemeName } from "@keycloak-theme/kc.gen";
+
+/** @see: https://docs.keycloakify.dev/features/i18n */
+const { useI18n, ofTypeI18n } = i18nBuilder
+    .withThemeName<ThemeName>()
+    .withCustomTranslations({
+        en: {
+            continueWith: "Continue with {0}",
+            or: "or",
+            // Brand panel
+            brandEyebrow: "chroniq.cc · Single sign-on · OIDC",
+            brandHeadline: "Time, in the right hands.",
+            brandSub: "Your unified identity for calendars, holidays, and global time.",
+            brandBullet1: "Local & global holidays",
+            brandBullet2: "Weather, lunar & daily reading",
+            brandBullet3: "Eight languages, forty countries",
+            // Clock widget
+            pulseNow: "RIGHT NOW",
+            // Social
+            continueWithGoogle: "Continue with Google",
+            continueWithWeChat: "Continue with WeChat",
+            // Auth
+            forgotPassword: "Forgot password?",
+            backToApp: "Back to app",
+            // Footer
+            footerStatus: "All systems operational",
+            footerCopyright: "© 2026 chroniq.cc · All rights reserved.",
+        },
+        "zh-CN": {
+            continueWith: "使用 {0} 登录",
+            or: "或",
+            brandEyebrow: "chroniq.cc · 单点登录 · OIDC",
+            brandHeadline: "时间，掌握在对的手中。",
+            brandSub: "您的统一身份，连接日历、节假日与全球时区。",
+            brandBullet1: "本地与全球节假日",
+            brandBullet2: "天气、农历与每日解读",
+            brandBullet3: "八种语言，四十个国家",
+            pulseNow: "当前时间",
+            continueWithGoogle: "使用 Google 登录",
+            continueWithWeChat: "使用微信登录",
+            forgotPassword: "忘记密码？",
+            backToApp: "返回应用",
+            footerStatus: "所有系统运行正常",
+            footerCopyright: "© 2026 chroniq.cc · 保留所有权利。",
+        },
+        ja: {
+            continueWith: "{0} で続ける",
+            or: "または",
+            brandEyebrow: "chroniq.cc · シングルサインオン · OIDC",
+            brandHeadline: "時間を、正しい手に。",
+            brandSub: "カレンダー・祝日・世界時間を一元管理するあなたのID。",
+            brandBullet1: "国内外の祝日",
+            brandBullet2: "天気・旧暦・毎日の読み物",
+            brandBullet3: "8言語、40カ国対応",
+            pulseNow: "現在時刻",
+            continueWithGoogle: "Googleで続ける",
+            continueWithWeChat: "WeChatで続ける",
+            forgotPassword: "パスワードを忘れた方",
+            backToApp: "アプリに戻る",
+            footerStatus: "すべてのシステムが正常稼働中",
+            footerCopyright: "© 2026 chroniq.cc · 無断転載を禁じます。",
+        },
+        de: {
+            continueWith: "Weiter mit {0}",
+            or: "oder",
+            brandEyebrow: "chroniq.cc · Single Sign-On · OIDC",
+            brandHeadline: "Zeit, in den richtigen Händen.",
+            brandSub: "Ihre einheitliche Identität für Kalender, Feiertage und Weltzeit.",
+            brandBullet1: "Lokale & globale Feiertage",
+            brandBullet2: "Wetter, Mondkalender & Tageslesung",
+            brandBullet3: "Acht Sprachen, vierzig Länder",
+            pulseNow: "JETZT",
+            continueWithGoogle: "Mit Google fortfahren",
+            continueWithWeChat: "Mit WeChat fortfahren",
+            forgotPassword: "Passwort vergessen?",
+            backToApp: "Zurück zur App",
+            footerStatus: "Alle Systeme betriebsbereit",
+            footerCopyright: "© 2026 chroniq.cc · Alle Rechte vorbehalten.",
+        },
+        es: {
+            continueWith: "Continuar con {0}",
+            or: "o",
+            brandEyebrow: "chroniq.cc · Inicio de sesión único · OIDC",
+            brandHeadline: "El tiempo, en las manos correctas.",
+            brandSub: "Tu identidad unificada para calendarios, festivos y hora mundial.",
+            brandBullet1: "Festivos locales y globales",
+            brandBullet2: "Clima, lunar y lectura diaria",
+            brandBullet3: "Ocho idiomas, cuarenta países",
+            pulseNow: "AHORA",
+            continueWithGoogle: "Continuar con Google",
+            continueWithWeChat: "Continuar con WeChat",
+            forgotPassword: "¿Olvidaste tu contraseña?",
+            backToApp: "Volver a la app",
+            footerStatus: "Todos los sistemas operativos",
+            footerCopyright: "© 2026 chroniq.cc · Todos los derechos reservados.",
+        },
+        it: {
+            continueWith: "Continua con {0}",
+            or: "oppure",
+            brandEyebrow: "chroniq.cc · Accesso singolo · OIDC",
+            brandHeadline: "Il tempo, nelle mani giuste.",
+            brandSub: "La tua identità unificata per calendari, festività e ora mondiale.",
+            brandBullet1: "Festività locali e globali",
+            brandBullet2: "Meteo, lunare e lettura quotidiana",
+            brandBullet3: "Otto lingue, quaranta paesi",
+            pulseNow: "ORA",
+            continueWithGoogle: "Continua con Google",
+            continueWithWeChat: "Continua con WeChat",
+            forgotPassword: "Password dimenticata?",
+            backToApp: "Torna all'app",
+            footerStatus: "Tutti i sistemi operativi",
+            footerCopyright: "© 2026 chroniq.cc · Tutti i diritti riservati.",
+        },
+        fr: {
+            continueWith: "Continuer avec {0}",
+            or: "ou",
+            brandEyebrow: "chroniq.cc · Authentification unique · OIDC",
+            brandHeadline: "Le temps, entre de bonnes mains.",
+            brandSub: "Votre identité unifiée pour calendriers, jours fériés et heure mondiale.",
+            brandBullet1: "Jours fériés locaux et mondiaux",
+            brandBullet2: "Météo, lunaire et lecture quotidienne",
+            brandBullet3: "Huit langues, quarante pays",
+            pulseNow: "MAINTENANT",
+            continueWithGoogle: "Continuer avec Google",
+            continueWithWeChat: "Continuer avec WeChat",
+            forgotPassword: "Mot de passe oublié ?",
+            backToApp: "Retour à l'app",
+            footerStatus: "Tous les systèmes opérationnels",
+            footerCopyright: "© 2026 chroniq.cc · Tous droits réservés.",
+        },
+    })
+    .build();
+
+type I18n = typeof ofTypeI18n;
+
+export { useI18n, type I18n };

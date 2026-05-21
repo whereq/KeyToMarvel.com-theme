@@ -1,0 +1,123 @@
+/**
+ * template.css — Chroniq Keycloak theme layout overrides.
+ *
+ * doUseDefaultCss=false so this is minimal.
+ * All primary styling via CSS custom properties and Tailwind.
+ */
+
+/* KC error message class */
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--cq-error);
+}
+
+/* Prevent white flash on body */
+.kcBodyClass {
+    background-color: var(--cq-bg) !important;
+    color: var(--cq-text) !important;
+}
+
+/* Recaptcha container */
+.g-recaptcha {
+    transform-origin: left top;
+}
+
+/* ── Split layout (two-column: brand | card) ── */
+#cq-main.cq-split {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    padding-top: 52px;   /* header height */
+    padding-bottom: 36px; /* footer height */
+    overflow: hidden;
+    min-height: 100dvh;
+}
+
+.cq-split-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 64px;
+    border-right: 1px solid var(--cq-border);
+    background: var(--cq-bg);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle dot grid overlay on brand panel */
+.cq-split-brand::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(var(--cq-border) 1px, transparent 1px);
+    background-size: 24px 24px;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.cq-split-card-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 40px;
+    overflow-y: auto;
+    background: var(--cq-surface);
+}
+
+/* ── Responsive: tablet (< 980 px) — stack vertically ── */
+@media (max-width: 979px) {
+    #cq-main.cq-split {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+    }
+
+    .cq-split-brand {
+        display: none;
+    }
+
+    .cq-split-card-wrap {
+        padding: 24px 24px 40px;
+    }
+}
+
+/* ── Responsive: mobile (< 560 px) — compact padding ── */
+@media (max-width: 559px) {
+    .cq-split-card-wrap {
+        padding: 16px 16px 36px;
+        align-items: flex-start;
+    }
+
+    #cq-login-card {
+        max-width: 100% !important;
+    }
+
+    #cq-card-header {
+        padding: 20px 20px 0 !important;
+    }
+
+    #cq-card-body {
+        padding: 16px 20px 24px !important;
+    }
+}
+
+/* ── Non-split centered layout ── */
+#cq-root > #cq-main:not(.cq-split) {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 24px 60px;
+}
+
+@media (max-width: 559px) {
+    #cq-root > #cq-main:not(.cq-split) {
+        padding: 64px 16px 48px !important;
+        align-items: stretch;
+    }
+
+    #cq-root > #cq-main:not(.cq-split) > #cq-login-card {
+        max-width: 100% !important;
+    }
+}
