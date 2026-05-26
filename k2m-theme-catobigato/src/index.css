@@ -1,0 +1,245 @@
+@import "@fontsource/dm-sans/300.css";
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
+@import "@fontsource/dm-sans/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+@import "tailwindcss";
+
+/* ==========================================================================
+   K2M CatoBigato Theme — Design Token System
+   Warm Ghibli-academic palette · Friendly cat tutor branding
+   ========================================================================== */
+
+:root {
+    /* --- Background layers (warm cream) --- */
+    --cb-bg-base:     #FAF5EC;   /* warm cream — page background */
+    --cb-bg-surface:  #F3EBD8;   /* parchment surface */
+    --cb-bg-card:     #FFFFFF;   /* card / panel — clean white */
+    --cb-bg-elevated: #F8F2E6;   /* elevated / hover surface */
+    --cb-bg-overlay:  #EFE3CA;   /* tooltip / popover */
+
+    /* --- Borders --- */
+    --cb-border-subtle:  rgba(42, 30, 18, 0.08);
+    --cb-border-default: rgba(42, 30, 18, 0.14);
+    --cb-border-strong:  rgba(42, 30, 18, 0.22);
+    --cb-border-focus:   #863BFF;
+
+    /* --- Accent — Primary: Orange (Catobi's fur) --- */
+    --cb-orange-50:  #FFF3E8;
+    --cb-orange-100: #FFE0C2;
+    --cb-orange-200: #F4A86A;
+    --cb-orange-400: #E8743B;   /* primary orange */
+    --cb-orange-500: #D4612A;
+    --cb-orange-600: #C95A22;
+    --cb-orange-700: #A84A1A;
+    --cb-orange-900: #6B2E0E;
+
+    /* --- Accent — Purple (Lightning bolt / magic) --- */
+    --cb-purple-50:  #F3EAFF;
+    --cb-purple-100: #E2D1FF;
+    --cb-purple-200: #C9A8FF;
+    --cb-purple-400: #A45EFF;
+    --cb-purple-500: #863BFF;   /* primary purple */
+    --cb-purple-600: #7030E0;
+    --cb-purple-700: #5A25C0;
+    --cb-purple-900: #331470;
+
+    /* --- Accent — Blue (Catobi's eyes) --- */
+    --cb-blue-50:  #E8F4FF;
+    --cb-blue-200: #7FC4F7;
+    --cb-blue-400: #4B9FE0;   /* primary blue */
+    --cb-blue-500: #3A8ACC;
+    --cb-blue-600: #2E75B0;
+    --cb-blue-800: #1A4A70;
+
+    /* --- Semantic: Primary action (orange CTA) --- */
+    --cb-primary:       var(--cb-orange-400);
+    --cb-primary-hover: var(--cb-orange-500);
+    --cb-primary-bg:    rgba(232, 116, 59, 0.08);
+
+    /* --- Semantic: Secondary action (purple) --- */
+    --cb-secondary:       var(--cb-purple-500);
+    --cb-secondary-hover: var(--cb-purple-600);
+    --cb-secondary-bg:    rgba(134, 59, 255, 0.08);
+
+    /* --- Text (warm dark ink) --- */
+    --cb-text-primary:   #2A1E12;   /* dark brown ink */
+    --cb-text-secondary: #5C4A36;   /* muted brown */
+    --cb-text-muted:     #8C7A62;   /* very muted / placeholder */
+    --cb-text-inverse:   #FFFFFF;   /* text on dark backgrounds */
+    --cb-text-link:      var(--cb-purple-500);
+    --cb-text-link-hover:var(--cb-purple-400);
+
+    /* --- Status colors --- */
+    --cb-error:       #EF4444;
+    --cb-error-bg:    rgba(239, 68, 68, 0.08);
+    --cb-error-border:rgba(239, 68, 68, 0.25);
+
+    --cb-success:       #22C55E;
+    --cb-success-bg:    rgba(34, 197, 94, 0.08);
+    --cb-success-border:rgba(34, 197, 94, 0.25);
+
+    --cb-warning:       #F59E0B;
+    --cb-warning-bg:    rgba(245, 158, 11, 0.08);
+    --cb-warning-border:rgba(245, 158, 11, 0.25);
+
+    --cb-info:       #3B82F6;
+    --cb-info-bg:    rgba(59, 130, 246, 0.08);
+    --cb-info-border:rgba(59, 130, 246, 0.25);
+
+    /* --- Typography --- */
+    --cb-font-sans:  'DM Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --cb-font-serif: 'Instrument Serif', 'Georgia', serif;
+    --cb-font-mono:  'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+    /* --- Spacing scale --- */
+    --cb-space-1: 4px;
+    --cb-space-2: 8px;
+    --cb-space-3: 12px;
+    --cb-space-4: 16px;
+    --cb-space-5: 20px;
+    --cb-space-6: 24px;
+    --cb-space-8: 32px;
+    --cb-space-10: 40px;
+    --cb-space-12: 48px;
+    --cb-space-16: 64px;
+
+    /* --- Border radius (friendly, rounded) --- */
+    --cb-radius-sm:  6px;
+    --cb-radius-md:  10px;
+    --cb-radius-lg:  16px;
+    --cb-radius-xl:  24px;
+    --cb-radius-full: 9999px;
+
+    /* --- Transitions --- */
+    --cb-transition-fast:   100ms ease;
+    --cb-transition-normal: 200ms ease;
+    --cb-transition-slow:   350ms ease;
+
+    /* --- Shadows (warm, subtle) --- */
+    --cb-shadow-sm: 0 1px 4px rgba(42, 30, 18, 0.06);
+    --cb-shadow-md: 0 4px 16px rgba(42, 30, 18, 0.08);
+    --cb-shadow-lg: 0 8px 32px rgba(42, 30, 18, 0.12);
+    --cb-shadow-card: 0 1px 4px rgba(42, 30, 18, 0.06), 0 4px 16px rgba(42, 30, 18, 0.04);
+
+    /* --- Z-index layers --- */
+    --cb-z-base:    0;
+    --cb-z-raised:  100;
+    --cb-z-overlay: 200;
+    --cb-z-modal:   300;
+    --cb-z-toast:   400;
+}
+
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--cb-font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--cb-text-primary);
+    background-color: var(--cb-bg-base);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 Theme Extension
+   ========================================================================== */
+
+@theme {
+    --color-cb-bg-base:     #FAF5EC;
+    --color-cb-bg-surface:  #F3EBD8;
+    --color-cb-bg-card:     #FFFFFF;
+    --color-cb-bg-elevated: #F8F2E6;
+
+    --color-cb-border:      rgba(42, 30, 18, 0.14);
+    --color-cb-focus:       #863BFF;
+
+    --color-cb-orange:      #E8743B;
+    --color-cb-purple:      #863BFF;
+    --color-cb-blue:        #4B9FE0;
+
+    --color-cb-text:        #2A1E12;
+    --color-cb-muted:       #5C4A36;
+
+    --color-cb-error:       #EF4444;
+    --color-cb-success:     #22C55E;
+    --color-cb-warning:     #F59E0B;
+    --color-cb-info:        #3B82F6;
+
+    --font-sans: 'DM Sans', 'Segoe UI', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--cb-bg-surface);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--cb-border-strong);
+    border-radius: var(--cb-radius-sm);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--cb-orange-400);
+}
+
+/* ==========================================================================
+   Focus Visible
+   ========================================================================== */
+
+:focus-visible {
+    outline: 2px solid var(--cb-border-focus);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+    background-color: rgba(134, 59, 255, 0.18);
+    color: var(--cb-text-primary);
+}
+
+/* ==========================================================================
+   Prose / Content Overrides
+   ========================================================================== */
+
+a {
+    color: var(--cb-text-link);
+    text-decoration: none;
+    transition: color var(--cb-transition-fast);
+}
+
+a:hover {
+    color: var(--cb-text-link-hover);
+    text-decoration: underline;
+}
+
+code, pre {
+    font-family: var(--cb-font-mono);
+}

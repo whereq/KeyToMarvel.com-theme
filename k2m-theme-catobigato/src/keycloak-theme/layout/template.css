@@ -1,0 +1,105 @@
+/**
+ * template.css — Layout overrides for the CatoBigato theme.
+ */
+
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--cb-error);
+}
+
+.kcBodyClass {
+    background-color: var(--cb-bg-base) !important;
+    color: var(--cb-text-primary) !important;
+}
+
+.g-recaptcha {
+    transform-origin: left top;
+}
+
+/* ── Split layout (two-column: brand | card) ── */
+#cb-main.cb-split {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    padding-top: 48px;
+    padding-bottom: 40px;
+    overflow: hidden;
+}
+
+.cb-split-brand {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 64px;
+    background: linear-gradient(135deg, #FAF5EC 0%, #F3EBD8 50%, #FFF3E8 100%);
+    border-right: 1px solid var(--cb-border-subtle);
+}
+
+.cb-split-card-wrap {
+    flex: 0 0 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 40px;
+    overflow-y: auto;
+}
+
+/* ── Responsive: tablet ── */
+@media (max-width: 1023px) {
+    .cb-split-brand {
+        padding: 32px 40px;
+    }
+
+    .cb-split-card-wrap {
+        flex: 0 0 420px;
+        padding: 24px 28px;
+    }
+}
+
+/* ── Responsive: mobile ── */
+@media (max-width: 767px) {
+    #cb-root > #cb-main:not(.cb-split) {
+        padding: 64px 16px 48px !important;
+        align-items: stretch;
+    }
+
+    #cb-root > #cb-main:not(.cb-split) > #cb-login-card {
+        max-width: 100% !important;
+    }
+
+    #cb-main.cb-split {
+        flex-direction: column;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-top: 48px;
+        padding-bottom: 0;
+        align-items: stretch;
+    }
+
+    .cb-split-brand {
+        display: none;
+    }
+
+    .cb-split-card-wrap {
+        flex: none;
+        width: 100%;
+        padding: 20px 16px 40px;
+        overflow-y: visible;
+        justify-content: center;
+    }
+
+    #cb-login-card {
+        max-width: 100% !important;
+    }
+
+    #cb-card-header {
+        padding: 20px 20px 0 !important;
+    }
+
+    #cb-card-body {
+        padding: 16px 20px 24px !important;
+    }
+}
