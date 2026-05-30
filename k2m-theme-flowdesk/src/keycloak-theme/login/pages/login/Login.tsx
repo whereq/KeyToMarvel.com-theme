@@ -4,271 +4,139 @@ import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import type { KcContext } from "@keycloak-theme/layout/KcContext";
 import type { I18n } from "@keycloak-theme/layout/i18n";
 import type { FdTemplateProps } from "@keycloak-theme/layout/Template";
-import { FdDivider, FlowDeskLogo } from "@keycloak-theme/shared/ui";
+import { FdDivider } from "@keycloak-theme/shared/ui";
 import LoginForm from "./LoginForm";
 import SocialProviders from "./SocialProviders";
 
-/* ── Mock market data for the brand panel ── */
-const MARKET_TICKERS = [
-    { symbol: "NVDA",  price: "875.32", change: "+3.74%",  up: true  },
-    { symbol: "AAPL",  price: "182.41", change: "+1.18%",  up: true  },
-    { symbol: "TSLA",  price: "251.09", change: "-0.83%",  up: false },
-    { symbol: "MSFT",  price: "415.87", change: "+0.52%",  up: true  },
+/* ── Mock data ── */
+const TICKERS = [
+    { sym: "NVDA", px: "875.32", ch: "+3.74%", up: true  },
+    { sym: "AAPL", px: "182.41", ch: "+1.18%", up: true  },
+    { sym: "TSLA", px: "251.09", ch: "−0.83%", up: false },
+    { sym: "MSFT", px: "415.87", ch: "+0.52%", up: true  },
 ] as const;
 
-/* ── Animated stock sparkline chart (pure SVG) ── */
-function StockSparkline() {
-    // A rising trendline with realistic micro-volatility
-    const linePath =
-        "M0,85 L12,80 L24,72 L36,78 L48,65 L60,70 L72,58 L84,62 L96,50 L108,55 " +
-        "L120,42 L132,48 L144,35 L156,40 L168,30 L180,36 L192,22 L204,28 L216,18 " +
-        "L228,24 L240,12 L252,18 L264,8 L276,14 L288,5 L300,10";
+/* ── Deterministic PRNG (same seed = same chart every render) ── */
+function rng(seed: number) {
+    let s = seed * 9301 + 49297;
+    return () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+}
 
-    const areaPath =
-        "M0,85 L12,80 L24,72 L36,78 L48,65 L60,70 L72,58 L84,62 L96,50 L108,55 " +
-        "L120,42 L132,48 L144,35 L156,40 L168,30 L180,36 L192,22 L204,28 L216,18 " +
-        "L228,24 L240,12 L252,18 L264,8 L276,14 L288,5 L300,10 L300,100 L0,100 Z";
+/* ── Pre-compute sparkline path (module-level, deterministic) ── */
+const SPARK = (() => {
+    const W = 800, H = 120, pad = 6;
+    const r = rng(11); const n = 60; const pts: number[] = []; let v = 30;
+    for (let i = 0; i < n; i++) { v += (r() - 0.42) * 6; pts.push(v); }
+    const min = Math.min(...pts), max = Math.max(...pts);
+    const nx = (i: number) => pad + (i / (n - 1)) * (W - pad * 2);
+    const ny = (p: number) => H - pad - ((p - min) / (max - min || 1)) * (H - pad * 2 - 8);
+    let d = ""; pts.forEach((p, i) => { d += (i ? "L" : "M") + nx(i).toFixed(1) + " " + ny(p).toFixed(1) + " "; });
+    const area = d + `L${(W - pad).toFixed(1)} ${H} L${pad} ${H} Z`;
+    const lastX = nx(n - 1), lastY = ny(pts[n - 1]);
+    return { d, area, lastX, lastY };
+})();
 
+/* ── Pre-compute candlestick data ── */
+type Candle = { open: number; close: number; high: number; low: number };
+const CANDLES = (() => {
+    const n = 22;
+    const r = rng(7); let close = 46; const data: Candle[] = [];
+    for (let i = 0; i < n; i++) {
+        const open = close; close = open + (r() - 0.4) * 7;
+        const high = Math.max(open, close) + r() * 4 + 1;
+        const low  = Math.min(open, close) - r() * 4 - 1;
+        data.push({ open, high, low, close });
+    }
+    return data;
+})();
+
+/* ── Panel header row ── */
+function PanelH({ label, right }: { label: string; right?: React.ReactNode }) {
     return (
-        <div style={{ width: "100%", position: "relative" }}>
-            {/* Chart header */}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "6px",
-                }}
-            >
-                <span style={{ fontSize: "0.7rem", color: "var(--fd-text-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                    Market Overview — Today
-                </span>
-                <span
-                    style={{
-                        fontSize: "0.72rem",
-                        fontWeight: 600,
-                        color: "var(--fd-stock-green)",
-                        background: "var(--fd-stock-green-bg)",
-                        padding: "1px 6px",
-                    }}
-                >
-                    ▲ 2.14%
-                </span>
-            </div>
+        <div style={{
+            display: "flex", alignItems: "center", gap: 8,
+            padding: "9px 12px", borderBottom: "1px solid var(--rule)",
+            fontSize: "10px", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase",
+            color: "var(--text-dim)", fontFamily: "var(--mono)",
+        }}>
+            <span style={{ width: 3, height: 10, background: "var(--accent)", borderRadius: 1, flexShrink: 0 }} />
+            <span>{label}</span>
+            {right && <><span style={{ flex: 1 }} />{right}</>}
+        </div>
+    );
+}
 
-            {/* Relative wrapper so CSS dot overlay can be positioned over the SVG */}
-            <div style={{ position: "relative", width: "100%" }}>
-                <svg
-                    viewBox="0 0 300 100"
-                    width="100%"
-                    height="80"
-                    preserveAspectRatio="none"
-                    style={{ display: "block", overflow: "visible" }}
-                >
-                    <defs>
-                        <linearGradient id="fd-area-grad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor="#0078d4" stopOpacity="0.18" />
-                            <stop offset="100%" stopColor="#0078d4" stopOpacity="0" />
-                        </linearGradient>
-                        {/* Grid line pattern */}
-                        <pattern id="fd-grid" x="0" y="0" width="60" height="25" patternUnits="userSpaceOnUse">
-                            <line x1="0" y1="0" x2="0" y2="100" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-                        </pattern>
-                    </defs>
-
-                    {/* Horizontal grid lines */}
-                    <line x1="0" y1="25" x2="300" y2="25" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-                    <line x1="0" y1="50" x2="300" y2="50" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-                    <line x1="0" y1="75" x2="300" y2="75" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-
-                    {/* Area fill */}
-                    <path d={areaPath} fill="url(#fd-area-grad)" />
-
-                    {/* Price line — animated draw-in */}
-                    <path
-                        d={linePath}
-                        stroke="#0078d4"
-                        strokeWidth="1.5"
-                        fill="none"
-                        strokeLinecap="square"
-                        style={{
-                            strokeDasharray: "800",
-                            strokeDashoffset: "800",
-                            animation: "fd-draw-line 2s ease-out 0.3s forwards",
-                        }}
-                    />
-                </svg>
-
-                {/*
-                  * Endpoint dot + pulse ring are rendered as CSS elements outside the
-                  * preserveAspectRatio="none" SVG to prevent circle distortion.
-                  *
-                  * The last data point is at viewBox (300, 10) → screen (100%, 10% of 80px = 8px).
-                  * `right: 0; top: 8px; transform: translate(50%, -50%)` centers each element there.
-                  */}
-                {/* Cyan dot — outer div positions, inner div animates (avoids transform conflict) */}
-                <div style={{ position: "absolute", right: 0, top: "8px", transform: "translate(50%, -50%)", pointerEvents: "none" }}>
-                    <div
-                        style={{
-                            width: "5px",
-                            height: "5px",
-                            borderRadius: "50%",
-                            background: "#00bcf2",
-                            animation: "fd-fade-in 0.3s ease 2.2s both",
-                            opacity: 0,
-                        }}
-                    />
-                </div>
-                {/* Pulse ring */}
-                <div style={{ position: "absolute", right: 0, top: "8px", transform: "translate(50%, -50%)", pointerEvents: "none" }}>
-                    <div
-                        style={{
-                            width: "10px",
-                            height: "10px",
-                            borderRadius: "50%",
-                            border: "1px solid #00bcf2",
-                            opacity: 0,
-                            animation: "fd-fade-in 0.3s ease 2.2s both",
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* Time axis labels */}
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: "2px",
-                }}
-            >
-                {["9:30", "11:00", "12:30", "14:00", "15:30", "Close"].map(t => (
-                    <span key={t} style={{ fontSize: "0.62rem", color: "var(--fd-text-muted)" }}>
-                        {t}
-                    </span>
-                ))}
+/* ── Market overview sparkline ── */
+function Sparkline() {
+    const { d, area, lastX, lastY } = SPARK;
+    return (
+        <div style={{ padding: "12px 12px 10px" }}>
+            <svg width="100%" height="100" viewBox="0 0 800 120" preserveAspectRatio="none" style={{ display: "block" }}>
+                <defs>
+                    <linearGradient id="fd-sg" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="var(--accent)" stopOpacity="0.20" />
+                        <stop offset="100%" stopColor="var(--accent)" stopOpacity="0" />
+                    </linearGradient>
+                </defs>
+                <path d={area} fill="url(#fd-sg)" />
+                <path d={d} fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+                <circle cx={lastX} cy={lastY} r="4" fill="var(--accent)" />
+                <circle cx={lastX} cy={lastY} r="8" fill="var(--accent)" opacity="0.18" />
+            </svg>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontFamily: "var(--mono)", fontSize: "9.5px", color: "var(--text-faint)" }}>
+                {["09:30", "11:00", "12:30", "14:00", "15:30", "Close"].map(t => <span key={t}>{t}</span>)}
             </div>
         </div>
     );
 }
 
-/* ── Candlestick mini chart ── */
-function CandlestickBar({
-    x, high, low, open, close, width = 8,
-}: {
-    x: number; high: number; low: number; open: number; close: number; width?: number;
-}) {
-    const isUp = close <= open; // SVG y-axis inverted
-    const color = isUp ? "var(--fd-stock-green)" : "var(--fd-stock-red)";
-    const bodyTop = Math.min(open, close);
-    const bodyH = Math.abs(open - close) || 1;
+/* ── Daily candlestick chart ── */
+function Candlesticks() {
+    const W = 800, H = 92, pad = 8;
+    const data = CANDLES;
+    const all = data.flatMap(d => [d.high, d.low]);
+    const min = Math.min(...all), max = Math.max(...all);
+    const span = (W - pad * 2) / data.length;
+    const ny = (v: number) => pad + (1 - (v - min) / (max - min || 1)) * (H - pad * 2);
 
     return (
-        <g>
-            {/* Wick */}
-            <line x1={x} y1={high} x2={x} y2={low} stroke={color} strokeWidth="1" />
-            {/* Body */}
-            <rect
-                x={x - width / 2}
-                y={bodyTop}
-                width={width}
-                height={bodyH}
-                fill={color}
-                style={{ animation: "fd-candle-rise 0.4s ease both" }}
-            />
-        </g>
+        <div style={{ padding: "10px 12px 8px" }}>
+            <svg width="100%" height="70" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+                {data.map((c, i) => {
+                    const x = pad + i * span + span / 2;
+                    const upC = c.close >= c.open;
+                    const col = upC ? "var(--up)" : "var(--down)";
+                    const yo = ny(c.open), yc = ny(c.close);
+                    const yt = Math.min(yo, yc), hgt = Math.max(2, Math.abs(yc - yo));
+                    const bw = Math.max(3, span * 0.52);
+                    return (
+                        <g key={i}>
+                            <line x1={x.toFixed(1)} y1={ny(c.high).toFixed(1)} x2={x.toFixed(1)} y2={ny(c.low).toFixed(1)} stroke={col} strokeWidth="1.2" />
+                            <rect x={(x - bw / 2).toFixed(1)} y={yt.toFixed(1)} width={bw.toFixed(1)} height={hgt.toFixed(1)} rx="0.5" fill={col} />
+                        </g>
+                    );
+                })}
+            </svg>
+        </div>
     );
 }
 
-function CandlestickChart() {
-    // Pre-computed candlestick data (y-axis: 0=top, 100=bottom)
-    const candles = [
-        { x: 15,  high: 72, low: 88, open: 86, close: 78 },
-        { x: 33,  high: 65, low: 82, open: 78, close: 68 },
-        { x: 51,  high: 60, low: 75, open: 70, close: 62 },
-        { x: 69,  high: 55, low: 70, open: 68, close: 58 },
-        { x: 87,  high: 50, low: 65, open: 62, close: 52 },
-        { x: 105, high: 48, low: 62, open: 55, close: 50 },
-        { x: 123, high: 44, low: 56, open: 54, close: 46 },
-        { x: 141, high: 40, low: 52, open: 50, close: 42 },
-        { x: 159, high: 38, low: 50, open: 48, close: 62 }, // red candle
-        { x: 177, high: 36, low: 48, open: 40, close: 38 },
-        { x: 195, high: 30, low: 44, open: 42, close: 32 },
-        { x: 213, high: 25, low: 38, open: 36, close: 27 },
-        { x: 231, high: 22, low: 35, open: 30, close: 24 },
-        { x: 249, high: 18, low: 30, open: 28, close: 20 },
-        { x: 267, high: 14, low: 25, open: 23, close: 16 },
-        { x: 285, high: 10, low: 22, open: 20, close: 12 },
-    ];
-
+/* ── Live quotes 2×2 grid ── */
+function Quotes() {
     return (
-        <svg viewBox="0 0 300 100" width="100%" height="60" preserveAspectRatio="none">
-            {/* Grid */}
-            <line x1="0" y1="25" x2="300" y2="25" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-            <line x1="0" y1="50" x2="300" y2="50" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-            <line x1="0" y1="75" x2="300" y2="75" stroke="var(--fd-border-subtle)" strokeWidth="0.5" />
-
-            {candles.map((c, i) => (
-                <CandlestickBar key={i} {...c} />
-            ))}
-        </svg>
-    );
-}
-
-/* ── Market ticker row — 2×2 grid ── */
-function MarketTicker() {
-    return (
-        <div
-            style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "2px",
-                width: "100%",
-            }}
-        >
-            {MARKET_TICKERS.map(({ symbol, price, change, up }) => (
-                <div
-                    key={symbol}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        padding: "5px 10px",
-                        background: "var(--fd-bg-elevated)",
-                        borderLeft: `2px solid ${up ? "var(--fd-stock-green)" : "var(--fd-stock-red)"}`,
-                    }}
-                >
-                    <span
-                        style={{
-                            fontSize: "0.75rem",
-                            fontWeight: 700,
-                            color: "var(--fd-text-primary)",
-                            fontFamily: "var(--fd-font-mono)",
-                            letterSpacing: "0.05em",
-                        }}
-                    >
-                        {symbol}
-                    </span>
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "1px" }}>
-                        <span
-                            style={{
-                                fontSize: "0.72rem",
-                                color: "var(--fd-text-secondary)",
-                                fontFamily: "var(--fd-font-mono)",
-                            }}
-                        >
-                            ${price}
-                        </span>
-                        <span
-                            style={{
-                                fontSize: "0.68rem",
-                                fontWeight: 600,
-                                color: up ? "var(--fd-stock-green)" : "var(--fd-stock-red)",
-                                fontFamily: "var(--fd-font-mono)",
-                            }}
-                        >
-                            {change}
-                        </span>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr" }}>
+            {TICKERS.map(({ sym, px, ch, up }, i) => (
+                <div key={sym} style={{
+                    display: "flex", alignItems: "center", justifyContent: "space-between",
+                    padding: "11px 12px",
+                    borderTop: i < 2 ? "none" : "1px solid var(--rule)",
+                    borderRight: i % 2 === 0 ? "1px solid var(--rule)" : "none",
+                    borderLeft: `2px solid ${up ? "var(--up)" : "var(--down)"}`,
+                }}>
+                    <span style={{ fontFamily: "var(--mono)", fontSize: 12, fontWeight: 600, letterSpacing: "0.04em" }}>{sym}</span>
+                    <div style={{ textAlign: "right" }}>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 13 }}>${px}</div>
+                        <div style={{ fontFamily: "var(--mono)", fontSize: 10.5, color: up ? "var(--up)" : "var(--down)", fontWeight: 500 }}>{ch}</div>
                     </div>
                 </div>
             ))}
@@ -276,184 +144,170 @@ function MarketTicker() {
     );
 }
 
-/* ── Full brand panel ── */
-function BrandPanel({ i18n }: { i18n: I18n }) {
-    const { msgStr } = i18n;
-    const bullets = [
-        msgStr("brandBullet1"),
-        msgStr("brandBullet2"),
-        msgStr("brandBullet3"),
-    ];
-
+/* ── Terminal status line ── */
+function StatusLine() {
     return (
-        <div
-            style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: "20px",
-                width: "100%",
-                position: "relative",
-                zIndex: 1,
-            }}
-        >
-            {/* Logo + name: horizontal wordmark */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
-                    <FlowDeskLogo size={48} showBackground={false} />
-                    <h2
-                        style={{
-                            margin: 0,
-                            fontSize: "2rem",
-                            fontWeight: 700,
-                            letterSpacing: "-0.02em",
-                            lineHeight: 1,
-                            background: "linear-gradient(90deg, #0078d4 0%, #00bcf2 100%)",
-                            WebkitBackgroundClip: "text",
-                            WebkitTextFillColor: "transparent",
-                            backgroundClip: "text",
-                        }}
-                    >
-                        FlowDesk
-                    </h2>
-                </div>
-                <p
-                    style={{
-                        margin: 0,
-                        fontSize: "0.9rem",
-                        color: "var(--fd-text-secondary)",
-                        lineHeight: 1.4,
-                        whiteSpace: "nowrap",
-                    }}
-                >
-                    {msgStr("brandTagline")}
-                </p>
-            </div>
-
-            {/* Line chart */}
-            <div
-                style={{
-                    width: "100%",
-                    padding: "12px 14px 8px",
-                    background: "rgba(0, 120, 212, 0.04)",
-                    border: "1px solid var(--fd-border-subtle)",
-                    borderTop: "2px solid var(--fd-blue-500)",
-                }}
-            >
-                <StockSparkline />
-            </div>
-
-            {/* Candlestick mini chart */}
-            <div
-                style={{
-                    width: "100%",
-                    padding: "8px 14px 6px",
-                    background: "var(--fd-bg-elevated)",
-                    border: "1px solid var(--fd-border-subtle)",
-                }}
-            >
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "0.68rem", color: "var(--fd-text-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                        Daily Candles
-                    </span>
-                    <span style={{ fontSize: "0.68rem", color: "var(--fd-cyan-400)", fontFamily: "var(--fd-font-mono)" }}>
-                        NVDA · 1D
-                    </span>
-                </div>
-                <CandlestickChart />
-            </div>
-
-            {/* Live market tickers */}
-            <div style={{ width: "100%" }}>
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "6px",
-                        paddingLeft: "2px",
-                    }}
-                >
-                    <span style={{ fontSize: "0.68rem", color: "var(--fd-text-muted)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-                        Live Quotes
-                    </span>
-                    <span
-                        style={{
-                            fontSize: "0.68rem",
-                            color: "var(--fd-stock-green)",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "4px",
-                        }}
-                    >
-                        <span
-                            style={{
-                                display: "inline-block",
-                                width: "5px",
-                                height: "5px",
-                                borderRadius: "50%",
-                                background: "var(--fd-stock-green)",
-                                animation: "fd-ticker-pulse 2s ease-in-out infinite",
-                            }}
-                        />
-                        Market Open
-                    </span>
-                </div>
-                <MarketTicker />
-            </div>
-
-            {/* Feature bullets */}
-            <ul
-                style={{
-                    listStyle: "none",
-                    margin: 0,
-                    padding: 0,
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "2px",
-                }}
-            >
-                {bullets.map(text => (
-                    <li
-                        key={text}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "10px",
-                            padding: "6px 10px",
-                            color: "var(--fd-text-secondary)",
-                            fontSize: "0.82rem",
-                        }}
-                    >
-                        <span
-                            style={{
-                                width: "4px",
-                                height: "4px",
-                                background: "var(--fd-blue-500)",
-                                flexShrink: 0,
-                                display: "inline-block",
-                            }}
-                        />
-                        {text}
-                    </li>
-                ))}
-            </ul>
+        <div style={{
+            marginTop: "auto", display: "flex", alignItems: "center", gap: 18, flexWrap: "wrap",
+            padding: "11px 0", borderTop: "1px solid var(--rule)",
+            fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.05em", color: "var(--text-dim)",
+        }}>
+            {[
+                { dot: "var(--up)",     label: "MARKET · OPEN", sub: "NY 14:22 EDT" },
+                { dot: "var(--nova)",   label: "NOVA · READY",  sub: "v0.4-preview" },
+                { dot: "var(--accent)", label: "DATA · NEAR-RT", sub: "lag 0.8s"    },
+            ].map(({ dot, label, sub }) => (
+                <span key={label} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: dot, display: "inline-block", animation: "fd-ticker-pulse 2s ease-in-out infinite" }} />
+                    <span style={{ color: "var(--text)" }}>{label}</span>
+                    <span style={{ color: "var(--text-faint)" }}>{sub}</span>
+                </span>
+            ))}
         </div>
     );
 }
+
+/* ── Full brand showcase (left panel) ── */
+function BrandShowcase({ i18n }: { i18n: I18n }) {
+    const { msgStr } = i18n;
+    const panel: React.CSSProperties = {
+        border: "1px solid var(--rule)",
+        background: "var(--bg-panel)",
+        borderRadius: 5,
+    };
+    return (
+        <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingBottom: 0 }}>
+            {/* Wordmark */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 40 }}>
+                <svg viewBox="0 0 56 56" fill="none" width="34" height="34" style={{ color: "var(--text)", flexShrink: 0 }}>
+                    <rect x="7" y="4" width="5" height="48" rx="1.5" fill="currentColor"/>
+                    <line x1="18" y1="11" x2="18" y2="22" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                    <rect x="15.5" y="14" width="5" height="6" rx="0.5" fill="currentColor"/>
+                    <line x1="27" y1="7" x2="27" y2="21" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+                    <rect x="24.5" y="9" width="5" height="10" rx="0.5" fill="none" stroke="currentColor" strokeWidth="1.4"/>
+                    <line x1="36" y1="3" x2="36" y2="18" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round"/>
+                    <rect x="33.5" y="5" width="5" height="10" rx="0.5" fill="var(--accent)"/>
+                    <line x1="45" y1="2" x2="45" y2="13" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round"/>
+                    <rect x="42.5" y="3" width="5" height="7" rx="0.5" fill="var(--accent)"/>
+                    <rect x="7" y="29" width="22" height="9" rx="1" fill="currentColor"/>
+                    <circle cx="9.5" cy="48" r="2.5" fill="var(--accent)"/>
+                </svg>
+                <span style={{ fontSize: 19, fontWeight: 700, letterSpacing: "-0.01em" }}>
+                    Flow<span style={{ opacity: 0.55 }}>Desk</span>
+                </span>
+                <span style={{ marginLeft: 6, fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.12em", color: "var(--text-faint)", alignSelf: "center" }}>
+                    DEEP STOCK ANALYSIS
+                </span>
+            </div>
+
+            {/* Lede */}
+            <div style={{ marginBottom: 26 }}>
+                <h1 style={{ margin: "0 0 12px", fontSize: 33, fontWeight: 600, letterSpacing: "-0.02em", lineHeight: 1.12, maxWidth: "16ch" }}>
+                    {msgStr("brandTagline")}
+                </h1>
+                <p style={{ margin: 0, color: "var(--text-dim)", fontSize: 15, lineHeight: 1.5, maxWidth: "44ch" }}>
+                    {msgStr("brandSubline")}
+                </p>
+            </div>
+
+            {/* Charts & quotes */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 14, flex: 1, minHeight: 0 }}>
+                {/* Market overview */}
+                <div style={panel}>
+                    <PanelH label={msgStr("mktOverview")} right={<span style={{ fontFamily: "var(--mono)", fontWeight: 500, letterSpacing: "0.08em", color: "var(--up)", fontSize: 10 }}>▲ +2.14%</span>} />
+                    <Sparkline />
+                </div>
+
+                {/* Daily candles */}
+                <div style={panel}>
+                    <PanelH label={msgStr("dailyCandles")} right={<span style={{ fontFamily: "var(--mono)", fontWeight: 500, letterSpacing: "0.08em", color: "var(--text-faint)", fontSize: 10 }}>NVDA · 1D</span>} />
+                    <Candlesticks />
+                </div>
+
+                {/* Live quotes */}
+                <div style={panel}>
+                    <PanelH
+                        label={msgStr("liveQuotes")}
+                        right={
+                            <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontFamily: "var(--mono)", fontSize: 10, color: "var(--up)" }}>
+                                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--up)", display: "inline-block", animation: "fd-ticker-pulse 2s ease-in-out infinite" }} />
+                                {msgStr("mktOpen")}
+                            </span>
+                        }
+                    />
+                    <Quotes />
+                </div>
+            </div>
+
+            {/* Feature bullets */}
+            <div style={{ marginTop: 18, display: "flex", flexDirection: "column", gap: 11 }}>
+                {[msgStr("brandBullet1"), msgStr("brandBullet2"), msgStr("brandBullet3")].map(text => (
+                    <div key={text} style={{ display: "flex", alignItems: "center", gap: 11, color: "var(--text-dim)", fontSize: "13.5px" }}>
+                        <span style={{ width: 5, height: 5, background: "var(--accent)", borderRadius: 1, flexShrink: 0, display: "inline-block" }} />
+                        {text}
+                    </div>
+                ))}
+            </div>
+
+            <StatusLine />
+        </div>
+    );
+}
+
+/* ── Shield icon ── */
+const ShieldIcon = (
+    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3 4 6v6c0 4 3 7.5 8 9 5-1.5 8-5 8-9V6z"/>
+    </svg>
+);
+
+/* ── Arrow icon for submit button ── */
+const ArrowIcon = (
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+    </svg>
+);
 
 export default function Login(
     props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>,
 ) {
     const { kcContext, i18n, doUseDefaultCss, classes } = props;
     const { kcClsx } = getKcClsx({ doUseDefaultCss, classes });
-    const { realm, messagesPerField, social } = kcContext;
-    const { msg } = i18n;
+    const { realm, messagesPerField, social, url } = kcContext;
+    const { msgStr } = i18n;
 
     const [isLoginButtonDisabled, setIsLoginButtonDisabled] = useState(false);
     const hasSocialProviders = (social?.providers?.length ?? 0) > 0;
 
     const Template = props.Template as React.ComponentType<FdTemplateProps>;
+
+    const formHeader = (
+        <>
+            {/* Eyebrow */}
+            <div style={{
+                fontFamily: "var(--mono)", fontSize: "10px", letterSpacing: "0.16em",
+                textTransform: "uppercase", color: "var(--accent)", marginBottom: "10px",
+            }}>
+                {msgStr("secureSignin")}
+            </div>
+            {/* Title */}
+            <h2 style={{ margin: "0 0 4px", fontSize: "26px", fontWeight: 600, letterSpacing: "-0.01em", color: "var(--text)" }}>
+                {msgStr("loginAccountTitle")}
+            </h2>
+            {/* Subtitle */}
+            <p style={{ margin: "0 0 24px", color: "var(--text-dim)", fontSize: "13.5px" }}>
+                {msgStr("loginSubtitle")}
+            </p>
+
+            {/* Social providers */}
+            {hasSocialProviders && (
+                <SocialProviders kcContext={kcContext} i18n={i18n} kcClsx={kcClsx} prominent />
+            )}
+            {hasSocialProviders && realm.password && (
+                <FdDivider>{msgStr("or")}</FdDivider>
+            )}
+        </>
+    );
 
     return (
         <Template
@@ -462,49 +316,37 @@ export default function Login(
             doUseDefaultCss={doUseDefaultCss}
             classes={classes}
             displayMessage={!messagesPerField.existsError("username", "password")}
-            headerNode={msg("loginAccountTitle")}
-            displayInfo={
-                realm.password &&
-                realm.registrationAllowed &&
-                !kcContext.registrationDisabled
-            }
+            headerNode={formHeader}
+            displayInfo={realm.password && realm.registrationAllowed && !kcContext.registrationDisabled}
             infoNode={
-                <span style={{ color: "var(--fd-text-secondary)" }}>
-                    {msg("noAccount")}{" "}
-                    <a
-                        href={kcContext.url.registrationUrl}
-                        style={{ color: "var(--fd-blue-500)", fontWeight: 500 }}
-                    >
-                        {msg("doRegister")}
+                <span style={{ color: "var(--text-dim)" }}>
+                    {msgStr("noAccount")}{" "}
+                    <a href={url.registrationUrl} style={{ color: "var(--accent)", fontWeight: 600 }}>
+                        {msgStr("doRegister")}
                     </a>
                 </span>
             }
             layoutVariant="split"
-            leftPanelNode={<BrandPanel i18n={i18n} />}
+            leftPanelNode={<BrandShowcase i18n={i18n} />}
         >
-            {/* Social providers first */}
-            {hasSocialProviders && (
-                <div style={{ marginBottom: "4px" }}>
-                    <SocialProviders
-                        kcContext={kcContext}
-                        i18n={i18n}
-                        kcClsx={kcClsx}
-                        prominent
-                    />
-                </div>
-            )}
-
-            {hasSocialProviders && realm.password && (
-                <FdDivider>{msg("or")}</FdDivider>
-            )}
-
             <LoginForm
                 kcContext={kcContext}
                 i18n={i18n}
                 kcClsx={kcClsx}
                 isLoginButtonDisabled={isLoginButtonDisabled}
                 setIsLoginButtonDisabled={setIsLoginButtonDisabled}
+                submitIcon={ArrowIcon}
             />
+
+            {/* Security note */}
+            <div style={{
+                marginTop: 18,
+                display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                color: "var(--text-faint)", fontFamily: "var(--mono)", fontSize: 10, letterSpacing: "0.04em",
+            }}>
+                {ShieldIcon}
+                <span>{msgStr("securedBy")}</span>
+            </div>
         </Template>
     );
 }

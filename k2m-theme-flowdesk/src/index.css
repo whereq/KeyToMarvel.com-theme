@@ -1,258 +1,223 @@
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
+@import "@fontsource/ibm-plex-sans/300.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-sans/700.css";
+@import "@fontsource/ibm-plex-mono/300.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
 @import "tailwindcss";
 
 /* ==========================================================================
-   K2M FlowDesk Theme — Design Token System
-   Metro Dark UI — Real-time Market Intelligence
-   Color identity: Microsoft Metro Blue + Cyan data-flow accents
+   K2M FlowDesk Theme — Direction A: Terminal × AI
+   Design System tokens from Claude Design handoff
    ========================================================================== */
 
 :root {
-    /* --- Background layers (deep dark like FlowDesk app) --- */
-    --fd-bg-base:     #0d0d0d;   /* deepest — page background */
-    --fd-bg-surface:  #111111;   /* nav / header surface */
-    --fd-bg-card:     #1a1a1a;   /* card / panel */
-    --fd-bg-elevated: #1f1f1f;   /* elevated / hover surface */
-    --fd-bg-overlay:  #252525;   /* tooltip / popover */
+    /* --- Core surfaces --- */
+    --bg:        #0A0B0D;
+    --bg-elev:   #101216;
+    --bg-panel:  #0E1014;
 
-    /* --- Borders (Metro sharp edges) --- */
-    --fd-border-subtle:  #1e1e1e;
-    --fd-border-default: #2b2b2b;
-    --fd-border-strong:  #3a3a3a;
-    --fd-border-chrome:  #4a4a4a;   /* header/footer chrome accent */
-    --fd-border-focus:   #0078d4;
-
-    /* --- Accent — Metro Blue (Microsoft brand / primary CTA) --- */
-    --fd-blue-50:  #eff6ff;
-    --fd-blue-100: #dbeafe;
-    --fd-blue-200: #bfdbfe;
-    --fd-blue-400: #3b9ded;
-    --fd-blue-500: #0078d4;   /* primary accent */
-    --fd-blue-600: #006cbd;
-    --fd-blue-700: #005a9e;
-    --fd-blue-900: #00305a;
-
-    /* --- Accent — Cyan (data flow / signal lines) --- */
-    --fd-cyan-400: #00bcf2;   /* primary data accent */
-    --fd-cyan-500: #00a8d9;
-    --fd-cyan-600: #0093bf;
-
-    /* --- Stock market semantic colors --- */
-    --fd-stock-green:       #10b981;   /* gains / positive */
-    --fd-stock-green-bg:    rgba(16, 185, 129, 0.10);
-    --fd-stock-green-border:rgba(16, 185, 129, 0.25);
-    --fd-stock-red:         #ef4444;   /* losses / negative */
-    --fd-stock-red-bg:      rgba(239, 68, 68, 0.10);
-    --fd-stock-red-border:  rgba(239, 68, 68, 0.25);
-    --fd-stock-neutral:     #6b7280;   /* no change */
+    /* --- Rules / borders --- */
+    --rule:        rgba(255,255,255,0.07);
+    --rule-strong: rgba(255,255,255,0.14);
 
     /* --- Text --- */
-    --fd-text-primary:   #f3f3f3;   /* bright primary text */
-    --fd-text-secondary: #c8c8c8;   /* secondary / label */
-    --fd-text-muted:     #888888;   /* very muted / placeholder */
-    --fd-text-inverse:   #ffffff;   /* text on blue backgrounds */
-    --fd-text-link:      #0078d4;
-    --fd-text-link-hover:#3b9ded;
+    --text:       #E8E6DF;
+    --text-dim:   rgba(232,230,223,0.62);
+    --text-faint: rgba(232,230,223,0.36);
 
-    /* --- Status colors --- */
-    --fd-error:        #ef4444;
-    --fd-error-bg:     rgba(239, 68, 68, 0.10);
-    --fd-error-border: rgba(239, 68, 68, 0.30);
+    /* --- Semantic market colors --- */
+    --up:   #3CCB7F;
+    --down: #F25B5B;
 
-    --fd-success:        #10b981;
-    --fd-success-bg:     rgba(16, 185, 129, 0.10);
-    --fd-success-border: rgba(16, 185, 129, 0.30);
+    /* --- Primary accent: amber (Terminal × AI identity) --- */
+    --accent:     #FF8B3D;
+    --accent-dim: rgba(255,139,61,0.18);
+    --accent-ink: #0A0B0D;
 
-    --fd-warning:        #f59e0b;
-    --fd-warning-bg:     rgba(245, 158, 11, 0.10);
-    --fd-warning-border: rgba(245, 158, 11, 0.30);
+    /* --- NOVA AI teal --- */
+    --nova: #3DDBD9;
 
-    --fd-info:        #0078d4;
-    --fd-info-bg:     rgba(0, 120, 212, 0.10);
-    --fd-info-border: rgba(0, 120, 212, 0.30);
+    /* --- Input background --- */
+    --field: rgba(255,255,255,0.03);
 
-    /* --- Typography (matches FlowDesk app font stack) --- */
-    --fd-font-sans: 'Segoe UI Variable', 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
-    --fd-font-mono: 'Cascadia Code', 'Consolas', 'JetBrains Mono', monospace;
+    /* --- Body grid pattern --- */
+    --grid: rgba(255,255,255,0.022);
 
-    /* --- Metro UI spacing scale --- */
-    --fd-space-1: 4px;
-    --fd-space-2: 8px;
-    --fd-space-3: 12px;
-    --fd-space-4: 16px;
-    --fd-space-5: 20px;
-    --fd-space-6: 24px;
-    --fd-space-8: 32px;
-    --fd-space-10: 40px;
-    --fd-space-12: 48px;
-    --fd-space-16: 64px;
+    /* --- Typography --- */
+    --ui:   'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
 
-    /* --- Border radius (Metro uses 0 — sharp flat tiles) --- */
+    /* --- Legacy --fd-* aliases (used by shared components) --- */
+    --fd-bg-base:      var(--bg);
+    --fd-bg-surface:   var(--bg-panel);
+    --fd-bg-card:      var(--bg-elev);
+    --fd-bg-elevated:  var(--bg-elev);
+    --fd-bg-overlay:   #1a1e24;
+
+    --fd-border-subtle:  var(--rule);
+    --fd-border-default: var(--rule);
+    --fd-border-strong:  var(--rule-strong);
+    --fd-border-chrome:  var(--rule-strong);
+    --fd-border-focus:   var(--accent);
+
+    --fd-blue-500: var(--accent);
+    --fd-blue-600: #e07a35;
+    --fd-cyan-400: var(--nova);
+
+    --fd-stock-green:    var(--up);
+    --fd-stock-green-bg: rgba(60,203,127,0.12);
+    --fd-stock-red:      var(--down);
+    --fd-stock-red-bg:   rgba(242,91,91,0.12);
+
+    --fd-text-primary:   var(--text);
+    --fd-text-secondary: var(--text-dim);
+    --fd-text-muted:     var(--text-faint);
+    --fd-text-link:      var(--accent);
+    --fd-text-link-hover: #ffaa70;
+
+    --fd-error:        var(--down);
+    --fd-error-bg:     rgba(242,91,91,0.12);
+    --fd-error-border: rgba(242,91,91,0.30);
+
+    --fd-success:        var(--up);
+    --fd-success-bg:     rgba(60,203,127,0.12);
+    --fd-success-border: rgba(60,203,127,0.30);
+
+    --fd-warning:        var(--accent);
+    --fd-warning-bg:     var(--accent-dim);
+    --fd-warning-border: rgba(255,139,61,0.30);
+
+    --fd-info:        var(--nova);
+    --fd-info-bg:     rgba(61,219,217,0.10);
+    --fd-info-border: rgba(61,219,217,0.25);
+
+    --fd-font-sans: var(--ui);
+    --fd-font-mono: var(--mono);
+
     --fd-radius-none: 0px;
     --fd-radius-sm:   0px;
-    --fd-radius-md:   2px;
-    --fd-radius-lg:   4px;
+    --fd-radius-md:   3px;
+    --fd-radius-lg:   5px;
 
-    /* --- Transitions --- */
     --fd-transition-fast:   100ms ease;
-    --fd-transition-normal: 200ms ease;
-    --fd-transition-slow:   350ms ease;
+    --fd-transition-normal: 150ms ease;
+    --fd-transition-slow:   300ms ease;
 
-    /* --- Shadows (Metro keeps it minimal) --- */
-    --fd-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
-    --fd-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
-    --fd-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.7);
-
-    /* --- Z-index layers --- */
     --fd-z-base:    0;
     --fd-z-raised:  100;
     --fd-z-overlay: 200;
     --fd-z-modal:   300;
     --fd-z-toast:   400;
+
+    /* Logo accent via CSS variable so SVG can reference it */
+    --fd-logo-accent: var(--accent);
 }
 
-/* ==========================================================================
-   Global Reset & Base Styles
-   ========================================================================== */
-
-*, *::before, *::after {
-    box-sizing: border-box;
+/* ── Light theme ─────────────────────────────────────────────────────────── */
+html[data-theme="light"] {
+    --bg:        #F7F4ED;
+    --bg-elev:   #FFFFFF;
+    --bg-panel:  #FBF8F1;
+    --rule:        rgba(10,10,10,0.10);
+    --rule-strong: rgba(10,10,10,0.20);
+    --text:       #1A1814;
+    --text-dim:   rgba(26,24,20,0.64);
+    --text-faint: rgba(26,24,20,0.42);
+    --up:   #1E9E5E;
+    --down: #D2483B;
+    --accent:     #E0712A;
+    --accent-dim: rgba(224,113,42,0.15);
+    --accent-ink: #FFFFFF;
+    --nova: #1E8F8D;
+    --field: rgba(10,10,10,0.02);
+    --grid: rgba(10,10,10,0.025);
 }
 
-html {
-    font-size: 16px;
+/* ── Reset ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+    font-family: var(--ui);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text);
+    background-color: var(--bg);
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 46px 46px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    font-family: var(--fd-font-sans);
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--fd-text-primary);
-    background-color: var(--fd-bg-base);
-}
+button { font: inherit; cursor: pointer; }
+input  { font: inherit; }
+a      { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, pre { font-family: var(--mono); }
 
-/* ==========================================================================
-   Tailwind CSS v4 Theme Extension
-   ========================================================================== */
-
+/* ── Tailwind theme extension ─────────────────────────────────────────────── */
 @theme {
-    --color-fd-bg-base:     #0d0d0d;
-    --color-fd-bg-surface:  #111111;
-    --color-fd-bg-card:     #1a1a1a;
-    --color-fd-bg-elevated: #1f1f1f;
+    --color-fd-bg-base:     #0A0B0D;
+    --color-fd-bg-surface:  #0E1014;
+    --color-fd-bg-card:     #101216;
+    --color-fd-bg-elevated: #101216;
 
-    --color-fd-border:      #2b2b2b;
-    --color-fd-chrome:      #4a4a4a;
-    --color-fd-focus:       #0078d4;
+    --color-fd-border:      rgba(255,255,255,0.07);
+    --color-fd-chrome:      rgba(255,255,255,0.14);
+    --color-fd-focus:       #FF8B3D;
 
-    --color-fd-blue:        #0078d4;
-    --color-fd-cyan:        #00bcf2;
-    --color-fd-green:       #10b981;
-    --color-fd-red:         #ef4444;
+    --color-fd-blue:        #FF8B3D;
+    --color-fd-cyan:        #3DDBD9;
+    --color-fd-green:       #3CCB7F;
+    --color-fd-red:         #F25B5B;
 
-    --color-fd-text:        #f3f3f3;
-    --color-fd-muted:       #888888;
+    --color-fd-text:        #E8E6DF;
+    --color-fd-muted:       rgba(232,230,223,0.36);
 
-    --color-fd-error:       #ef4444;
-    --color-fd-success:     #10b981;
-    --color-fd-warning:     #f59e0b;
-    --color-fd-info:        #0078d4;
+    --color-fd-error:       #F25B5B;
+    --color-fd-success:     #3CCB7F;
+    --color-fd-warning:     #FF8B3D;
+    --color-fd-info:        #3DDBD9;
 
-    --font-sans: 'Segoe UI Variable', 'Segoe UI', 'Inter', system-ui, sans-serif;
-    --font-mono: 'Cascadia Code', 'Consolas', monospace;
+    --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
 }
 
-/* ==========================================================================
-   Scrollbar Styling
-   ========================================================================== */
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-panel); }
+::-webkit-scrollbar-thumb { background: var(--rule-strong); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-}
+/* ── Focus ───────────────────────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-::-webkit-scrollbar-track {
-    background: var(--fd-bg-surface);
-}
+/* ── Selection ───────────────────────────────────────────────────────────── */
+::selection { background: var(--accent-dim); color: var(--text); }
 
-::-webkit-scrollbar-thumb {
-    background: var(--fd-border-strong);
-    border-radius: 0;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--fd-blue-500);
-}
-
-/* ==========================================================================
-   Focus Visible
-   ========================================================================== */
-
-:focus-visible {
-    outline: 2px solid var(--fd-border-focus);
-    outline-offset: 2px;
-}
-
-/* ==========================================================================
-   Selection
-   ========================================================================== */
-
-::selection {
-    background-color: rgba(0, 120, 212, 0.30);
-    color: var(--fd-text-primary);
-}
-
-/* ==========================================================================
-   Prose
-   ========================================================================== */
-
-a {
-    color: var(--fd-text-link);
-    text-decoration: none;
-    transition: color var(--fd-transition-fast);
-}
-
-a:hover {
-    color: var(--fd-text-link-hover);
-    text-decoration: underline;
-}
-
-code, pre {
-    font-family: var(--fd-font-mono);
-}
-
-/* ==========================================================================
-   Stock Chart Animations
-   ========================================================================== */
-
+/* ── Animations ──────────────────────────────────────────────────────────── */
 @keyframes fd-draw-line {
     from { stroke-dashoffset: 800; }
     to   { stroke-dashoffset: 0; }
 }
 
 @keyframes fd-fade-in {
-    from { opacity: 0; transform: translateY(4px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; }
+    to   { opacity: 1; }
 }
 
 @keyframes fd-ticker-pulse {
     0%, 100% { opacity: 1; }
-    50%       { opacity: 0.7; }
+    50%       { opacity: 0.5; }
 }
 
 @keyframes fd-candle-rise {
     from { transform: scaleY(0); transform-origin: bottom; }
-    to   { transform: scaleY(1); transform-origin: bottom; }
-}
-
-@keyframes fd-price-blink {
-    0%, 100% { color: var(--fd-stock-green); }
-    50%       { color: var(--fd-cyan-400); }
+    to   { transform: scaleY(1); }
 }
