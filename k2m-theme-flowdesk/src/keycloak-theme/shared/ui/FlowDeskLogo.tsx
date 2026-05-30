@@ -1,99 +1,60 @@
-import type { CSSProperties } from "react";
-
-interface FlowDeskLogoProps {
+interface LogoProps {
     size?: number;
-    style?: CSSProperties;
     className?: string;
-    /** Show background rect (default true for standalone use) */
-    showBackground?: boolean;
 }
 
 /**
- * FlowDeskLogo — the canonical "F + data-flow" SVG mark.
- *
- * F-shaped letterform in Metro Blue with two cyan data-flow curves beneath,
- * representing the continuous flow of market data.
+ * K-Chart F logo — F letterform built from ascending K-line candlesticks.
+ * Spine + first two candles use currentColor; last two candles use --accent (amber).
  */
-export function FlowDeskLogo({
-    size = 40,
-    style,
-    className,
-    showBackground = true,
-}: FlowDeskLogoProps) {
+export function FlowDeskLogo({ size = 40, className = "" }: LogoProps) {
     return (
         <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 40 40"
+            viewBox="0 0 56 56"
+            fill="none"
             width={size}
             height={size}
-            style={style}
+            aria-label="FlowDesk"
             className={className}
-            role="img"
-            aria-label="FlowDesk logo"
+            style={{ color: "var(--text)", flexShrink: 0 }}
         >
-            {showBackground && <rect width="40" height="40" fill="#0d0d0d" />}
-            {/* F vertical stem */}
-            <rect x="8" y="7" width="4" height="26" fill="#0078d4" />
-            {/* F top horizontal bar */}
-            <rect x="8" y="7" width="17" height="4" fill="#0078d4" />
-            {/* F middle horizontal bar */}
-            <rect x="8" y="17" width="13" height="4" fill="#0078d4" />
-            {/* Primary data-flow curve */}
-            <path
-                d="M12 34 Q20 28 26 30 Q32 32 36 26"
-                stroke="#00bcf2"
-                strokeWidth="1.5"
-                strokeLinecap="square"
-                fill="none"
-                opacity="0.85"
-            />
-            {/* Secondary data-flow curve (subtle) */}
-            <path
-                d="M12 37 Q22 32 30 34 Q36 36 38 31"
-                stroke="#00bcf2"
-                strokeWidth="1"
-                strokeLinecap="square"
-                fill="none"
-                opacity="0.4"
-            />
-            {/* Data node dot */}
-            <circle cx="26" cy="30" r="1.5" fill="#00bcf2" opacity="0.9" />
+            {/* Spine */}
+            <rect x="7" y="4" width="5" height="48" rx="1.5" fill="currentColor" />
+            {/* Candle 1 — text color */}
+            <line x1="18" y1="11" x2="18" y2="22" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            <rect x="15.5" y="14" width="5" height="6" rx="0.5" fill="currentColor" />
+            {/* Candle 2 — text color, hollow (ascending) */}
+            <line x1="27" y1="7" x2="27" y2="21" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+            <rect x="24.5" y="9" width="5" height="10" rx="0.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            {/* Candle 3 — accent amber, breakout */}
+            <line x1="36" y1="3" x2="36" y2="18" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" />
+            <rect x="33.5" y="5" width="5" height="10" rx="0.5" fill="var(--accent)" />
+            {/* Candle 4 — accent amber, highest */}
+            <line x1="45" y1="2" x2="45" y2="13" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" />
+            <rect x="42.5" y="3" width="5" height="7" rx="0.5" fill="var(--accent)" />
+            {/* Crossbar */}
+            <rect x="7" y="29" width="22" height="9" rx="1" fill="currentColor" />
+            {/* Base accent dot */}
+            <circle cx="9.5" cy="48" r="2.5" fill="var(--accent)" />
         </svg>
     );
 }
 
-/**
- * FlowDeskWordmark — logo mark + "FlowDesk" text lockup.
- */
-export function FlowDeskWordmark({
-    size = 32,
-    style,
-    className,
-}: {
-    size?: number;
-    style?: CSSProperties;
-    className?: string;
-}) {
+/** Horizontal wordmark: K-Chart F logo + "FlowDesk" text */
+export function FlowDeskWordmark({ size = 32, className = "" }: LogoProps) {
     return (
-        <div
-            className={["flex items-center gap-2.5", className ?? ""].join(" ")}
-            style={style}
-        >
-            <FlowDeskLogo size={size} showBackground={false} />
+        <div className={`flex items-center gap-3 ${className}`} style={{ lineHeight: 1 }}>
+            <FlowDeskLogo size={size} />
             <span
                 style={{
-                    fontSize: `${Math.round(size * 0.45)}px`,
+                    fontFamily: "var(--ui)",
+                    fontSize: `${size * 0.56}px`,
                     fontWeight: 700,
                     letterSpacing: "-0.01em",
-                    background: "linear-gradient(90deg, #0078d4 0%, #00bcf2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text",
-                    lineHeight: 1,
-                    userSelect: "none",
+                    color: "var(--text)",
                 }}
             >
-                FlowDesk
+                Flow<span style={{ opacity: 0.55 }}>Desk</span>
             </span>
         </div>
     );
