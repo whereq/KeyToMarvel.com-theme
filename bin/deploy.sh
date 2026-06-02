@@ -2,7 +2,7 @@
 # =============================================================================
 # deploy.sh — Deploy Keycloak themes to PROD (Raspberry Pi).
 #
-# Handles all themes: superhero, morph, vegeta, flowdesk, chroniq, catobigato.
+# Handles all themes: superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com.
 # Each theme may include: JAR, welcome page, extra theme dirs (account/login/admin).
 #
 # Usage:
@@ -14,7 +14,7 @@
 #   ./deploy.sh --list                   # list available themes
 #
 # Theme aliases (short names):
-#   superhero, morph, vegeta, flowdesk, chroniq, catobigato
+#   superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com
 #
 # Examples:
 #   ./deploy.sh vegeta                   # full deploy of vegeta theme
@@ -60,6 +60,7 @@ declare -A THEME_REGISTRY=(
   [flowdesk]="k2m-theme-flowdesk:k2m-theme-flowdesk:n:n"
   [chroniq]="k2m-theme-chroniq:k2m-theme-chroniq:n:n"
   [catobigato]="k2m-theme-catobigato:k2m-theme-catobigato:n:n"
+  [whereq.com]="k2m-theme-whereq-com:k2m-theme-whereq-com:n:n"
 )
 
 # Realm-to-theme assignments: which realms use which theme for which columns
@@ -70,6 +71,7 @@ declare -A REALM_THEME_MAP=(
   [whereq]="k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [catobigato]="k2m-theme-catobigato:k2m-theme-catobigato:k2m-theme-catobigato:k2m-theme-vegeta"
   [flowdesk.top]="k2m-theme-flowdesk:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
+  [whereq.com]="k2m-theme-whereq-com:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
 )
 
 # ── Helper: parse theme registry entry ────────────────────────────────────────
@@ -84,7 +86,7 @@ list_themes() {
   echo ""
   printf "  ${BOLD}%-14s %-28s %-20s %-8s %-10s${RESET}\n" "ALIAS" "DIRECTORY" "INTERNAL NAME" "WELCOME" "EXTRA DIRS"
   echo "  ─────────────────────────────────────────────────────────────────────────────────"
-  for alias in superhero morph vegeta flowdesk chroniq catobigato; do
+  for alias in superhero morph vegeta flowdesk chroniq catobigato whereq.com; do
     parse_theme "$alias"
     local built="n"
     [[ -f "$REPO_DIR/$THEME_DIR/dist_keycloak/$JAR_FILENAME" ]] && built="y"
@@ -115,7 +117,7 @@ for arg in "$@"; do
     --help|-h)
       echo "Usage: $0 <theme> [--skip-build] [--skip-pull] [--dry-run] [--db-only]"
       echo ""
-      echo "Themes: superhero, morph, vegeta, flowdesk, chroniq, catobigato"
+      echo "Themes: superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com"
       echo ""
       echo "Options:"
       echo "  --skip-build   Deploy existing build artifacts (skip yarn build)"
