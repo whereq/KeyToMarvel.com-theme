@@ -1,0 +1,256 @@
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "tailwindcss";
+
+/* ==========================================================================
+   K2M whereq.com Theme — Metro / calendar.cc inspired (green-mono brand)
+   Design system tokens from the Claude Design handoff (styles.css)
+   Token names kept flowdesk-compatible so shared/ui components work unchanged.
+   ========================================================================== */
+
+:root {
+    /* --- Core surfaces (default = dark, cool-tinted 'paper') --- */
+    --bg:        #0A0E13;
+    --bg-elev:   #0F141B;   /* form card / login card surface */
+    --bg-panel:  #0F141B;   /* showcase sub-panels */
+    --surface-2: #161D26;
+    --surface-3: #1D2632;
+
+    /* --- Rules / borders --- */
+    --rule:        #1B2430;
+    --rule-strong: #2A3645;
+
+    /* --- Text (never pure #fff / #000) --- */
+    --text:       #D4DDE8;
+    --text-warm:  #E8DFC7;  /* titles / highlights */
+    --text-dim:   #94A2B5;
+    --text-faint: #6A7689;
+    --muted-2:    #475262;
+
+    /* --- Primary accent: green (whereq mono brand) --- */
+    --accent:     #4ADE80;
+    --accent-dim: rgba(74,222,128,0.18);
+    --accent-soft: rgba(74,222,128,0.13);
+    --accent-ink: #08210F;
+
+    /* --- Semantic (constant across themes) --- */
+    --up:       #4ADE80;
+    --down:     #FF3B5C;
+    --success:  #4ADE80;
+    --danger:   #FF3B5C;
+    --warn:     #FFB020;
+    --info:     #5BA5FF;
+    --memorial: #B388FF;
+    --social:   #FF8FB1;
+    --saved:    #6E7BFF;
+    --school:   #E6B450;
+    --nova:     #5BA5FF;   /* legacy alias used by status line */
+
+    /* --- Map showcase --- */
+    --map-bg:     #0E1620;
+    --map-park:   #1A3220;
+    --map-water:  #0B2A3D;
+    --map-road:   #2A3645;
+    --map-road-2: #3A4A5C;
+
+    /* --- Input background --- */
+    --field: #161D26;
+
+    /* --- Body grid pattern (very subtle) --- */
+    --grid: rgba(255,255,255,0.018);
+
+    /* --- Typography (Geist) --- */
+    --ui:   'Geist Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --mono: 'Geist Mono Variable', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+
+    /* --- Legacy --fd-* aliases (used by shared/ui components) --- */
+    --fd-bg-base:      var(--bg);
+    --fd-bg-surface:   var(--bg-panel);
+    --fd-bg-card:      var(--bg-elev);
+    --fd-bg-elevated:  var(--bg-elev);
+    --fd-bg-overlay:   var(--surface-3);
+
+    --fd-border-subtle:  var(--rule);
+    --fd-border-default: var(--rule);
+    --fd-border-strong:  var(--rule-strong);
+    --fd-border-chrome:  var(--rule-strong);
+    --fd-border-focus:   var(--accent);
+
+    --fd-blue-500: var(--accent);
+    --fd-blue-600: #3CC76C;
+    --fd-cyan-400: var(--info);
+
+    --fd-stock-green:    var(--up);
+    --fd-stock-green-bg: rgba(74,222,128,0.12);
+    --fd-stock-red:      var(--down);
+    --fd-stock-red-bg:   rgba(255,59,92,0.12);
+
+    --fd-text-primary:   var(--text);
+    --fd-text-secondary: var(--text-dim);
+    --fd-text-muted:     var(--text-faint);
+    --fd-text-link:      var(--accent);
+    --fd-text-link-hover: #6BE89A;
+
+    --fd-error:        var(--down);
+    --fd-error-bg:     rgba(255,59,92,0.12);
+    --fd-error-border: rgba(255,59,92,0.30);
+
+    --fd-success:        var(--up);
+    --fd-success-bg:     rgba(74,222,128,0.12);
+    --fd-success-border: rgba(74,222,128,0.30);
+
+    --fd-warning:        var(--warn);
+    --fd-warning-bg:     rgba(255,176,32,0.12);
+    --fd-warning-border: rgba(255,176,32,0.30);
+
+    --fd-info:        var(--info);
+    --fd-info-bg:     rgba(91,165,255,0.10);
+    --fd-info-border: rgba(91,165,255,0.25);
+
+    --fd-font-sans: var(--ui);
+    --fd-font-mono: var(--mono);
+
+    --fd-radius-none: 0px;
+    --fd-radius-sm:   2px;
+    --fd-radius-md:   3px;
+    --fd-radius-lg:   5px;
+
+    --fd-transition-fast:   100ms ease;
+    --fd-transition-normal: 150ms ease;
+    --fd-transition-slow:   300ms ease;
+
+    --fd-z-base:    0;
+    --fd-z-raised:  100;
+    --fd-z-overlay: 200;
+    --fd-z-modal:   300;
+    --fd-z-toast:   400;
+
+    --fd-logo-accent: var(--accent);
+}
+
+/* ── Light theme ─────────────────────────────────────────────────────────── */
+html[data-theme="light"] {
+    --bg:        #F4F5F7;
+    --bg-elev:   #FFFFFF;
+    --bg-panel:  #FFFFFF;
+    --surface-2: #F0F2F5;
+    --surface-3: #E6E9EE;
+
+    --rule:        #E3E6EC;
+    --rule-strong: #D3D8E0;
+
+    --text:       #1E2733;
+    --text-warm:  #3B2B14;
+    --text-dim:   #3D4757;
+    --text-faint: #6A7382;
+    --muted-2:    #97A0AE;
+
+    --accent:     #4ADE80;
+    --accent-dim: rgba(74,222,128,0.16);
+    --accent-soft: rgba(74,222,128,0.12);
+    --accent-ink: #08210F;
+
+    --up:      #1E9E5E;
+    --down:    #D2483B;
+    --success: #1E9E5E;
+    --danger:  #D2483B;
+
+    --map-bg:     #EDEFF3;
+    --map-park:   #D7E6C9;
+    --map-water:  #BCDFF1;
+    --map-road:   #FFFFFF;
+    --map-road-2: #E5E8EE;
+
+    --field: #F0F2F5;
+    --grid: rgba(10,10,10,0.02);
+}
+
+/* ── Reset ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+
+body {
+    font-family: var(--ui);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--text);
+    background-color: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+button { font: inherit; cursor: pointer; }
+input  { font: inherit; }
+a      { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code, pre { font-family: var(--mono); }
+
+/* ── Tailwind theme extension ─────────────────────────────────────────────── */
+@theme {
+    --color-fd-bg-base:     #0A0E13;
+    --color-fd-bg-surface:  #0F141B;
+    --color-fd-bg-card:     #0F141B;
+    --color-fd-bg-elevated: #161D26;
+
+    --color-fd-border:      #1B2430;
+    --color-fd-chrome:      #2A3645;
+    --color-fd-focus:       #4ADE80;
+
+    --color-fd-blue:        #4ADE80;
+    --color-fd-cyan:        #5BA5FF;
+    --color-fd-green:       #4ADE80;
+    --color-fd-red:         #FF3B5C;
+
+    --color-fd-text:        #D4DDE8;
+    --color-fd-muted:       #6A7689;
+
+    --color-fd-error:       #FF3B5C;
+    --color-fd-success:     #4ADE80;
+    --color-fd-warning:     #FFB020;
+    --color-fd-info:        #5BA5FF;
+
+    --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Geist Mono Variable', ui-monospace, Menlo, monospace;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-panel); }
+::-webkit-scrollbar-thumb { background: var(--rule-strong); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ── Focus ───────────────────────────────────────────────────────────────── */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Selection ───────────────────────────────────────────────────────────── */
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+@keyframes fd-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fd-ticker-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+/* Map showcase: pin pop-in */
+@keyframes wq-pop {
+    from { opacity: 0; transform: scale(0) translateY(6px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* Map showcase: floating toast entrance */
+@keyframes wq-float-in {
+    from { opacity: 0; transform: translateY(8px) scale(.96); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Score bar grow */
+@keyframes wq-grow {
+    from { transform: scaleX(0); }
+    to   { transform: scaleX(1); }
+}
