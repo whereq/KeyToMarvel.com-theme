@@ -659,3 +659,61 @@ match your current page set or Keycloakify will warn at build time.
 |-----------------|----------|
 | 22 – 25 | `keycloak-theme-for-kc-22-to-25.jar` |
 | 26+ | `keycloak-theme-for-kc-all-other-versions.jar` |
+
+  1. Diagnose — find the offending client
+
+  Run on the Pi (these match your deploy.sh container/db names):
+
+``` bash
+  docker exec whereq-db psql -U whereq -d k2m -c \
+  "SELECT c.client_id, ca.value
+   FROM client c
+   JOIN client_attributes ca ON c.id = ca.client_id
+   JOIN realm r ON r.id = c.realm_id
+   WHERE r.name = 'whereq.com' AND ca.name = 'login_theme';"
+```
+
+  If this returns a row like whereq-web | k2m-theme-vegeta, that's the culprit.
+
+  2. Fix — two options
+
+  Option A — Admin Console (no SQL): Clients → select that client → Settings → scroll to Login settings → Login theme → change from k2m-theme-vegeta to k2m-theme-whereq-com (or set it
+  blank to inherit the realm) → Save.
+
+  Option B — SQL. Clear the override so the realm setting applies (recommended — keeps the realm as single source of truth):
+
+``` bash
+  docker exec whereq-db psql -U whereq -d k2m -c \
+  "DELETE FROM client_attributes ca
+   USING client c, realm r
+   WHERE ca.client_id = c.id AND c.realm_id = r.id
+     AND r.name = 'whereq.com' AND ca.name = 'login_theme';"
+```
+
+  Or, if you'd rather pin it explicitly to the new theme instead of inheriting:
+
+``` bash
+  docker exec whereq-db psql -U whereq -d k2m -c \
+  "UPDATE client_attributes ca SET value = 'k2m-theme-whereq-com'
+   FROM client c, realm r
+   WHERE ca.client_id = c.id AND c.realm_id = r.id
+     AND r.name = 'whereq.com' AND ca.name = 'login_theme';"
+```
+
+  3. Restart to clear Keycloak's theme cache
+
+``` bash
+  docker restart keycloak-k2m
+```
+
+  Then re-test the login (hard-refresh / incognito to dodge browser cache).
+
+  ---
+  Two things worth flagging:
+
+  - Your deploy.sh won't ever fix this — REALM_THEME_MAP only manages the four realm-level columns (realm table), not client-level overrides in client_attributes. So this is a manual
+  one-time fix per client. If you want, I can add a step to deploy.sh that detects/clears stray client login_theme overrides for the deployed realm so this doesn't recur silently.
+  - If the diagnostic query returns no rows, then it's not a client override and the likely cause is Keycloak theme caching — in that case just confirm the restart actually happened and
+  that the JAR landed in the providers dir.
+
+  Want me to add the client-override safeguard to deploy.sh?
