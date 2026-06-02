@@ -42,8 +42,14 @@ KC_VOLUMES_DIR="$(realpath "$KC_VOLUMES_DIR")"
 PROVIDERS_DIR="$KC_VOLUMES_DIR/providers"
 THEME_DIR="$KC_VOLUMES_DIR/themes/k2m-theme-vegeta"
 
-JAR_NAME="keycloak-theme-for-kc-all-other-versions.jar"
-JAR_SRC="$PROJECT_DIR/dist_keycloak/$JAR_NAME"
+# Keycloakify always builds to this default filename...
+JAR_BUILD_NAME="keycloak-theme-for-kc-all-other-versions.jar"
+JAR_SRC="$PROJECT_DIR/dist_keycloak/$JAR_BUILD_NAME"
+# ...but we deploy under a theme-specific name so a sibling theme project
+# (flowdesk, catobigato) that builds to the SAME default filename can never
+# overwrite this one in the shared providers/ directory.
+# (2026-05-31 outage: flowdesk's default-named JAR clobbered vegeta's.)
+JAR_NAME="k2m-theme-vegeta.jar"
 
 echo "======================================="
 echo " k2m-theme-vegeta deploy"
@@ -82,7 +88,10 @@ echo ""
 echo "[2/2] Deploying welcome theme..."
 mkdir -p "$THEME_DIR/welcome"
 cp "$PROJECT_DIR/src/keycloak-theme/welcome/index.ftl" "$THEME_DIR/welcome/index.ftl"
-printf "parent=keycloak\n" > "$THEME_DIR/welcome/theme.properties"
+# redirectToAdmin=false is REQUIRED — without it Keycloak redirects "/" to /admin/
+# instead of rendering the custom welcome page. (Dropping this line silently broke
+# the welcome page; see docs/THEME_SETUP.md §12.)
+printf "parent=keycloak\nredirectToAdmin=false\n" > "$THEME_DIR/welcome/theme.properties"
 echo "      → $THEME_DIR/welcome/"
 echo ""
 
