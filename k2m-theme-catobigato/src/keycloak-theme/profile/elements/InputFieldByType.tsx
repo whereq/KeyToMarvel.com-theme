@@ -105,7 +105,12 @@ export default function InputFieldByType(props: {
                 );
             }
 
-            if (inputType === "password" || inputType === "password-confirm") {
+            if (
+                attribute.name === "password" ||
+                attribute.name === "password-confirm" ||
+                inputType === "password" ||
+                inputType === "password-confirm"
+            ) {
                 const hasError = displayableErrors.length > 0;
                 return (
                     <div className="flex flex-col gap-1">
