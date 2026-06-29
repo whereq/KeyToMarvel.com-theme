@@ -46,6 +46,9 @@ DB_CONTAINER="whereq-db"
 DB_NAME="k2m"
 DB_USER="whereq"
 
+# Build output JAR — keycloakify produces this same filename for every theme
+# under <theme>/dist_keycloak/. On deploy it is renamed to <internal-name>.jar
+# (see Step 3) so each theme lives in its own provider JAR in PROD.
 JAR_FILENAME="keycloak-theme-for-kc-all-other-versions.jar"
 
 # ── Theme registry ────────────────────────────────────────────────────────────
@@ -200,13 +203,19 @@ if ! $DB_ONLY; then
     dim "Would run: git pull origin main"
   else
     cd "$REPO_DIR"
+    git fetch --prune origin
     CURRENT_BRANCH=$(git branch --show-current)
     if [[ "$CURRENT_BRANCH" != "main" ]]; then
+      # Stash any local changes so they can't block the checkout (set -e aborts otherwise)
+      if ! git diff --quiet || ! git diff --cached --quiet; then
+        warn "Local changes on '$CURRENT_BRANCH' — stashing before switch"
+        git stash push -u -m "deploy.sh auto-stash $(date +%Y%m%d-%H%M%S)" || true
+      fi
       warn "Currently on branch '$CURRENT_BRANCH', switching to main"
       git checkout main
     fi
-    git pull origin main
-    success "Pulled latest from main"
+    git pull --ff-only origin main
+    success "On main, pulled latest ($(git rev-parse --short HEAD))"
   fi
 fi
 
@@ -247,7 +256,9 @@ if ! $DB_ONLY; then
   header "[ 3/6 ] Deploy JAR → providers"
 
   JAR_SRC="$REPO_DIR/$THEME_DIR/dist_keycloak/$JAR_FILENAME"
-  JAR_DEST="$PROVIDERS_DIR/$JAR_FILENAME"
+  # PROD convention: one provider JAR per theme, named <internal-name>.jar
+  # (e.g. k2m-theme-flowdesk.jar) so themes never overwrite each other.
+  JAR_DEST="$PROVIDERS_DIR/${THEME_INTERNAL}.jar"
 
   if $DRY_RUN; then
     dim "Would copy: $JAR_SRC → $JAR_DEST"
@@ -257,13 +268,13 @@ if ! $DB_ONLY; then
       BACKUP="$JAR_DEST.bak.$(date +%Y%m%d-%H%M%S)"
       info "Backing up existing JAR → $(basename "$BACKUP")"
       cp "$JAR_DEST" "$BACKUP"
-      # Keep only last 3 backups
-      ls -t "$PROVIDERS_DIR"/$JAR_FILENAME.bak.* 2>/dev/null | tail -n +4 | xargs -r rm -f
+      # Keep only last 3 backups (for this theme)
+      ls -t "$PROVIDERS_DIR/${THEME_INTERNAL}.jar.bak."* 2>/dev/null | tail -n +4 | xargs -r rm -f
     fi
 
     cp "$JAR_SRC" "$JAR_DEST"
     JAR_SIZE=$(du -h "$JAR_DEST" | cut -f1)
-    success "JAR deployed ($JAR_SIZE)"
+    success "JAR deployed → $(basename "$JAR_DEST") ($JAR_SIZE)"
   fi
 fi
 
