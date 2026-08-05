@@ -4,7 +4,7 @@
         ${msg("passwordResetSubject")}
     </h2>
     <p style="color:#8892b4;font-size:14px;line-height:1.7;margin:0 0 24px;">
-        ${msg("passwordResetBody",link, linkExpirationFormatter(linkExpiration))}
+        ${msg("passwordResetIntro", realmName, linkExpirationFormatter(linkExpiration))}
     </p>
     <a href="${link}"
        style="display:inline-block;padding:12px 28px;background:#00c9e4;color:#080a12;

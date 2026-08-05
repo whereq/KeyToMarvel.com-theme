@@ -1,5 +1,5 @@
 ${msg("emailVerificationSubject")}
 
-${msg("emailVerificationBody",link, linkExpirationFormatter(linkExpiration))}
+${msg("emailVerificationIntro", realmName, linkExpirationFormatter(linkExpiration))}
 
 ${link}
