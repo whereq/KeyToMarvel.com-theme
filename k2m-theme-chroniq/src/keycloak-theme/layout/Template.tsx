@@ -9,6 +9,7 @@ import type { KcContext } from "./KcContext";
 import Header from "./Header";
 import Footer from "./Footer";
 import { CqAlert } from "@keycloak-theme/shared/ui";
+import faviconUrl from "./favicon.svg";
 
 import "./template.css";
 
@@ -45,6 +46,18 @@ export default function Template(props: CqTemplateProps) {
     useEffect(() => {
         document.title = documentTitle ?? msgStr("loginTitle", kcContext.realm.displayName);
     }, [documentTitle, kcContext.realm.displayName, msgStr]);
+
+    // Override Keycloak's default favicon with the chroniq.cc app favicon.
+    useEffect(() => {
+        let link = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+        if (link === null) {
+            link = document.createElement("link");
+            link.rel = "icon";
+            document.head.appendChild(link);
+        }
+        link.type = "image/svg+xml";
+        link.href = faviconUrl;
+    }, []);
 
     useSetClassName({ qualifiedName: "html", className: kcClsx("kcHtmlClass") });
     useSetClassName({
