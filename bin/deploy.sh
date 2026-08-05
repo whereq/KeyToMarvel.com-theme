@@ -37,7 +37,13 @@ dim()     { echo -e "${DIM}    $*${RESET}"; }
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-KEYCLOAK_VOLUMES_DIR="$HOME/github/KeyToMarvel.com/docker/volumes/keycloak"
+# Keycloak volumes location. New PROD server keeps repos under ~/git; the old
+# Raspberry Pi used ~/github. Pick whichever exists so the script is portable.
+if [[ -d "$HOME/git/KeyToMarvel.com/docker/volumes/keycloak" ]]; then
+  KEYCLOAK_VOLUMES_DIR="$HOME/git/KeyToMarvel.com/docker/volumes/keycloak"
+else
+  KEYCLOAK_VOLUMES_DIR="$HOME/github/KeyToMarvel.com/docker/volumes/keycloak"
+fi
 PROVIDERS_DIR="$KEYCLOAK_VOLUMES_DIR/providers"
 THEMES_DIR="$KEYCLOAK_VOLUMES_DIR/themes"
 
@@ -75,6 +81,7 @@ declare -A REALM_THEME_MAP=(
   [catobigato]="k2m-theme-catobigato:k2m-theme-catobigato:k2m-theme-catobigato:k2m-theme-vegeta"
   [flowdesk.top]="k2m-theme-flowdesk:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [whereq.com]="k2m-theme-whereq-com:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
+  [chroniq.cc]="k2m-theme-chroniq:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
 )
 
 # ── Helper: parse theme registry entry ────────────────────────────────────────
