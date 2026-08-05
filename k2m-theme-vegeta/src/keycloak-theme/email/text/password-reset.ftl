@@ -1,5 +1,5 @@
 ${msg("passwordResetSubject")}
 
-${msg("passwordResetBody",link, linkExpirationFormatter(linkExpiration))}
+${msg("passwordResetIntro", realmName, linkExpirationFormatter(linkExpiration))}
 
 ${link}
