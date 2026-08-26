@@ -1,0 +1,128 @@
+/* ── Keycloak class overrides ─────────────────────────────────────────────── */
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--fd-error);
+    font-family: var(--mono);
+}
+
+.kcBodyClass {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+}
+
+.g-recaptcha { transform-origin: left top; }
+
+/* ── Full-page split layout: showcase | formside ─────────────────────────── */
+#fd-root.fd-split-root {
+    display: grid;
+    grid-template-columns: 1.3fr minmax(420px, 480px);
+    min-height: 100vh;
+}
+
+/* Left: showcase brand panel */
+.fd-split-brand {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 40px 52px 32px;
+    border-right: 1px solid var(--rule);
+    min-width: 0;
+    overflow-y: auto;
+}
+
+/* calendar.cc-style soft accent glow in the top-left corner */
+.fd-split-brand::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(120% 80% at 0% 0%, var(--accent-soft), transparent 55%);
+    opacity: 0.6;
+}
+.fd-split-brand > * { position: relative; z-index: 1; }
+
+/* Right: form panel (self-contained column) */
+.fd-formside {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: var(--bg-elev);
+    border-left: 1px solid var(--rule);
+}
+
+.fd-topbar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+    padding: 18px 28px;
+}
+
+.fd-formscroll {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8px 56px 24px;
+}
+
+.fd-formcard {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+/* ── Non-split layout (other Keycloak pages) ─────────────────────────────── */
+#fd-root:not(.fd-split-root) {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#fd-main {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 24px;
+}
+
+#fd-login-card {
+    width: 100%;
+    max-width: 440px;
+    background: var(--bg-elev);
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--accent);
+    border-radius: 5px;
+}
+
+/* ── Mobile: showcase hidden, mobile bar shown ────────────────────────────── */
+.fd-mobilebar { display: none; }
+
+@media (max-width: 980px) {
+    #fd-root.fd-split-root {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .fd-split-brand { display: none; }
+
+    .fd-formside { min-height: 100vh; border-left: 0; }
+
+    .fd-mobilebar {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 24px;
+        border-bottom: 1px solid var(--rule);
+    }
+
+    .fd-topbar { padding: 14px 24px; }
+
+    .fd-formscroll { padding: 24px 24px 32px; justify-content: flex-start; }
+
+    .fd-formside > footer { padding-left: 24px; padding-right: 24px; }
+}
