@@ -83,7 +83,7 @@ declare -A REALM_THEME_MAP=(
   [flowdesk.top]="k2m-theme-flowdesk:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [whereq.com]="k2m-theme-whereq-com:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [chroniq.cc]="k2m-theme-chroniq:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
-  [whereq.cc]="k2m-theme-whereq-cc:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
+  [whereq.cc-realm]="k2m-theme-whereq-cc:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
 )
 
 # ── Helper: parse theme registry entry ────────────────────────────────────────

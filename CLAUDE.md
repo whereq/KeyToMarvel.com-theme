@@ -93,11 +93,12 @@ Typical flow: make changes → test in `yarn dev`/`storybook` → `bin/release.s
 - **Local dev**: WSL (Windows Subsystem for Linux).
 - **PROD (current)**: New server with **two SSH entry points depending on network location** —
   both reach the same box:
-  - **Inside home (LAN)**: `ssh whereq@whereq` (resolves to a home LAN IP, e.g. `192.168.0.199`).
-  - **Outside home**: `ssh ssh.whereq.com`.
+  - **Inside home (LAN)**: `ssh whereq@whereq` (resolves to a home LAN IP, e.g. `192.168.0.196`).
+  - **Outside home**: `ssh ssh.whereq.cc` (Cloudflare-tunnelled via `cloudflared`; the old
+    `ssh.whereq.com` hostname is retired and no longer resolves).
   - **Auto-detect** when the user hasn't said where they are: probe the LAN host first —
     `ssh -o ConnectTimeout=6 -o BatchMode=yes whereq@whereq 'echo ok'`. Prints `ok` → inside
-    home; times out / refused → use `ssh ssh.whereq.com`. Determine it yourself; don't ask.
+    home; times out / refused → use `ssh ssh.whereq.cc`. Determine it yourself; don't ask.
   - Git repos live under `/home/whereq/git` (e.g. `/home/whereq/git/KeyToMarvel.com-theme`).
   - Keycloak runs in Docker: containers `keycloak-k2m` (server) and `whereq-db` (Postgres, db
     `k2m`, user `whereq`).
