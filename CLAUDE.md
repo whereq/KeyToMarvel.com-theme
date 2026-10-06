@@ -22,6 +22,7 @@ Themes (alias → directory → internal name used in the JAR/DB):
 | `whereq.com` | `k2m-theme-whereq-com` | `k2m-theme-whereq-com`  | login only |
 | `whereq.cc`  | `k2m-theme-whereq-cc`  | `k2m-theme-whereq-cc`   | login only (encrypted-gallery) |
 | `qhaul.ca`   | `k2m-theme-qhaul-ca`   | `k2m-theme-qhaul-ca`    | login only (navy/orange Metro UI, moving/delivery brand) |
+| `whereq.cloud` | `k2m-theme-whereq-cloud` | `k2m-theme-whereq-cloud` | login only (market-data API platform; dark/light toggle) |
 
 The authoritative registry (which realms use which theme for login/account/admin/email) lives
 in `bin/deploy.sh` (`THEME_REGISTRY` and `REALM_THEME_MAP`). `vegeta` is the fullest theme

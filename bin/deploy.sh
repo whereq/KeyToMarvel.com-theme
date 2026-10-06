@@ -6,7 +6,7 @@
 # (LAN first, fall back to cloudflared ssh.whereq.cc).
 #
 # Handles every theme in the repo:
-#   superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com, whereq.cc, qhaul.ca
+#   superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com, whereq.cc, qhaul.ca, whereq.cloud
 # Each theme may include: JAR, welcome page (FTL), extra theme dirs.
 #
 # Usage (run on PROD):
@@ -19,7 +19,7 @@
 #   ./deploy.sh --all
 #
 # Theme aliases:
-#   superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com, whereq.cc, qhaul.ca
+#   superhero, morph, vegeta, flowdesk, chroniq, catobigato, whereq.com, whereq.cc, qhaul.ca, whereq.cloud
 #
 # Options:
 #   --all                       Deploy all themes in sequence (skip-build + skip-pull on 2nd+ runs)
@@ -89,6 +89,7 @@ declare -A THEME_REGISTRY=(
   [whereq.com]="k2m-theme-whereq-com:k2m-theme-whereq-com:n:n:login-only"
   [whereq.cc]="k2m-theme-whereq-cc:k2m-theme-whereq-cc:n:n:login-only"
   [qhaul.ca]="k2m-theme-qhaul-ca:k2m-theme-qhaul-ca:n:n:login-only"
+  [whereq.cloud]="k2m-theme-whereq-cloud:k2m-theme-whereq-cloud:n:n:login-only"
 )
 
 # Realm-to-theme assignments: which realms use which theme for which columns.
@@ -106,7 +107,7 @@ declare -A REALM_THEME_MAP=(
   [chroniq.cc]="k2m-theme-chroniq:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [whereq.cc-realm]="k2m-theme-whereq-cc:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [caijing.today-realm]="k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
-  # whereq.cloud left intentionally un-mapped (no theme assigned in PROD)
+  [whereq.cloud]="k2m-theme-whereq-cloud:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
 )
 
 # ── Default container / path names (overridable via env) ──────────────────────
@@ -167,7 +168,7 @@ list_themes() {
     echo ""
     printf "  ${BOLD}%-14s %-28s %-22s %-10s %-10s${RESET}\n" "ALIAS" "DIRECTORY" "INTERNAL NAME" "WELCOME" "EXTRA"
     echo "  ────────────────────────────────────────────────────────────────────────────────────"
-    for alias in superhero morph vegeta flowdesk chroniq catobigato whereq.com whereq.cc qhaul.ca; do
+    for alias in superhero morph vegeta flowdesk chroniq catobigato whereq.com whereq.cc qhaul.ca whereq.cloud; do
         if parse_theme "$alias" 2>/dev/null; then
             printf "  %-14s %-28s %-22s %-10s %-10s\n" "$alias" "$THEME_DIR" "$THEME_INTERNAL" "$HAS_WELCOME" "$EXTRA_TYPE"
         fi
@@ -825,7 +826,7 @@ if $ALL_THEMES; then
     info "Deploying all themes in: ${!THEME_REGISTRY[*]}"
     echo ""
     first=true
-    for alias in superhero morph vegeta flowdesk chroniq catobigato whereq.com whereq.cc qhaul.ca; do
+    for alias in superhero morph vegeta flowdesk chroniq catobigato whereq.com whereq.cc qhaul.ca whereq.cloud; do
         if [[ "$first" == true ]]; then
             SKIP_PULL=false  # first one pulls
             first=false

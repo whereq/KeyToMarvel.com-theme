@@ -1,0 +1,213 @@
+/* ==========================================================================
+   K2M whereq.cloud Theme — Google Fonts
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;600&display=swap");
+
+@import "tailwindcss";
+
+/* ==========================================================================
+   K2M whereq.cloud Theme — Design Token System
+   Metro UI — Market data / API platform, dark-default with light toggle
+   Color identity: WhereQ Cloud blue (#1f5b98 / dark #0f2238), Metro xs radii
+   ========================================================================== */
+
+/* ── DARK (default) ── */
+:root,
+[data-theme="dark"] {
+    --wqc-bg: #0a0a0a;
+    --wqc-surface: #141414;
+    --wqc-surface-2: #17222f;
+    --wqc-border: #262626;
+    --wqc-border-strong: #3a3a3a;
+    --wqc-text: #ececec;
+    --wqc-text-2: #b3b3b3;
+    --wqc-muted: #b3b3b3;
+    --wqc-muted-2: #8f8f8f;
+    --wqc-accent: #6fb3ff;
+    --wqc-brand: #0f2238;
+
+    /* Status */
+    --wqc-error: #ef4444;
+    --wqc-error-bg: rgba(239, 68, 68, 0.12);
+    --wqc-error-border: rgba(239, 68, 68, 0.35);
+    --wqc-success: #22c55e;
+    --wqc-success-bg: rgba(34, 197, 94, 0.12);
+    --wqc-success-border: rgba(34, 197, 94, 0.35);
+    --wqc-warning: #f59e0b;
+    --wqc-warning-bg: rgba(245, 158, 11, 0.12);
+    --wqc-warning-border: rgba(245, 158, 11, 0.35);
+    --wqc-info: #6fb3ff;
+    --wqc-info-bg: rgba(111, 179, 255, 0.12);
+    --wqc-info-border: rgba(111, 179, 255, 0.35);
+
+    --wqc-bg-card: var(--wqc-surface);
+    --wqc-bg-elevated: var(--wqc-surface-2);
+}
+
+/* ── LIGHT ── */
+[data-theme="light"] {
+    --wqc-bg: #f3f3f3;
+    --wqc-surface: #ffffff;
+    --wqc-surface-2: #f0f4f9;
+    --wqc-border: #dcdcdc;
+    --wqc-border-strong: #c8c8c8;
+    --wqc-text: #1d1d1d;
+    --wqc-text-2: #4a4a4a;
+    --wqc-muted: #4a4a4a;
+    --wqc-muted-2: #6a6a6a;
+    --wqc-accent: #1f5b98;
+    --wqc-brand: #1f5b98;
+
+    /* Status */
+    --wqc-error: #dc2626;
+    --wqc-error-bg: rgba(220, 38, 38, 0.07);
+    --wqc-error-border: rgba(220, 38, 38, 0.25);
+    --wqc-success: #16a34a;
+    --wqc-success-bg: rgba(22, 163, 74, 0.07);
+    --wqc-success-border: rgba(22, 163, 74, 0.25);
+    --wqc-warning: #d97706;
+    --wqc-warning-bg: rgba(217, 119, 6, 0.07);
+    --wqc-warning-border: rgba(217, 119, 6, 0.25);
+    --wqc-info: #1f5b98;
+    --wqc-info-bg: rgba(31, 91, 152, 0.07);
+    --wqc-info-border: rgba(31, 91, 152, 0.25);
+
+    --wqc-bg-card: var(--wqc-surface);
+    --wqc-bg-elevated: var(--wqc-surface-2);
+}
+
+/* ── Static brand accents (same in both modes — per design, the primary CTA,
+   focus rings and top accent bars stay a constant saturated blue in both
+   dark and light mode; only link text / secondary hovers use the adaptive
+   --wqc-accent above, which goes lighter in dark mode for readability) ── */
+:root {
+    --wqc-brand-blue: #1f5b98;
+    --wqc-brand-blue-hover: #2a6fb5;
+    --wqc-border-focus: var(--wqc-brand-blue);
+    --wqc-live: #00c800;
+
+    /* Tile palette — Metro flat accents for the market-data tile grid */
+    --wqc-tile-teal: #00aba9;
+    --wqc-tile-red: #a20025;
+    --wqc-tile-amber: #f0a30a;
+    --wqc-tile-green: #008a00;
+    --wqc-tile-dark: #2d2d2d;
+    --wqc-tile-purple: #6a00ff;
+
+    /* Fonts */
+    --wqc-font-sans: "Segoe UI", "Open Sans", "Noto Sans SC", system-ui, sans-serif;
+    --wqc-font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+
+    /* Radii — xs Metro, uniform per brand design */
+    --wqc-r-xs: 2px;
+    --wqc-r-sm: 2px;
+
+    /* Transitions */
+    --wqc-transition-fast: 100ms ease;
+    --wqc-transition-normal: 200ms ease;
+
+    /* Z-index layers */
+    --wqc-z-base: 0;
+    --wqc-z-raised: 100;
+    --wqc-z-overlay: 200;
+    --wqc-z-modal: 300;
+}
+
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--wqc-font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--wqc-text);
+    background-color: var(--wqc-bg);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 Theme Extension
+   ========================================================================== */
+
+@theme {
+    --color-wqc-bg: #0a0a0a;
+    --color-wqc-surface: #141414;
+    --color-wqc-border: #262626;
+    --color-wqc-accent: #6fb3ff;
+    --color-wqc-text: #ececec;
+    --color-wqc-muted: #b3b3b3;
+    --color-wqc-error: #ef4444;
+    --color-wqc-success: #22c55e;
+    --color-wqc-warning: #f59e0b;
+    --color-wqc-info: #6fb3ff;
+
+    --font-sans: "Segoe UI", "Open Sans", "Noto Sans SC", system-ui, sans-serif;
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--wqc-surface-2);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--wqc-border-strong);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--wqc-accent);
+}
+
+/* ==========================================================================
+   Focus Visible
+   ========================================================================== */
+
+:focus-visible {
+    outline: 2px solid var(--wqc-border-focus);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+    background-color: rgba(111, 179, 255, 0.25);
+    color: var(--wqc-text);
+}
+
+/* ==========================================================================
+   Prose
+   ========================================================================== */
+
+a {
+    color: var(--wqc-accent);
+    text-decoration: none;
+    transition: color var(--wqc-transition-fast);
+}
+
+a:hover {
+    color: var(--wqc-accent);
+    text-decoration: underline;
+    opacity: 0.85;
+}
