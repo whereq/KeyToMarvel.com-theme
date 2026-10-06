@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-vegeta -type d -not -path */node_modules* -not -path */.git*)",
+      "Bash(find /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-vegeta -name .storybook -o -name storybook.config.* -o -name .storybook.tsx)",
+      "Bash(wc:*)",
+      "Bash(cp /home/whereq/git/catobigato.com/frontend/public/favicon.svg /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-catobigato/public/resources/img/favicon.svg)",
+      "Bash(cp /home/whereq/git/catobigato.com/frontend/public/assets/catobi-head.png /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-catobigato/public/resources/img/catobi-head.png)",
+      "Bash(cp /home/whereq/git/catobigato.com/frontend/public/assets/catobi-clean.png /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-catobigato/public/resources/img/catobi-clean.png)",
+      "Bash(cp /home/whereq/git/catobigato.com/frontend/public/logo.png /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-catobigato/public/resources/img/logo.png)",
+      "Bash(yarn install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(yarn build:*)",
+      "Bash(npx keycloakify:*)",
+      "Bash(ssh:*)",
+      "Bash(ls:*)",
+      "Bash(unzip -l /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-catobigato/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar)",
+      "Bash(scp whereq@rp4:/tmp/catobigato-check.jar /tmp/catobigato-check.jar)",
+      "Bash(unzip -l /tmp/catobigato-check.jar)",
+      "Bash(unzip:*)",
+      "Bash(scp whereq@rp4:/tmp/vegeta-check.jar /tmp/vegeta-check.jar)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\(''''access_token'''',''''FAIL:''''+json.dumps\\(d\\)\\)[:80]\\)\")",
+      "Bash(find /home/whereq/git/KeyToMarvel.com-theme -path */bin/* -name *.sh -type f)",
+      "Bash(chmod:*)"
+    ]
+  }
+}

@@ -9,6 +9,8 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         en: {
             continueWith: "Continue with {0}",
             or: "or",
+            // User profile attribute labels (resolve ${profile.attributes.*} display names)
+            "profile.attributes.avatar": "Avatar",
             // Brand panel
             brandEyebrow: "chroniq.cc · Single sign-on · OIDC",
             brandHeadline: "Time, in the right hands.",
@@ -31,6 +33,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         "zh-CN": {
             continueWith: "使用 {0} 登录",
             or: "或",
+            "profile.attributes.avatar": "头像",
             brandEyebrow: "chroniq.cc · 单点登录 · OIDC",
             brandHeadline: "时间，掌握在对的手中。",
             brandSub: "您的统一身份，连接日历、节假日与全球时区。",
@@ -48,6 +51,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         ja: {
             continueWith: "{0} で続ける",
             or: "または",
+            "profile.attributes.avatar": "アバター",
             brandEyebrow: "chroniq.cc · シングルサインオン · OIDC",
             brandHeadline: "時間を、正しい手に。",
             brandSub: "カレンダー・祝日・世界時間を一元管理するあなたのID。",
@@ -65,6 +69,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         de: {
             continueWith: "Weiter mit {0}",
             or: "oder",
+            "profile.attributes.avatar": "Profilbild",
             brandEyebrow: "chroniq.cc · Single Sign-On · OIDC",
             brandHeadline: "Zeit, in den richtigen Händen.",
             brandSub: "Ihre einheitliche Identität für Kalender, Feiertage und Weltzeit.",
@@ -82,6 +87,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         es: {
             continueWith: "Continuar con {0}",
             or: "o",
+            "profile.attributes.avatar": "Avatar",
             brandEyebrow: "chroniq.cc · Inicio de sesión único · OIDC",
             brandHeadline: "El tiempo, en las manos correctas.",
             brandSub: "Tu identidad unificada para calendarios, festivos y hora mundial.",
@@ -99,6 +105,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         it: {
             continueWith: "Continua con {0}",
             or: "oppure",
+            "profile.attributes.avatar": "Avatar",
             brandEyebrow: "chroniq.cc · Accesso singolo · OIDC",
             brandHeadline: "Il tempo, nelle mani giuste.",
             brandSub: "La tua identità unificata per calendari, festività e ora mondiale.",
@@ -116,6 +123,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         fr: {
             continueWith: "Continuer avec {0}",
             or: "ou",
+            "profile.attributes.avatar": "Avatar",
             brandEyebrow: "chroniq.cc · Authentification unique · OIDC",
             brandHeadline: "Le temps, entre de bonnes mains.",
             brandSub: "Votre identité unifiée pour calendriers, jours fériés et heure mondiale.",

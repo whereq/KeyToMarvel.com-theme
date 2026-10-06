@@ -1,0 +1,3 @@
+# Never commit a realm JSON that contains a real client secret, or any creds.
+*-realm.json
+*.env
