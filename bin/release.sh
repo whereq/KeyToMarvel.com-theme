@@ -343,12 +343,17 @@ do_stage_and_commit() {
 
     if [[ "$spec" == "ALL" ]]; then
         if ! $ALLOW_CLAUDE; then
-            # Stage everything except .claude/ dirs
+            # Stage everything, then unstage any .claude/ paths using a
+            # positive inclusion list (more reliable than negative pathspec)
             git -C "$PROJECT_ROOT" add -A
-            git -C "$PROJECT_ROOT" reset -q -- . ':!**/.claude/**' 2>/dev/null || \
-                git -C "$PROJECT_ROOT" reset -q -- ":(exclude).claude/" ":(exclude)*/.claude/" 2>/dev/null || true
-            # Above is best-effort; the clean approach is .gitignore. Just print a notice.
-            dim "Note: any .claude/ files left untracked unless --allow-claude (consider .gitignore)"
+            # Collect staged .claude/ paths and reset just those
+            local claude_paths
+            claude_paths=$(git -C "$PROJECT_ROOT" diff --cached --name-only -- '.claude/' '*/.claude/' | tr '\n' ' ')
+            if [[ -n "$claude_paths" ]]; then
+                # shellcheck disable=SC2086
+                git -C "$PROJECT_ROOT" reset -q -- $claude_paths
+                dim "Excluded $(echo "$claude_paths" | wc -w) .claude/ path(s) from staging (use --allow-claude to include)"
+            fi
         else
             git -C "$PROJECT_ROOT" add -A
         fi
