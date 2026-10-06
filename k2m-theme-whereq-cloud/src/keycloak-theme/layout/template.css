@@ -1,0 +1,109 @@
+/**
+ * template.css — whereq.cloud Keycloak theme layout overrides.
+ *
+ * doUseDefaultCss=false so this is minimal.
+ * All primary styling via CSS custom properties and Tailwind.
+ */
+
+/* KC error message class */
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--wqc-error);
+}
+
+/* Prevent white flash on body */
+.kcBodyClass {
+    background-color: var(--wqc-bg) !important;
+    color: var(--wqc-text) !important;
+}
+
+/* Recaptcha container */
+.g-recaptcha {
+    transform-origin: left top;
+}
+
+/* ==========================================================================
+   Split layout — brand design: two equal-width panels that naturally stack
+   on narrow viewports via auto-fit (no manual breakpoint needed).
+   ========================================================================== */
+
+.wqc-split-root {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 460px), 1fr));
+    background: var(--wqc-surface);
+    color: var(--wqc-text);
+}
+
+.wqc-split-brand {
+    background: var(--wqc-brand);
+    color: #ffffff;
+    padding: 36px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 36px;
+    border-top: 3px solid var(--wqc-brand-blue);
+    position: relative;
+    overflow: hidden;
+}
+
+.wqc-split-pane {
+    background: var(--wqc-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 32px 48px;
+    gap: 24px;
+}
+
+.wqc-split-pane-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 639px) {
+    .wqc-split-brand {
+        padding: 28px 24px;
+    }
+
+    .wqc-split-pane {
+        padding: 24px 20px;
+    }
+
+    /* Metro tile grid: 4 cols is too cramped on phones — drop to 2 */
+    .wqc-tile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+/* ==========================================================================
+   Standard layout — centered card for all other login-flow pages
+   ========================================================================== */
+
+.wqc-standard-root {
+    min-height: 100dvh;
+    background: var(--wqc-bg);
+    color: var(--wqc-text);
+    display: flex;
+    flex-direction: column;
+}
+
+.wqc-standard-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+@media (max-width: 559px) {
+    .wqc-standard-wrap {
+        padding: 32px 16px;
+        justify-content: flex-start;
+    }
+}
