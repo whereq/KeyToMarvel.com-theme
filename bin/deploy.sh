@@ -121,8 +121,19 @@ DB_USER="whereq"
 JAR_FILENAME="keycloak-theme-for-kc-all-other-versions.jar"
 JAR_KC22_FILENAME="keycloak-theme-for-kc-22-to-25.jar"
 
-# Default repo path on PROD
-PROD_REPO_DIR_DEFAULT="$HOME/git/KeyToMarvel.com-theme"
+# Default repo path on PROD (we use a fixed absolute path; $HOME on the local
+# box may not match $HOME on PROD)
+PROD_REPO_DIR_DEFAULT="/home/whereq/git/KeyToMarvel.com-theme"
+
+# Resilient `yarn` invocation for the remote shell: a bare `ssh host "yarn ..."`
+# runs a non-interactive, non-login shell that may not have a standalone `yarn`
+# binary on PATH — only `corepack yarn` is guaranteed there. Prefix remote
+# build commands with this to resolve the right one at remote-execution time.
+YARN_SHIM='if command -v yarn >/dev/null 2>&1; then YARN=yarn; else YARN="corepack yarn"; fi'
+
+# Keycloak health check — the official keycloak image doesn't ship curl, only
+# wget, so try curl first (in case that ever changes) and fall back to wget.
+KC_HEALTH_CHECK_CMD="curl -sf http://localhost:8080/health/ready >/dev/null 2>&1 || wget -q -O /dev/null http://localhost:8080/health/ready >/dev/null 2>&1"
 
 # ── Runtime state ─────────────────────────────────────────────────────────────
 SSH_TARGET=""
@@ -558,9 +569,9 @@ deploy_one_theme() {
                 return 1
             fi
             info "Installing dependencies..."
-            remote "cd '$THEME_PATH' && yarn install --frozen-lockfile 2>/dev/null || yarn install" 2>&1 | tail -10 | sed 's/^/    /' || true
+            remote "cd '$THEME_PATH' && $YARN_SHIM && \$YARN install --frozen-lockfile 2>/dev/null || \$YARN install" 2>&1 | tail -10 | sed 's/^/    /' || true
             info "Building keycloak theme..."
-            remote "cd '$THEME_PATH' && yarn build-keycloak-theme" 2>&1 | tail -20 | sed 's/^/    /' || true
+            remote "cd '$THEME_PATH' && $YARN_SHIM && \$YARN build-keycloak-theme" 2>&1 | tail -20 | sed 's/^/    /' || true
             success "Build complete"
         fi
         # Verify build artifact
@@ -679,7 +690,7 @@ deploy_one_theme() {
             info "Waiting for Keycloak to become ready..."
             local attempts=0 max=$((KC_HEALTH_TIMEOUT / 2))
             while [[ $attempts -lt $max ]]; do
-                if remote "docker exec '$KC_CONTAINER' curl -sf http://localhost:8080/health/ready >/dev/null 2>&1" 2>/dev/null; then
+                if remote "docker exec '$KC_CONTAINER' sh -c \"$KC_HEALTH_CHECK_CMD\"" 2>/dev/null; then
                     success "Keycloak is ready"
                     break
                 fi
@@ -832,7 +843,7 @@ if $ALL_THEMES; then
         info "Waiting for Keycloak to become ready..."
         local attempts=0 max=$((KC_HEALTH_TIMEOUT / 2))
         while [[ $attempts -lt $max ]]; do
-            if remote "docker exec '$KC_CONTAINER' curl -sf http://localhost:8080/health/ready >/dev/null 2>&1" 2>/dev/null; then
+            if remote "docker exec '$KC_CONTAINER' sh -c \"$KC_HEALTH_CHECK_CMD\"" 2>/dev/null; then
                 success "Keycloak is ready"
                 break
             fi
