@@ -20,6 +20,8 @@ Themes (alias → directory → internal name used in the JAR/DB):
 | `chroniq`    | `k2m-theme-chroniq`    | `k2m-theme-chroniq`     | login only |
 | `catobigato` | `k2m-theme-catobigato` | `k2m-theme-catobigato`  | login only |
 | `whereq.com` | `k2m-theme-whereq-com` | `k2m-theme-whereq-com`  | login only |
+| `whereq.cc`  | `k2m-theme-whereq-cc`  | `k2m-theme-whereq-cc`   | login only (encrypted-gallery) |
+| `qhaul.ca`   | `k2m-theme-qhaul-ca`   | `k2m-theme-qhaul-ca`    | login only (navy/orange Metro UI, moving/delivery brand) |
 
 The authoritative registry (which realms use which theme for login/account/admin/email) lives
 in `bin/deploy.sh` (`THEME_REGISTRY` and `REALM_THEME_MAP`). `vegeta` is the fullest theme
@@ -77,16 +79,25 @@ Two scripts at the repo root orchestrate the full cycle:
 
 - **`bin/release.sh -m "message"`** (run locally) — stages, commits, squashes commits ahead of
   origin, auto-increments a `vX.Y.Z` tag, and pushes `main` + tags. Merges a dev branch into
-  `main` first if you're on one. `--dry-run` and `--no-squash` supported.
-- **`bin/deploy.sh <alias>`** (run **on the PROD server**) — pulls `main`, builds the theme,
-  copies the JAR to the Keycloak `providers/` dir renamed to `<internal-name>.jar` (one JAR per
-  theme so they never overwrite each other), copies welcome/extra theme dirs where applicable,
-  restarts the `keycloak-k2m` container, then verifies/repairs the `realm` table's
+  `main` first if you're on one. In a multi-theme repo, scope a release with
+  `--only <dir>[,<dir>...]` (stages just those `k2m-theme-*` dirs plus root files). Version
+  control: `--major|--minor|--patch` / `--set-version vX.Y.Z`; also `--amend`, `--no-tag`,
+  `--no-push`, `--no-squash`, `--dry-run`. **`.claude/` dirs are excluded by default** (opt in
+  with `--allow-claude`).
+- **`bin/deploy.sh <alias>`** — builds the theme, copies the JAR to the Keycloak `providers/`
+  dir renamed to `<internal-name>.jar` (one JAR per theme so they never overwrite each other),
+  copies welcome/exploded theme dirs where applicable, restarts the `keycloak-k2m` container,
+  then verifies/repairs the `realm` table's
   `login_theme`/`account_theme`/`admin_theme`/`email_theme` columns against `REALM_THEME_MAP`.
-  Flags: `--skip-build`, `--skip-pull`, `--dry-run`, `--db-only`, `--list`.
+  **Runs from LOCAL by default and auto-SSHes to PROD** (LAN `whereq@whereq` first, else
+  cloudflared `ssh.whereq.cc`); pass `--local` when you're already on the PROD box, or
+  `--target <host>` / `K2M_SSH_TARGET` to override. Other flags: `--all` (every theme),
+  `--status` (audit PROD, change nothing), `--verify` (audit + exit 1 on drift), `--skip-build`,
+  `--skip-pull`, `--no-restart`, `--db-only`, `--purge-client-overrides`, `--dry-run`, `--list`.
 
-Typical flow: make changes → test in `yarn dev`/`storybook` → `bin/release.sh -m "..."` locally
-→ SSH to PROD → `bin/deploy.sh <alias>`.
+Typical flow: make changes → test in `yarn dev`/`storybook` → `bin/release.sh -m "..."` →
+`bin/deploy.sh <alias>` (auto-SSHes to PROD; add `--local` if already on the box). Use
+`bin/deploy.sh --status` anytime to see what's actually deployed and whether the DB drifted.
 
 ## Environment
 

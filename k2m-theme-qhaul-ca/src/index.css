@@ -1,0 +1,186 @@
+/* ==========================================================================
+   K2M QHaul Theme — Google Fonts
+   ========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap");
+
+@import "tailwindcss";
+
+/* ==========================================================================
+   K2M QHaul Theme — Design Token System
+   Metro Light UI — Moving & Delivery, GTA
+   Color identity: QHaul orange + navy + teal, Metro xs radii
+   ========================================================================== */
+
+:root {
+    --qh-bg: #F7F8FA;
+    --qh-surface: #FFFFFF;
+    --qh-surface-2: #F3F5F7;
+    --qh-border: #D8DEE4;
+    --qh-border-strong: #14243D;
+    --qh-text: #14243D;
+    --qh-text-2: #42556B;
+    --qh-muted: #5C6B7A;
+    --qh-muted-2: #9AA7B4;
+
+    --qh-accent: #F4621F;
+    --qh-accent-hover: #D9500F;
+    --qh-accent-ink: #FFFFFF;
+    --qh-accent-bg: #FFF1EA;
+
+    --qh-navy: #14243D;
+    --qh-teal: #17607A;
+
+    /* Status */
+    --qh-error: #D64545;
+    --qh-error-bg: rgba(214, 69, 69, 0.08);
+    --qh-error-border: rgba(214, 69, 69, 0.30);
+    --qh-success: #1E8E5A;
+    --qh-success-bg: rgba(30, 142, 90, 0.08);
+    --qh-success-border: rgba(30, 142, 90, 0.30);
+    --qh-warning: #C98A1D;
+    --qh-warning-bg: rgba(201, 138, 29, 0.08);
+    --qh-warning-border: rgba(201, 138, 29, 0.30);
+    --qh-info: #17607A;
+    --qh-info-bg: rgba(23, 96, 122, 0.08);
+    --qh-info-border: rgba(23, 96, 122, 0.30);
+
+    /* Input / card surface aliases */
+    --qh-bg-card: var(--qh-surface);
+    --qh-bg-elevated: var(--qh-surface-2);
+    --qh-border-focus: var(--qh-accent);
+
+    /* On-navy text (brand aside panel) */
+    --qh-navy-ink: #FFFFFF;
+    --qh-navy-ink-2: #A9B8C9;
+    --qh-navy-eyebrow: #FFB489;
+
+    /* Stat tile palette (2x2 grid: orange / navy / teal / white) */
+    --qh-tile-1-bg: var(--qh-accent);
+    --qh-tile-1-ink: #FFFFFF;
+    --qh-tile-2-bg: var(--qh-navy);
+    --qh-tile-2-ink: #FFFFFF;
+    --qh-tile-3-bg: var(--qh-teal);
+    --qh-tile-3-ink: #FFFFFF;
+    --qh-tile-4-bg: #FFFFFF;
+    --qh-tile-4-ink: var(--qh-navy);
+
+    /* Fonts — single family, Latin + Simplified Chinese */
+    --qh-font-sans: "Barlow", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    /* System monospace — used only for OTP/code entry, not part of the brand type system */
+    --qh-font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+    /* Radii — xs Metro, uniform per brand design */
+    --qh-r-xs: 2px;
+    --qh-r-sm: 2px;
+
+    /* Transitions */
+    --qh-transition-fast: 100ms ease;
+    --qh-transition-normal: 200ms ease;
+
+    /* Z-index layers */
+    --qh-z-base: 0;
+    --qh-z-raised: 100;
+    --qh-z-overlay: 200;
+    --qh-z-modal: 300;
+}
+
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--qh-font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--qh-text);
+    background-color: var(--qh-bg);
+}
+
+/* ==========================================================================
+   Tailwind CSS v4 Theme Extension
+   ========================================================================== */
+
+@theme {
+    --color-qh-bg: #F7F8FA;
+    --color-qh-surface: #FFFFFF;
+    --color-qh-surface-2: #F3F5F7;
+    --color-qh-border: #D8DEE4;
+    --color-qh-accent: #F4621F;
+    --color-qh-navy: #14243D;
+    --color-qh-teal: #17607A;
+    --color-qh-text: #14243D;
+    --color-qh-muted: #5C6B7A;
+    --color-qh-error: #D64545;
+    --color-qh-success: #1E8E5A;
+    --color-qh-warning: #C98A1D;
+    --color-qh-info: #17607A;
+
+    --font-sans: "Barlow", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ==========================================================================
+   Scrollbar Styling
+   ========================================================================== */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--qh-surface-2);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--qh-muted-2);
+    border-radius: 0;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--qh-accent);
+}
+
+/* ==========================================================================
+   Focus Visible
+   ========================================================================== */
+
+:focus-visible {
+    outline: 2px solid var(--qh-border-focus);
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+::selection {
+    background-color: rgba(244, 98, 31, 0.2);
+    color: var(--qh-text);
+}
+
+/* ==========================================================================
+   Prose
+   ========================================================================== */
+
+a {
+    color: var(--qh-accent);
+    text-decoration: none;
+    transition: color var(--qh-transition-fast);
+}
+
+a:hover {
+    color: var(--qh-accent-hover);
+    text-decoration: underline;
+}

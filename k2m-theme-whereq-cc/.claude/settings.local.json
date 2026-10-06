@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(rsync -a --exclude node_modules --exclude .git --exclude dist_keycloak --exclude build_keycloak --exclude .keycloakify --exclude .claude ./ /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-whereq-com/)",
+      "Bash(yarn install *)",
+      "Bash(yarn build *)",
+      "Bash(yarn build-keycloak-theme *)",
+      "Bash(unzip -l dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar)",
+      "Bash(unzip -p dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar \"theme/k2m-theme-whereq-com/login/theme.properties\")",
+      "Bash(yarn lint *)",
+      "Bash(pkill -f \"storybook dev\")",
+      "Bash(pkill -f \"storybook\")",
+      "Bash(bash -n bin/deploy.sh)"
+    ]
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-vegeta/src/keycloak-theme -name *.css -o -name tailwind.config*)",
+      "Bash(find /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-vegeta/src/keycloak-theme/shared/ui -name *.tsx)",
+      "Bash(find /home/whereq/git/flowdesk.top/frontend/src/pages -name \"*.tsx\" -exec wc -l {} +)",
+      "Bash(yarn install:*)",
+      "Bash(yarn build:*)",
+      "Bash(timeout 8 yarn dev)",
+      "Bash(ssh:*)",
+      "Bash(mvn --version)",
+      "Bash(yarn build-keycloak-theme:*)",
+      "Bash(ls:*)",
+      "Bash(scp:*)",
+      "Bash(jar tf:*)",
+      "Bash(jar xf:*)",
+      "Bash(curl -s \"https://www.keytomarvel.com/realms/flowdesk.top/protocol/openid-connect/auth?client_id=flowdesk-spa&redirect_uri=https%3A%2F%2Fflowdesk.top%2F&response_type=code&scope=openid\")",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(cp \"/home/whereq/.claude/projects/-home-whereq-git-KeyToMarvel-com-theme-k2m-theme-flowdesk/a6aba653-7e61-41e0-98ce-0746f1e21311/tool-results/webfetch-1780159945958-8up3vq.bin\" /tmp/flowdesk-design.gz)",
+      "Read(//tmp/**)",
+      "Bash(gunzip -c /tmp/flowdesk-design.gz)",
+      "Bash(tar xf *)",
+      "Bash(yarn add *)",
+      "Bash(curl -sv \"https://www.keytomarvel.com/realms/flowdesk.top/protocol/openid-connect/auth?client_id=flowdesk-spa&redirect_uri=https%3A%2F%2Fflowdesk.top%2F&response_type=code&scope=openid\")",
+      "Read(//home/whereq/git/flowdesk.top/frontend/public/**)",
+      "Read(//home/whereq/git/flowdesk.top/frontend/**)",
+      "Bash(git -C /home/whereq/git/flowdesk.top log --format=\"%h %ad %s\" --date=short -5 -- frontend/public/logo.svg)",
+      "Bash(bash -n bin/deploy.sh)",
+      "Bash(bash bin/deploy.sh --list)"
+    ]
+  }
+}

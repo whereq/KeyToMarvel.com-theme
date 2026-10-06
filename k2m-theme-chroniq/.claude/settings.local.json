@@ -1,0 +1,43 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(cp /home/whereq/.claude/projects/-home-whereq-git-KeyToMarvel-com-theme-k2m-theme-chroniq/b85e9e65-3f3d-4060-a0da-33cacc863d69/tool-results/webfetch-1779155715411-6tspdc.bin /tmp/design.gz)",
+      "Bash(gunzip -f /tmp/design.gz)",
+      "Read(//tmp/design/**)",
+      "Bash(cp /home/whereq/.claude/projects/-home-whereq-git-KeyToMarvel-com-theme-k2m-theme-chroniq/b85e9e65-3f3d-4060-a0da-33cacc863d69/tool-results/webfetch-1779155715411-6tspdc.bin /tmp/design_chroniq.gz)",
+      "Bash(gunzip -f /tmp/design_chroniq.gz)",
+      "Read(//tmp/**)",
+      "Bash(mkdir -p /tmp/design_chroniq_extracted)",
+      "Bash(tar -xf /tmp/design_chroniq -C /tmp/design_chroniq_extracted)",
+      "Read(//home/whereq/git/KeyToMarvel.com-theme/k2m-theme-flowdesk/**)",
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(echo \"=== $f.tsx ===\")",
+      "Read(//home/whereq/git/KeyToMarvel.com-theme/k2m-theme-flowdesk/src/keycloak-theme/login/pages/login/**)",
+      "Bash(done)",
+      "Read(//home/whereq/git/KeyToMarvel.com-theme/k2m-theme-flowdesk/src/keycloak-theme/login/pages/otp/**)",
+      "Bash(__NEW_LINE_4c1f276aa802d2bb__ for:*)",
+      "Read(//home/whereq/git/KeyToMarvel.com-theme/k2m-theme-flowdesk/src/keycloak-theme/login/pages/register/**)",
+      "Bash(__NEW_LINE_4c1f276aa802d2bb__ echo:*)",
+      "Bash(yarn install:*)",
+      "Bash(npx tsc:*)",
+      "Bash(yarn build:*)",
+      "Bash(ssh *)",
+      "Bash(yarn -v)",
+      "Bash(yarn build-keycloak-theme *)",
+      "Bash(scp /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-chroniq/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar whereq@whereq:/home/whereq/git/KeyToMarvel.com/docker/volumes/keycloak/providers/k2m-theme-chroniq.jar)",
+      "Bash(grep -oE \"data:image/svg\\\\+xml[^\\\\\"']{0,60}\" dist/assets/index-CQfgrhnL.js)",
+      "Bash(scp /home/whereq/git/KeyToMarvel.com-theme/k2m-theme-vegeta/dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar whereq@whereq:/home/whereq/git/KeyToMarvel.com/docker/volumes/keycloak/providers/k2m-theme-vegeta.jar)",
+      "Bash(unzip -l dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar)",
+      "Bash(unzip -p dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar theme/k2m-theme-vegeta/email/messages/messages_zh.properties)",
+      "Bash(unzip -p dist_keycloak/keycloak-theme-for-kc-all-other-versions.jar theme/k2m-theme-vegeta/email/messages/messages_fr.properties)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git tag *)",
+      "Bash(git push *)",
+      "Bash(git ls-remote *)"
+    ]
+  }
+}

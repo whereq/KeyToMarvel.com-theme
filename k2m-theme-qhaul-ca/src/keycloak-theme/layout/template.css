@@ -1,0 +1,111 @@
+/**
+ * template.css — QHaul Keycloak theme layout overrides.
+ *
+ * doUseDefaultCss=false so this is minimal.
+ * All primary styling via CSS custom properties and Tailwind.
+ */
+
+/* KC error message class */
+.kcInputErrorMessageClass {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.75rem;
+    color: var(--qh-error);
+}
+
+/* Prevent white flash on body */
+.kcBodyClass {
+    background-color: var(--qh-bg) !important;
+    color: var(--qh-text) !important;
+}
+
+/* Recaptcha container */
+.g-recaptcha {
+    transform-origin: left top;
+}
+
+/* ==========================================================================
+   Split layout — brand design: navy aside | white scrollable pane
+   ========================================================================== */
+
+.qh-split-root {
+    height: 100dvh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 520px;
+    background: var(--qh-surface);
+    overflow: hidden;
+}
+
+.qh-split-brand {
+    background: var(--qh-navy);
+    color: #FFFFFF;
+    padding: 40px 44px;
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+    position: relative;
+    overflow: hidden;
+}
+
+.qh-split-pane {
+    background: var(--qh-surface);
+    border-left: 1px solid var(--qh-border);
+    padding: 32px 44px 40px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--qh-muted-2) var(--qh-surface-2);
+}
+
+/* ── Responsive: tablet (< 980 px) — stack vertically, hide brand aside ── */
+@media (max-width: 979px) {
+    .qh-split-root {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 100dvh;
+        overflow: visible;
+    }
+
+    .qh-split-brand {
+        display: none;
+    }
+
+    .qh-split-pane {
+        border-left: none;
+        padding: 28px 24px 40px;
+    }
+}
+
+@media (max-width: 559px) {
+    .qh-split-pane {
+        padding: 20px 16px 32px;
+    }
+}
+
+/* ==========================================================================
+   Standard layout — centered card for all other login-flow pages
+   ========================================================================== */
+
+.qh-standard-root {
+    min-height: 100dvh;
+    background: var(--qh-bg);
+    display: flex;
+    flex-direction: column;
+}
+
+.qh-standard-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+@media (max-width: 559px) {
+    .qh-standard-wrap {
+        padding: 32px 16px;
+        justify-content: flex-start;
+    }
+}
