@@ -46,6 +46,9 @@ const { useI18n, ofTypeI18n } = i18nBuilder
             // Social
             socialGoogleLabel: "Google",
             socialWechatLabel: "WeChat",
+
+            // User Profile attribute labels (keyed by ${profile.attributes.<name>})
+            "profile.attributes.avatar": "Avatar",
         },
         "zh-CN": {
             or: "或使用以下方式",
@@ -82,6 +85,8 @@ const { useI18n, ofTypeI18n } = i18nBuilder
 
             socialGoogleLabel: "Google",
             socialWechatLabel: "微信登录",
+
+            "profile.attributes.avatar": "头像",
         },
         fr: {
             or: "Ou continuer avec",
@@ -118,6 +123,8 @@ const { useI18n, ofTypeI18n } = i18nBuilder
 
             socialGoogleLabel: "Google",
             socialWechatLabel: "WeChat",
+
+            "profile.attributes.avatar": "Avatar",
         },
     })
     .build();
