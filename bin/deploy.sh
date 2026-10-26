@@ -106,6 +106,7 @@ declare -A REALM_THEME_MAP=(
   [whereq.com]="k2m-theme-whereq-com:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [chroniq.cc]="k2m-theme-chroniq:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [whereq.cc-realm]="k2m-theme-whereq-cc:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
+  [qhaul.ca-realm]="k2m-theme-qhaul-ca:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [caijing.today-realm]="k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
   [whereq.cloud]="k2m-theme-whereq-cloud:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
 )
@@ -261,23 +262,31 @@ ensure_on_prod() {
 }
 
 # ── Argument parsing ──────────────────────────────────────────────────────────
-for arg in "$@"; do
-    case "$arg" in
-        --skip-build)           SKIP_BUILD=true ;;
-        --skip-pull)            SKIP_PULL=true ;;
-        --dry-run)              DRY_RUN=true ;;
-        --db-only)              DB_ONLY=true ;;
-        --status)               STATUS_ONLY=true ;;
-        --verify)               VERIFY_ONLY=true ;;
-        --no-restart)           NO_RESTART=true ;;
-        --purge-client-overrides) PURGE_CLIENT_OVERRIDES=true ;;
-        --all)                  ALL_THEMES=true ;;
-        --local)                LOCAL_RUN=true ;;
+# Single pass with `shift` so that options taking a separate value (--target)
+# consume that value instead of leaving it to be misread as a theme alias.
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --skip-build)           SKIP_BUILD=true; shift ;;
+        --skip-pull)            SKIP_PULL=true; shift ;;
+        --dry-run)              DRY_RUN=true; shift ;;
+        --db-only)              DB_ONLY=true; shift ;;
+        --status)               STATUS_ONLY=true; shift ;;
+        --verify)               VERIFY_ONLY=true; shift ;;
+        --no-restart)           NO_RESTART=true; shift ;;
+        --purge-client-overrides) PURGE_CLIENT_OVERRIDES=true; shift ;;
+        --all)                  ALL_THEMES=true; shift ;;
+        --local)                LOCAL_RUN=true; shift ;;
         --target)
-            # value comes as next arg — handled after loop
+            if [[ $# -lt 2 || -z "${2:-}" ]]; then
+                error "--target requires a value (e.g. --target whereq@whereq)"
+                exit 1
+            fi
+            SSH_TARGET_OVERRIDE="$2"
+            shift 2
             ;;
         --target=*)
-            SSH_TARGET_OVERRIDE="${arg#--target=}"
+            SSH_TARGET_OVERRIDE="${1#--target=}"
+            shift
             ;;
         --list)                 list_themes; exit 0 ;;
         --help|-h)
@@ -285,34 +294,18 @@ for arg in "$@"; do
               | sed -e 's/^# \?//' -e '$d' -e '/^=====/d'
             exit 0 ;;
         -*)
-            error "Unknown option: $arg"
+            error "Unknown option: $1"
             exit 1 ;;
         *)
             if [[ -z "$THEME_ALIAS" ]]; then
-                THEME_ALIAS="$arg"
+                THEME_ALIAS="$1"
             else
-                error "Unexpected argument: $arg"
+                error "Unexpected argument: $1"
                 exit 1
             fi
+            shift
             ;;
     esac
-done
-
-# Handle --target <value> (needs separate arg)
-i=1
-new_args=()
-for arg in "$@"; do
-    if [[ "$arg" == "--target" ]]; then
-        # next arg is the value
-        next_idx=$((i + 1))
-        next_arg="${!next_idx:-}"
-        if [[ -z "$next_arg" ]]; then
-            error "--target requires a value (e.g. --target whereq@whereq)"
-            exit 1
-        fi
-        SSH_TARGET_OVERRIDE="$next_arg"
-    fi
-    i=$((i + 1))
 done
 
 # Validate
@@ -581,10 +574,17 @@ deploy_one_theme() {
             error "JAR not found after build: $jar_src"
             return 1
         fi
-        # Verify JAR contents match expected theme name (catches stale builds)
+        # Verify JAR contents match expected theme name (catches stale builds).
+        # PROD may not have `unzip` (only python3), so fall back to zipfile.
         if ! $DRY_RUN; then
             local jar_check
-            jar_check=$(remote "unzip -l '$jar_src' 2>/dev/null | grep -c '^.*theme/$THEME_INTERNAL/' || true" 2>/dev/null || echo "0")
+            jar_check=$(remote "jar_list_count() {
+                if command -v unzip >/dev/null 2>&1; then
+                    unzip -l \"\$1\" 2>/dev/null | grep -c '^.*theme/$THEME_INTERNAL/'
+                else
+                    python3 -c \"import sys,zipfile; print(sum(1 for n in zipfile.ZipFile(sys.argv[1]).namelist() if 'theme/$THEME_INTERNAL/' in n))\" \"\$1\" 2>/dev/null
+                fi
+            }; jar_list_count '$jar_src'" 2>/dev/null || echo "0")
             jar_check=$(echo "$jar_check" | tr -d '[:space:]')
             if [[ "${jar_check:-0}" -lt 1 ]]; then
                 warn "JAR contents don't contain theme/$THEME_INTERNAL/ — check vite.config.ts themeName!"
