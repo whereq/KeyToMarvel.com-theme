@@ -41,7 +41,7 @@ export default function UserProfileFormFields({
                                     <span
                                         dangerouslySetInnerHTML={{
                                             __html: kcSanitize(
-                                                displayableErrors.map(e => e.errorMessage).join(", "),
+                                                displayableErrors.map(e => e.errorMessageStr).join(", "),
                                             ),
                                         }}
                                     />
