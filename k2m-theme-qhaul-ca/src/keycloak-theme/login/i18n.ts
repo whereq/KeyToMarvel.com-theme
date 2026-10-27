@@ -10,7 +10,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
             or: "Or continue with",
 
             // Brand panel (navy aside — realm-level, same across login/register/forgot)
-            brandRealm: "QHaul account · qhaul.ca realm",
+            brandRealm: "QHaul account · qhaul.ca",
             brandHeadline: "One account for every job you move.",
             brandBody: "Sign in to see past bookings, net-terms invoices, saved addresses and live tracking. Business accounts manage team permissions here too.",
             brandTile1Value: "4,800+",
@@ -56,7 +56,7 @@ const { useI18n, ofTypeI18n } = i18nBuilder
         "zh-CN": {
             or: "或使用以下方式",
 
-            brandRealm: "QHaul 账户 · qhaul.ca realm",
+            brandRealm: "QHaul 账户 · qhaul.ca",
             brandHeadline: "一个账户，管理你的每一次搬运。",
             brandBody: "登录后可查看历史订单、月结发票、常用地址与实时追踪。商务账户可管理团队成员权限。",
             brandTile1Value: "4,800+",
