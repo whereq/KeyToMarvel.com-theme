@@ -147,6 +147,7 @@ YARN_SHIM='if command -v yarn >/dev/null 2>&1; then YARN=yarn; else YARN="corepa
 
 # Keycloak health check — the official keycloak image doesn't ship curl, only
 # wget, so try curl first (in case that ever changes) and fall back to wget.
+# Some images ship neither, so kc_healthy() also trusts Docker's own healthcheck.
 KC_HEALTH_CHECK_CMD="curl -sf http://localhost:8080/health/ready >/dev/null 2>&1 || wget -q -O /dev/null http://localhost:8080/health/ready >/dev/null 2>&1"
 
 # ── Runtime state ─────────────────────────────────────────────────────────────
@@ -200,6 +201,35 @@ ssh_q() {
     else
         ssh -o ConnectTimeout=10 -o BatchMode=yes "$SSH_TARGET" "$@"
     fi
+}
+
+# ── Helper: is Keycloak up and serving? ──────────────────────────────────────
+# 1. Docker's own healthcheck for the container (works even when the image
+#    ships neither curl nor wget).
+# 2. An HTTP probe from inside the container as a fallback.
+kc_healthy() {
+    local status
+    status=$(remote "docker inspect --format '{{.State.Health.Status}}' '$KC_CONTAINER'" 2>/dev/null | tr -d '[:space:]')
+    if [[ "$status" == "healthy" ]]; then
+        return 0
+    fi
+    remote "docker exec '$KC_CONTAINER' sh -c \"$KC_HEALTH_CHECK_CMD\"" 2>/dev/null
+}
+
+# ── Helper: wait until Keycloak reports ready ────────────────────────────────
+wait_for_keycloak() {
+    local attempts=0
+    local max=$((KC_HEALTH_TIMEOUT / 2))
+    while [[ $attempts -lt $max ]]; do
+        if kc_healthy; then
+            success "Keycloak is ready"
+            return 0
+        fi
+        attempts=$((attempts + 1))
+        sleep 2
+    done
+    warn "Health check timed out after ${KC_HEALTH_TIMEOUT}s — server may still be starting"
+    return 1
 }
 
 # ── Helper: run SQL on the Keycloak DB ────────────────────────────────────────
@@ -785,17 +815,9 @@ deploy_one_theme() {
             info "Restarting $KC_CONTAINER..."
             remote "docker restart '$KC_CONTAINER'" 2>&1 | sed 's/^/    /' || true
             info "Waiting for Keycloak to become ready..."
-            local attempts=0 max=$((KC_HEALTH_TIMEOUT / 2))
-            while [[ $attempts -lt $max ]]; do
-                if remote "docker exec '$KC_CONTAINER' sh -c \"$KC_HEALTH_CHECK_CMD\"" 2>/dev/null; then
-                    success "Keycloak is ready"
-                    break
-                fi
-                attempts=$((attempts + 1))
-                sleep 2
-            done
-            if [[ $attempts -ge $max ]]; then
-                warn "Health check timed out after ${KC_HEALTH_TIMEOUT}s — server may still be starting"
+            if wait_for_keycloak; then
+                # The restart picked up the realm locale changes applied above.
+                LOCALE_CHANGES_PENDING=false
             fi
         fi
     fi
@@ -942,17 +964,8 @@ if $ALL_THEMES; then
         header "[ restart ] Restarting Keycloak after all themes"
         remote "docker restart '$KC_CONTAINER'" 2>&1 | sed 's/^/    /' || true
         info "Waiting for Keycloak to become ready..."
-        local attempts=0 max=$((KC_HEALTH_TIMEOUT / 2))
-        while [[ $attempts -lt $max ]]; do
-            if remote "docker exec '$KC_CONTAINER' sh -c \"$KC_HEALTH_CHECK_CMD\"" 2>/dev/null; then
-                success "Keycloak is ready"
-                break
-            fi
-            attempts=$((attempts + 1))
-            sleep 2
-        done
-        if [[ $attempts -ge $max ]]; then
-            warn "Health check timed out after ${KC_HEALTH_TIMEOUT}s"
+        if wait_for_keycloak; then
+            LOCALE_CHANGES_PENDING=false
         fi
     fi
 elif $DB_ONLY; then

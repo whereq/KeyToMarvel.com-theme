@@ -28,6 +28,13 @@ The authoritative registry (which realms use which theme for login/account/admin
 in `bin/deploy.sh` (`THEME_REGISTRY` and `REALM_THEME_MAP`). `vegeta` is the fullest theme
 (login + account + admin + email) and is the fallback for account/admin/email on most realms.
 
+`bin/deploy.sh` also holds `REALM_LOCALE_MAP` — per-realm **internationalization** settings
+(`"<default locale>|<comma-separated supported locales>"`). Keycloak only offers a locale on the
+sign-in page when the realm lists it in `realm_supported_locales`, and `realm.default_locale` is the
+fallback when the browser asks for an unsupported locale. `deploy.sh` audits this in `--status`
+(section 7) and repairs it right before the Keycloak restart, so the locale switcher and the
+default locale stay in sync with the theme's `login/i18n.ts` translations.
+
 ## Commands
 
 Run these **inside a theme directory** (e.g. `cd k2m-theme-vegeta`):
