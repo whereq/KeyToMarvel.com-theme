@@ -47,6 +47,9 @@ const { useI18n, ofTypeI18n } = i18nBuilder
             socialGoogleLabel: "Google",
             socialWechatLabel: "WeChat",
 
+            // Standard Keycloak key that ships untranslated in the zh_CN bundle
+            email: "Email",
+
             // User Profile attribute labels (keyed by ${profile.attributes.<name>})
             "profile.attributes.avatar": "Avatar",
         },
@@ -86,6 +89,9 @@ const { useI18n, ofTypeI18n } = i18nBuilder
             socialGoogleLabel: "Google",
             socialWechatLabel: "微信登录",
 
+            // Standard Keycloak key that ships untranslated in the zh_CN bundle
+            email: "电子邮箱",
+
             "profile.attributes.avatar": "头像",
         },
         fr: {
@@ -123,6 +129,9 @@ const { useI18n, ofTypeI18n } = i18nBuilder
 
             socialGoogleLabel: "Google",
             socialWechatLabel: "WeChat",
+
+            // Standard Keycloak key that ships untranslated in the zh_CN bundle
+            email: "Courriel",
 
             "profile.attributes.avatar": "Avatar",
         },
