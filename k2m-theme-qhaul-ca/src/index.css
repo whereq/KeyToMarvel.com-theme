@@ -54,10 +54,12 @@
     --qh-navy-ink-2: #A9B8C9;
     --qh-navy-eyebrow: #FFB489;
 
-    /* Stat tile palette (2x2 grid: orange / navy / teal / white) */
+    /* Stat tile palette (2x2 grid: orange / blue / teal / white) */
     --qh-tile-1-bg: var(--qh-accent);
     --qh-tile-1-ink: #FFFFFF;
-    --qh-tile-2-bg: var(--qh-navy);
+    /* Tile 2 sits on the navy brand panel, so it must NOT reuse --qh-navy —
+       a lighter navy keeps the navy family while staying visible as a box. */
+    --qh-tile-2-bg: #24456E;
     --qh-tile-2-ink: #FFFFFF;
     --qh-tile-3-bg: var(--qh-teal);
     --qh-tile-3-ink: #FFFFFF;

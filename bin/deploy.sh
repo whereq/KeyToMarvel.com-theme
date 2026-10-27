@@ -111,6 +111,18 @@ declare -A REALM_THEME_MAP=(
   [whereq.cloud]="k2m-theme-whereq-cloud:k2m-theme-vegeta:k2m-theme-vegeta:k2m-theme-vegeta"
 )
 
+# Realm internationalization: which locales a realm offers and which one it
+# falls back to. This is the source of truth for the locale switcher on the
+# sign-in page — Keycloak only offers a locale when the realm lists it in
+# realm_supported_locales, and realm.default_locale is the fallback used when
+# neither the browser nor the user asked for a supported locale.
+#
+# Format: REALM_NAME -> "<default locale>|<comma-separated supported locales>"
+# Realms not listed here are left untouched.
+declare -A REALM_LOCALE_MAP=(
+  [qhaul.ca-realm]="zh-CN|en,zh-CN,fr"
+)
+
 # ── Default container / path names (overridable via env) ──────────────────────
 KC_CONTAINER="${K2M_KC_CONTAINER:-keycloak-k2m}"
 DB_CONTAINER="${K2M_DB_CONTAINER:-whereq-db}"
@@ -152,6 +164,7 @@ ALL_THEMES=false
 LOCAL_RUN=false
 SSH_TARGET_OVERRIDE=""
 KC_HEALTH_TIMEOUT=90   # seconds; 30 × 2s retries
+LOCALE_CHANGES_PENDING=false   # set when realm locale settings were repaired in the DB
 
 # ── Helper: parse theme registry entry ────────────────────────────────────────
 parse_theme() {
@@ -473,6 +486,82 @@ do_status() {
         done
         warn "Client overrides shadow realm setting. Run with --purge-client-overrides to clear."
     fi
+
+    # 7. Realm locale settings (default + supported locales)
+    echo ""
+    info "7) Realm locale settings (DB vs REALM_LOCALE_MAP)"
+    if [[ ${#REALM_LOCALE_MAP[@]} -eq 0 ]]; then
+        dim "No realms configured in REALM_LOCALE_MAP"
+    else
+        do_verify_locales check || warn "Locale drift detected (run the deploy to repair it)"
+    fi
+}
+
+# ── Realm locale settings ────────────────────────────────────────────────────
+# Keycloak only offers a locale on the sign-in page when the realm lists it in
+# realm_supported_locales. realm.default_locale is the fallback used when the
+# browser (Accept-Language) asks for a locale the realm does not support.
+#
+# Usage: do_verify_locales check|apply
+#   check — read-only audit
+#   apply — repair drift in the DB (needs a Keycloak restart to take effect)
+do_verify_locales() {
+    local mode="${1:-check}"
+
+    if [[ ${#REALM_LOCALE_MAP[@]} -eq 0 ]]; then
+        return 0
+    fi
+
+    local locale_errors=0
+
+    for realm_name in "${!REALM_LOCALE_MAP[@]}"; do
+        local spec="${REALM_LOCALE_MAP[$realm_name]}"
+        local expected_default="${spec%%|*}"
+        local expected_list="${spec#*|}"
+
+        local realm_id
+        realm_id=$(run_sql "SELECT id FROM realm WHERE name='$realm_name';")
+        if [[ -z "$realm_id" ]]; then
+            warn "Realm '$realm_name' not found in DB (skipping locale check)"
+            continue
+        fi
+
+        local actual_default
+        actual_default=$(run_sql "SELECT default_locale FROM realm WHERE name='$realm_name';")
+        local actual_list
+        actual_list=$(run_sql "SELECT string_agg(value, ',' ORDER BY value) FROM realm_supported_locales WHERE realm_id='$realm_id';")
+
+        # Compare as sorted sets — the physical row order is not significant.
+        local expected_sorted actual_sorted
+        expected_sorted=$(printf '%s\n' "$expected_list" | tr ',' '\n' | grep -v '^[[:space:]]*$' | sort | tr '\n' ',' | sed 's/,$//')
+        actual_sorted=$(printf '%s\n' "$actual_list" | tr ',' '\n' | grep -v '^[[:space:]]*$' | sort | tr '\n' ',' | sed 's/,$//')
+
+        if [[ "$actual_default" == "$expected_default" && "$actual_sorted" == "$expected_sorted" ]]; then
+            success "Realm '$realm_name': default locale '$actual_default', supported [$actual_list]"
+            continue
+        fi
+
+        locale_errors=$((locale_errors + 1))
+        warn "Realm '$realm_name': default locale '$actual_default' (expected '$expected_default')"
+        warn "Realm '$realm_name': supported locales [$actual_list] (expected [$expected_list])"
+
+        if [[ "$mode" == "apply" ]]; then
+            if $DRY_RUN; then
+                dim "Would set default_locale='$expected_default' and supported locales to [$expected_list]"
+            else
+                run_sql "UPDATE realm SET default_locale='$expected_default', internationalization_enabled=true WHERE name='$realm_name';" >/dev/null
+                run_sql "DELETE FROM realm_supported_locales WHERE realm_id='$realm_id';" >/dev/null
+                local loc
+                for loc in ${expected_list//,/ }; do
+                    run_sql "INSERT INTO realm_supported_locales (realm_id, value) VALUES ('$realm_id', '$loc');" >/dev/null
+                done
+                success "Realm '$realm_name': locale settings updated (default '$expected_default', supported [$expected_list])"
+                LOCALE_CHANGES_PENDING=true
+            fi
+        fi
+    done
+
+    return $locale_errors
 }
 
 # ── Run status / verify and exit ─────────────────────────────────────────────
@@ -680,9 +769,16 @@ deploy_one_theme() {
         fi
     fi
 
-    # Step 5: restart Keycloak (single-theme only)
+    # Step 5: realm locale settings (applied BEFORE the restart so the new
+    #         locale list / default locale is live when Keycloak comes back up)
+    if ! $DB_ONLY; then
+        header "[ 5/6 ] Realm locale settings"
+        do_verify_locales apply || warn "Realm locale drift detected (see above)"
+    fi
+
+    # Step 6: restart Keycloak (single-theme only)
     if ! $DB_ONLY && ! $ALL_THEMES && ! $NO_RESTART; then
-        header "[ 5/6 ] Restart Keycloak"
+        header "[ 6/6 ] Restart Keycloak"
         if $DRY_RUN; then
             dim "Would run: docker restart $KC_CONTAINER"
         else
@@ -786,6 +882,10 @@ do_verify_db() {
         success "No orphan realms"
     fi
 
+    # Realm locale settings (audit only — the repair happens before the restart)
+    echo ""
+    do_verify_locales check
+
     return $db_errors
 }
 
@@ -856,7 +956,9 @@ if $ALL_THEMES; then
         fi
     fi
 elif $DB_ONLY; then
-    :
+    # No theme build/deploy — just keep the realm locale settings in sync.
+    header "[ locale ] Realm locale settings"
+    do_verify_locales apply || warn "Realm locale drift detected (see above)"
 else
     deploy_one_theme "$THEME_ALIAS"
 fi
@@ -868,6 +970,10 @@ fi
 
 # ── Summary ───────────────────────────────────────────────────────────────────
 echo ""
+if $LOCALE_CHANGES_PENDING; then
+    warn "Realm locale settings were changed in the DB — restart Keycloak to apply them."
+    warn "  bin/deploy.sh <alias>   (restarts Keycloak as part of the deploy)"
+fi
 if $DRY_RUN; then
     success "${BOLD}Dry run complete — no changes made.${RESET}"
 else
