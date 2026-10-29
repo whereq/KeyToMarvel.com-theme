@@ -1,6 +1,7 @@
 # This file is managed by Keycloakify, do not edit it manually.
 
 # === Owned files start ===
+# admin/components/users/UserDataTable.tsx
 # === Owned files end =====
 
 # === @keycloakify/keycloak-admin-ui v260007.0.4 ===
@@ -399,7 +400,6 @@
 /admin/components/time-selector/TimeSelector.tsx
 /admin/components/time-selector/TimeSelectorControl.tsx
 /admin/components/time-selector/TimeSelectorForm.tsx
-/admin/components/users/UserDataTable.tsx
 /admin/components/users/UserDataTableAttributeSearchForm.tsx
 /admin/components/users/UserDataTableToolbarItems.tsx
 /admin/components/users/UserSelect.tsx

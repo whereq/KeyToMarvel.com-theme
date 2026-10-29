@@ -13,6 +13,7 @@
 # admin/assets/logo.svg
 # admin/realm-settings/NewAttributeSettings.tsx
 # admin/user/UserForm.tsx
+# admin/components/users/UserDataTable.tsx
 # admin/realm-settings/user-profile/AttributesGroupForm.tsx
 # === Owned files end =====
 
@@ -405,7 +406,6 @@
 /admin/components/time-selector/TimeSelector.tsx
 /admin/components/time-selector/TimeSelectorControl.tsx
 /admin/components/time-selector/TimeSelectorForm.tsx
-/admin/components/users/UserDataTable.tsx
 /admin/components/users/UserDataTableAttributeSearchForm.tsx
 /admin/components/users/UserDataTableToolbarItems.tsx
 /admin/components/users/UserSelect.tsx
